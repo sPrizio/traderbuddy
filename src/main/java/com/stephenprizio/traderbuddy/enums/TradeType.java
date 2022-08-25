@@ -8,5 +8,6 @@ package com.stephenprizio.traderbuddy.enums;
  */
 public enum TradeType {
     BUY,
-    SELL
+    SELL,
+    PROMOTIONAL_PAYMENT
 }

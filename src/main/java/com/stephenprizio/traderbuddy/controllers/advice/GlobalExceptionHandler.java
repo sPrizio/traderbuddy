@@ -1,8 +1,8 @@
 package com.stephenprizio.traderbuddy.controllers.advice;
 
-import com.stephenprizio.traderbuddy.exceptions.IllegalParameterException;
-import com.stephenprizio.traderbuddy.exceptions.NoResultFoundException;
-import com.stephenprizio.traderbuddy.exceptions.NonUniqueItemFoundException;
+import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
+import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
+import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

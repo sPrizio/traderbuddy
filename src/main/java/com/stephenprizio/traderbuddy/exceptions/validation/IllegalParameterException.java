@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.exceptions;
+package com.stephenprizio.traderbuddy.exceptions.validation;
 
 /**
  * Custom exception for illegal method parameters

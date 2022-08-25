@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.services;
 
 import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.exceptions.IllegalParameterException;
+import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import org.assertj.core.groups.Tuple;

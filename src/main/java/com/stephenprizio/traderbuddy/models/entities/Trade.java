@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.models.entities;
 
 import com.stephenprizio.traderbuddy.enums.TradeType;
+import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,16 @@ public class Trade {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Getter
+    @Setter
+    @Column(unique = true)
+    private String tradeId;
+
+    @Getter
+    @Setter
+    @Column
+    private TradingPlatform tradingPlatform;
 
     @Getter
     @Setter

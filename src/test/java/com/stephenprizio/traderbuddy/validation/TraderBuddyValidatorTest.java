@@ -1,8 +1,8 @@
 package com.stephenprizio.traderbuddy.validation;
 
-import com.stephenprizio.traderbuddy.exceptions.IllegalParameterException;
-import com.stephenprizio.traderbuddy.exceptions.NoResultFoundException;
-import com.stephenprizio.traderbuddy.exceptions.NonUniqueItemFoundException;
+import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
+import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
+import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.time.DateTimeException;
