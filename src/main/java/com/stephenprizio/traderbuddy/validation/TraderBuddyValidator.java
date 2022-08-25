@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Validator class for method integrity
@@ -18,6 +19,10 @@ import java.util.Objects;
  * @version 1.0
  */
 public class TraderBuddyValidator {
+
+    private TraderBuddyValidator() {
+        throw new UnsupportedOperationException("Static classes should not be instantiated");
+    }
 
 
     //  METHODS
@@ -37,7 +42,7 @@ public class TraderBuddyValidator {
     }
 
     /**
-     * Validates that the given collection only contains 1 element
+     * Validates that the given {@link Collection} only contains 1 element
      *
      * @param collection collection to test
      * @param message error message
@@ -51,7 +56,7 @@ public class TraderBuddyValidator {
     }
 
     /**
-     * Validates that the given collection is not empty
+     * Validates that the given {@link Collection} is not empty
      *
      * @param collection collection to test
      * @param message error message
@@ -65,7 +70,7 @@ public class TraderBuddyValidator {
     }
 
     /**
-     * Validates that the 2 given dates are valid and don't overlap
+     * Validates that the 2 given {@link LocalDateTime}s are valid and don't overlap
      *
      * @param compareOne start date
      * @param compareTwo end date
@@ -91,6 +96,19 @@ public class TraderBuddyValidator {
             LocalDateTime.parse(date, DateTimeFormatter.ofPattern(format));
         } catch (Exception e) {
             throw new DateTimeException(String.format(message, values));
+        }
+    }
+
+    /**
+     * Validates if the given {@link Optional} is empty
+     *
+     * @param optional {@link Optional}
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateIfPresent(Optional<?> optional, String message, Object... values) {
+        if (optional.isEmpty()) {
+            throw new NoResultFoundException(String.format(message, values));
         }
     }
 }

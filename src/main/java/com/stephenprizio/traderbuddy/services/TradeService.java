@@ -3,12 +3,12 @@ package com.stephenprizio.traderbuddy.services;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateParameterIsNotNull;
@@ -53,5 +53,17 @@ public class TradeService {
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
 
         return this.tradeRepository.findAllTradesWithinDate(start, end);
+    }
+
+    /**
+     * Returns an {@link Optional} containing a {@link Trade}
+     *
+     * @param tradeId trade id
+     * @return {@link Optional} {@link Trade}
+     */
+    public Optional<Trade> findTradeByTradeId(String tradeId) {
+        validateParameterIsNotNull(tradeId, "tradeId cannot be null");
+
+        return Optional.ofNullable(this.tradeRepository.findTradeByTradeId(tradeId));
     }
 }

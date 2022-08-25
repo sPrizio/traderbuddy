@@ -29,4 +29,12 @@ public interface TradeRepository extends CrudRepository<Trade, Long> {
      */
     @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2")
     List<Trade> findAllTradesWithinDate(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * Returns a {@link Trade} for the given tradeId
+     *
+     * @param tradeId trade id
+     * @return {@link Trade}
+     */
+    Trade findTradeByTradeId(String tradeId);
 }

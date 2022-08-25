@@ -5,6 +5,9 @@ import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 @DataJpaTest
 @RunWith(SpringRunner.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class CMCTradesImportServiceTest {
 
@@ -42,6 +46,7 @@ public class CMCTradesImportServiceTest {
     }
 
     @Test
+    @Order(1)
     public void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
                 .isThrownBy(() -> this.cmcTradesImportService.importTrades("src/main/resources/testing/NotFound.csv", ";"))
@@ -49,6 +54,7 @@ public class CMCTradesImportServiceTest {
     }
 
     @Test
+    @Order(2)
     public void test_importTrades_success() {
         this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
 
@@ -60,5 +66,15 @@ public class CMCTradesImportServiceTest {
                         Tuple.tuple("O5-77-5H7MXX", 0.75, LocalDateTime.of(2022, 8, 24, 11, 13), LocalDateTime.of(2022, 8, 24, 11, 14), 12935.17, 12943.36, -8.0),
                         Tuple.tuple("1109841303", 0.0, LocalDateTime.of(2022, 8, 24, 11, 14), LocalDateTime.of(2022, 8, 24, 11, 14), 0.0, 0.0, 8.0)
                 );
+    }
+
+    @Test
+    @Order(3)
+    public void testImportTrades_success_unchanged() {
+        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
+        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
+
+        assertThat(this.tradeRepository.findAll())
+                .hasSize(3);
     }
 }

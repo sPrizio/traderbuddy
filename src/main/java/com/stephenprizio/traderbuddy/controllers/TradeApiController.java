@@ -14,9 +14,9 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateIfAnyResult;
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateLocalDateTimeFormat;
+import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.*;
 
 /**
  * API Controller for {@link Trade}s
@@ -51,6 +51,7 @@ public class TradeApiController {
 
     /**
      * Returns a {@link StandardJsonResponse} containing {@link Trade}s for the given interval of time
+     *
      * @param start start date & time
      * @param end end date & time
      * @return {@link StandardJsonResponse}
@@ -65,5 +66,18 @@ public class TradeApiController {
         validateIfAnyResult(trades, "No trades were found within interval: [%s, %s]", start, end);
 
         return new StandardJsonResponse(true, trades, StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link Trade} for the given trade id
+     *
+     * @param tradeId trade id
+     * @return {@link StandardJsonResponse}
+     */
+    @GetMapping("/for-trade-id")
+    public StandardJsonResponse getTradeForTradeId(final @RequestParam("tradeId") String tradeId) {
+        Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId);
+        validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
+        return new StandardJsonResponse(true, trade.get(), StringUtils.EMPTY);
     }
 }

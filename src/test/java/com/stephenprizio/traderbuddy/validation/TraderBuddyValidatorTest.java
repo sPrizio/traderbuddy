@@ -3,11 +3,13 @@ package com.stephenprizio.traderbuddy.validation;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -28,22 +30,27 @@ public class TraderBuddyValidatorTest {
 
     @Test
     public void test_validateIfSingleResult_success() {
+        List<String> list = List.of("one", "two");
         assertThatExceptionOfType(NonUniqueItemFoundException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateIfSingleResult(List.of("one", "two"), "This is a single test"))
+                .isThrownBy(() -> TraderBuddyValidator.validateIfSingleResult(list, "This is a single test"))
                 .withMessage("This is a single test");
     }
 
     @Test
     public void test_validateIfAnyResult_success() {
+        List<Object> list = List.of();
         assertThatExceptionOfType(NoResultFoundException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateIfAnyResult(List.of(), "This is an empty collection test"))
+                .isThrownBy(() -> TraderBuddyValidator.validateIfAnyResult(list, "This is an empty collection test"))
                 .withMessage("This is an empty collection test");
     }
 
     @Test
     public void test_validateDatesAreNotMutuallyExclusive_success() {
+        LocalDateTime test1 = LocalDate.of(2022, 1, 1).atStartOfDay();
+        LocalDateTime test2 = LocalDate.of(2021, 1, 1).atStartOfDay();
+
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateDatesAreNotMutuallyExclusive(LocalDate.of(2022, 1, 1).atStartOfDay(), LocalDate.of(2021, 1, 1).atStartOfDay(), "This is a two bad dates test"))
+                .isThrownBy(() -> TraderBuddyValidator.validateDatesAreNotMutuallyExclusive(test1, test2, "This is a two bad dates test"))
                 .withMessage("This is a two bad dates test");
     }
 
@@ -52,5 +59,13 @@ public class TraderBuddyValidatorTest {
         assertThatExceptionOfType(DateTimeException.class)
                 .isThrownBy(() -> TraderBuddyValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date test"))
                 .withMessage("This is a bad date test");
+    }
+
+    @Test
+    public void test_validateIfPresent_success() {
+        Optional<Integer> optional = Optional.empty();
+        assertThatExceptionOfType(NoResultFoundException.class)
+                .isThrownBy(() -> TraderBuddyValidator.validateIfPresent(optional, "This is an empty optional test"))
+                .withMessage("This is an empty optional test");
     }
 }

@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers;
 
+import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.services.TradeService;
@@ -16,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-public class TradeApiControllerTest {
+public class TradeApiControllerTest extends AbstractTraderBuddyTest {
+
+    private final Trade TEST_TRADE_1 = generateTestBuyTrade();
+    private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,36 +48,19 @@ public class TradeApiControllerTest {
 
     @Before
     public void setUp() {
-
-        Trade trade1 = new Trade();
-        Trade trade2 = new Trade();
-
-        trade1.setResultOfTrade("Winner winner chicken dinner");
-        trade1.setTradeType(TradeType.BUY);
-        trade1.setClosePrice(13098.67);
-        trade1.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
-        trade1.setTradeOpenTime(LocalDateTime.of(2022, 8, 24, 11, 32, 58));
-        trade1.setLotSize(0.75);
-        trade1.setNetProfit(14.85);
-        trade1.setOpenPrice(13083.41);
-        trade1.setReasonForEntrance("I have my reasons");
-
-        trade2.setResultOfTrade("Loser like a real loser");
-        trade2.setTradeType(TradeType.SELL);
-        trade2.setClosePrice(13156.12);
-        trade2.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 10, 24, 36));
-        trade2.setTradeOpenTime(LocalDateTime.of(2022, 8, 24, 10, 25, 12));
-        trade2.setLotSize(0.75);
-        trade2.setNetProfit(-4.50);
-        trade2.setOpenPrice(13160.09);
-        trade2.setReasonForEntrance("I continue to have my reasons");
-
-        Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY)).thenReturn(List.of(trade1));
-        Mockito.when(this.tradeService.findAllTradesWithinDate(any(), any())).thenReturn(List.of(trade1, trade2));
+        Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY)).thenReturn(List.of(TEST_TRADE_1));
+        Mockito.when(this.tradeService.findAllTradesWithinDate(any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
+        Mockito.when(this.tradeService.findTradeByTradeId("testId1")).thenReturn(Optional.of(TEST_TRADE_1));
     }
 
 
     //  ----------------- getTradesForTradeType -----------------
+
+    @Test
+    public void test_getTradesForTradeType_badRequest() throws Exception {
+        this.mockMvc.perform(get("/api/v1/trades/for-type?tradeType=BAD"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void test_getTradesForTradeType_success() throws Exception {
@@ -121,5 +108,30 @@ public class TradeApiControllerTest {
                 .andExpect(jsonPath("$.data[0].openPrice", is(13083.41)))
                 .andExpect(jsonPath("$.data[0].closePrice", is(13098.67)))
                 .andExpect(jsonPath("$.data[0].netProfit", is(14.85)));
+    }
+
+
+    //  ----------------- getTradeForTradeId -----------------
+
+    @Test
+    public void test_getTradeForTradeId_missingParamStart() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("dasdfasdfaf"));
+        map.put("end", List.of("2022-08-25T00:00:00"));
+
+        this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test_getTradeForTradeId_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("tradeId", List.of("testId1"));
+
+        this.mockMvc.perform(get("/api/v1/trades/for-trade-id").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.tradeId", is("testId1")));
     }
 }

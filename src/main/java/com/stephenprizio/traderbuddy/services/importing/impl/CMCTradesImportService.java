@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,19 +60,21 @@ public class CMCTradesImportService implements ImportService {
                             .toList();
 
             Map<String, Trade> tradeMap = new HashMap<>();
+            Map<String, Trade> existingTrades = new HashMap<>();
+            this.tradeRepository.findAll().forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
 
-            List<CMCTradeWrapper> buyTrades = trades.stream().filter(trade -> trade.type().equals("Buy Trade")).toList();
-            List<CMCTradeWrapper> sellTrades = trades.stream().filter(trade -> trade.type().equals("Sell Trade")).toList();
-            List<CMCTradeWrapper> closeTrades = trades.stream().filter(trade -> trade.type().equals("Close Trade")).toList();
-            List<CMCTradeWrapper> stopLosses = trades.stream().filter(trade -> trade.type().equals("Stop Loss")).toList();
-            List<CMCTradeWrapper> takeProfits = trades.stream().filter(trade -> trade.type().equals("Take Profit")).toList();
-            List<CMCTradeWrapper> promotionalPayments = trades.stream().filter(trade -> trade.type().equals("Promotional Payment")).toList();
+            List<CMCTradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Buy Trade")).toList();
+            List<CMCTradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Sell Trade")).toList();
+            List<CMCTradeWrapper> closeTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Close Trade")).toList();
+            List<CMCTradeWrapper> stopLosses = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Stop Loss")).toList();
+            List<CMCTradeWrapper> takeProfits = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Take Profit")).toList();
+            List<CMCTradeWrapper> promotionalPayments = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Promotional Payment")).toList();
 
             buyTrades.forEach(trade -> tradeMap.put(trade.orderNumber(), createNewTrade(trade, TradeType.BUY)));
             sellTrades.forEach(trade -> tradeMap.put(trade.orderNumber(), createNewTrade(trade, TradeType.SELL)));
-            closeTrades.forEach(trade -> tradeMap.put(trade.relatedOrderNumber(), updateTrade(trade, tradeMap.get(trade.relatedOrderNumber()))));
-            stopLosses.forEach(trade -> tradeMap.put(trade.orderNumber(), updateTrade(trade, tradeMap.get(trade.orderNumber()))));
-            takeProfits.forEach(trade -> tradeMap.put(trade.orderNumber(), updateTrade(trade, tradeMap.get(trade.orderNumber()))));
+            closeTrades.stream().filter(trade -> tradeMap.containsKey(trade.relatedOrderNumber())).forEach(trade -> tradeMap.put(trade.relatedOrderNumber(), updateTrade(trade, tradeMap.get(trade.relatedOrderNumber()))));
+            stopLosses.stream().filter(trade -> tradeMap.containsKey(trade.orderNumber())).forEach(trade -> tradeMap.put(trade.orderNumber(), updateTrade(trade, tradeMap.get(trade.orderNumber()))));
+            takeProfits.stream().filter(trade -> tradeMap.containsKey(trade.orderNumber())).forEach(trade -> tradeMap.put(trade.orderNumber(), updateTrade(trade, tradeMap.get(trade.orderNumber()))));
             promotionalPayments.forEach(trade -> tradeMap.put(trade.orderNumber(), createPromotionalPayment(trade)));
 
             this.tradeRepository.saveAll(tradeMap.values());
