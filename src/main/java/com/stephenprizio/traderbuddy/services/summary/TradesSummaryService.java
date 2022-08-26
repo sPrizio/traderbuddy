@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.services.summary;
 
 import com.stephenprizio.traderbuddy.enums.TradesSummaryInterval;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.models.records.TradeSummary;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class TradesSummaryService {
      * @return {@link TradeSummary}
      */
     public TradeSummary getSummaryForTimeSpan(LocalDateTime start, LocalDateTime end) {
+
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
@@ -115,20 +117,4 @@ public class TradesSummaryService {
 
         return result;
     }
-
-
-    //  RECORDS
-
-    /**
-     * Represents a summary of trades
-     *
-     * @param date {@link LocalDateTime} of period
-     * @param target target goal for profit
-     * @param numberOfTrades number of trades taken
-     * @param winPercentage number of trades won expressed as a percentage between 0 & 100
-     * @param netProfit net profit of trades (can be negative)
-     * @param percentageProfit profit as a percentage of target
-     * @param surplus net difference between target and profit
-     */
-    private record TradeSummary(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {}
 }

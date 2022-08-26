@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.controllers;
+package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
@@ -60,7 +60,8 @@ public class TradeApiControllerTest extends AbstractTraderBuddyTest {
     @Test
     public void test_getTradesForTradeType_badRequest() throws Exception {
         this.mockMvc.perform(get("/api/v1/trades/for-type?tradeType=BAD"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD is not a valid trade type")));
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.stephenprizio.traderbuddy.services.summary;
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +41,11 @@ public class TradesSummaryServiceTest extends AbstractTraderBuddyTest {
     private TradesSummaryService tradesSummaryService;
 
     @MockBean
-    private TradeService tradeService;
+    private TradeRepository tradeRepository;
 
     @Before
     public void setUp() {
-        Mockito.when(this.tradeService.findAllTradesWithinDate(TEST_DAY1, TEST_DAY2)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
+        Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST_DAY1, TEST_DAY2)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
     }
 
 

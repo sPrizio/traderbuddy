@@ -3,6 +3,7 @@ package com.stephenprizio.traderbuddy;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.models.records.TradeSummary;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -85,5 +86,9 @@ public abstract class AbstractTraderBuddyTest {
         }
 
         return trades;
+    }
+
+    public TradeSummary generateTradeSummary() {
+        return new TradeSummary(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11);
     }
 }

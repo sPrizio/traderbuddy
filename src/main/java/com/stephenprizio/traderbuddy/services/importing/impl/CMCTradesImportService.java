@@ -4,6 +4,7 @@ import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.importing.TradeImportFailureException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.models.records.CMCTradeWrapper;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import com.stephenprizio.traderbuddy.services.importing.ImportService;
 import org.apache.commons.lang3.StringUtils;
@@ -193,21 +194,4 @@ public class CMCTradesImportService implements ImportService {
 
         return matched;
     }
-
-
-    //  RECORDS
-
-    /**
-     * A wrapper class for CMC trades
-     *
-     * @param dateTime           trade date & time
-     * @param type               type of trade
-     * @param orderNumber        order number
-     * @param relatedOrderNumber related order number (specifically relating the closing of a trade to it's open)
-     * @param product            symbol traded
-     * @param units              units traded
-     * @param price              price at time of trade
-     * @param amount             net profit amount
-     */
-    private record CMCTradeWrapper(LocalDateTime dateTime, String type, String orderNumber, String relatedOrderNumber, String product, Double units, Double price, Double amount) {}
 }

@@ -1,9 +1,10 @@
-package com.stephenprizio.traderbuddy.controllers;
+package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +42,16 @@ public class TradeApiController {
      */
     @ResponseBody
     @GetMapping("/for-type")
-    public StandardJsonResponse getTradesForTradeType(final @RequestParam("tradeType") TradeType tradeType) {
-        List<Trade> trades = this.tradeService.findAllByTradeType(tradeType);
-        validateIfAnyResult(trades, "No trades were found for type %s", tradeType.name());
+    public StandardJsonResponse getTradesForTradeType(final @RequestParam("tradeType") String tradeType) {
+
+        if (!EnumUtils.isValidEnumIgnoreCase(TradeType.class, tradeType)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid trade type", tradeType));
+        }
+
+        TradeType type = TradeType.valueOf(tradeType.toUpperCase());
+        List<Trade> trades = this.tradeService.findAllByTradeType(type);
+        validateIfAnyResult(trades, "No trades were found for type %s", type);
+
         return new StandardJsonResponse(true, trades, StringUtils.EMPTY);
     }
 
