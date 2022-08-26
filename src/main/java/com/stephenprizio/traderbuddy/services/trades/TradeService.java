@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.services;
+package com.stephenprizio.traderbuddy.services.trades;
 
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;

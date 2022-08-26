@@ -114,7 +114,7 @@ public class CMCTradesImportService implements ImportService {
      * @param string {@link String}
      * @return {@link Double}
      */
-    private double safeParseDouble(String string) {
+    private Double safeParseDouble(String string) {
 
         if (StringUtils.isEmpty(string) || string.equals("-")) {
             return 0.0;
@@ -195,7 +195,7 @@ public class CMCTradesImportService implements ImportService {
     }
 
 
-    //  INNER CLASSES
+    //  RECORDS
 
     /**
      * A wrapper class for CMC trades
@@ -209,5 +209,5 @@ public class CMCTradesImportService implements ImportService {
      * @param price              price at time of trade
      * @param amount             net profit amount
      */
-    private record CMCTradeWrapper(LocalDateTime dateTime, String type, String orderNumber, String relatedOrderNumber, String product, double units, double price, double amount) {}
+    private record CMCTradeWrapper(LocalDateTime dateTime, String type, String orderNumber, String relatedOrderNumber, String product, Double units, Double price, Double amount) {}
 }

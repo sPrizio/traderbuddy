@@ -3,7 +3,7 @@ package com.stephenprizio.traderbuddy.controllers;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
-import com.stephenprizio.traderbuddy.services.TradeService;
+import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 

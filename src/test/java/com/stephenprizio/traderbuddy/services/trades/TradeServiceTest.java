@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.services;
+package com.stephenprizio.traderbuddy.services.trades;
 
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Testing class for {@link TradeService}
+ *
+ * @author Stephen Prizio
+ * @version 1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -81,6 +84,13 @@ public class TradeServiceTest extends AbstractTraderBuddyTest {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, null))
                 .withMessage("endDate cannot be null");
+    }
+
+    @Test
+    public void test_findAllTradesWithinDate_invalidInterval() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, LocalDateTime.MIN))
+                .withMessage("startDate was after endDate or vice versa");
     }
 
     @Test

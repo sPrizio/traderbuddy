@@ -3,7 +3,7 @@ package com.stephenprizio.traderbuddy.controllers;
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.services.TradeService;
+import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
