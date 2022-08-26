@@ -2,7 +2,6 @@ package com.stephenprizio.traderbuddy.services;
 
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
@@ -19,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;

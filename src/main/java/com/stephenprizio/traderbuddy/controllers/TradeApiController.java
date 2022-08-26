@@ -5,10 +5,7 @@ import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.TradeService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -42,6 +39,7 @@ public class TradeApiController {
      * @param tradeType {@link TradeType}
      * @return {@link StandardJsonResponse}
      */
+    @ResponseBody
     @GetMapping("/for-type")
     public StandardJsonResponse getTradesForTradeType(final @RequestParam("tradeType") TradeType tradeType) {
         List<Trade> trades = this.tradeService.findAllByTradeType(tradeType);
@@ -56,6 +54,7 @@ public class TradeApiController {
      * @param end end date & time
      * @return {@link StandardJsonResponse}
      */
+    @ResponseBody
     @GetMapping("/for-interval")
     public StandardJsonResponse getTradesWithinInterval(final @RequestParam("start") String start, final @RequestParam("end") String end) {
 
@@ -74,6 +73,7 @@ public class TradeApiController {
      * @param tradeId trade id
      * @return {@link StandardJsonResponse}
      */
+    @ResponseBody
     @GetMapping("/for-trade-id")
     public StandardJsonResponse getTradeForTradeId(final @RequestParam("tradeId") String tradeId) {
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId);

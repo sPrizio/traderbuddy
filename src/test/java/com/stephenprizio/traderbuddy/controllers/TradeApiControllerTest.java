@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,7 +83,8 @@ public class TradeApiControllerTest extends AbstractTraderBuddyTest {
         map.put("end", List.of("2022-08-25T00:00:00"));
 
         this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("The start date dasdfasdfaf was not of the expected format yyyy-MM-dd'T'HH:mm:ss")));
     }
 
     @Test
@@ -93,7 +95,8 @@ public class TradeApiControllerTest extends AbstractTraderBuddyTest {
         map.put("end", List.of("asdadasdasd"));
 
         this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("The end date asdadasdasd was not of the expected format yyyy-MM-dd'T'HH:mm:ss")));
     }
 
     @Test
@@ -114,14 +117,14 @@ public class TradeApiControllerTest extends AbstractTraderBuddyTest {
     //  ----------------- getTradeForTradeId -----------------
 
     @Test
-    public void test_getTradeForTradeId_missingParamStart() throws Exception {
+    public void test_getTradeForTradeId_missingParamTradeId() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("dasdfasdfaf"));
-        map.put("end", List.of("2022-08-25T00:00:00"));
+        map.put("tradeId", List.of("asdasdad"));
 
-        this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(get("/api/v1/trades/for-trade-id").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("No trade was found with trade id: asdasdad")));
     }
 
     @Test

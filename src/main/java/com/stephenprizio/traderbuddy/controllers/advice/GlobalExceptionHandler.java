@@ -6,10 +6,9 @@ import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundExc
 import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.DateTimeException;
 
@@ -27,6 +26,7 @@ public class GlobalExceptionHandler {
 
     //  METHODS
 
+    @ResponseBody
     @ExceptionHandler({
             DateTimeException.class,
             IllegalParameterException.class,
@@ -34,10 +34,9 @@ public class GlobalExceptionHandler {
             NoResultFoundException.class,
             UnsupportedOperationException.class
     })
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public StandardJsonResponse handleClientError(Exception exception) {
         LOGGER.error("Bad Request by the client. Please try again: ", exception);
-        return generateResponse("Bad Request by the client. Please try again." + exception.getMessage());
+        return generateResponse("Bad Request by the client. Please try again: " + exception.getMessage());
     }
 
 
