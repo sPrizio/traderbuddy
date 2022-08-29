@@ -1,8 +1,8 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
 import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
-import com.stephenprizio.traderbuddy.models.records.TradeSummary;
-import com.stephenprizio.traderbuddy.services.summary.TradesSummaryService;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
+import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Testing class for {@link TradesSummaryApiController}
+ * Testing class for {@link TradingSummaryApiController}
  *
  * @author Stephen Prizio
  * @version 1.0
@@ -34,20 +34,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-public class TradesSummaryApiControllerTest extends AbstractTraderBuddyTest {
+public class TradingSummaryApiControllerTest extends AbstractTraderBuddyTest {
 
-    private final TradeSummary TRADE_SUMMARY = generateTradeSummary();
+    private final TradingSummary TRADING_SUMMARY = generateTradingSummary();
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private TradesSummaryService tradesSummaryService;
+    private TradingSummaryService tradingSummaryService;
 
     @Before
     public void setUp() {
-        Mockito.when(this.tradesSummaryService.getSummaryForTimeSpan(any(), any())).thenReturn(TRADE_SUMMARY);
-        Mockito.when(this.tradesSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(List.of(TRADE_SUMMARY));
+        Mockito.when(this.tradingSummaryService.getSummaryForTimeSpan(any(), any())).thenReturn(TRADING_SUMMARY.records().get(0));
+        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(TRADING_SUMMARY);
     }
 
 
@@ -143,8 +143,8 @@ public class TradesSummaryApiControllerTest extends AbstractTraderBuddyTest {
 
         this.mockMvc.perform(get("/api/v1/trade-summary/report").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].target", is(47.52)))
-                .andExpect(jsonPath("$.data[0].numberOfTrades", is(15)))
-                .andExpect(jsonPath("$.data[0].netProfit", is(58.63)));
+                .andExpect(jsonPath("$.data.records[0].target", is(47.52)))
+                .andExpect(jsonPath("$.data.records[0].numberOfTrades", is(15)))
+                .andExpect(jsonPath("$.data.records[0].netProfit", is(58.63)));
     }
 }

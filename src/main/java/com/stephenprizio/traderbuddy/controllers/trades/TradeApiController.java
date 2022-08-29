@@ -2,7 +2,7 @@ package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.StandardJsonResponse;
+import com.stephenprizio.traderbuddy.models.nonentities.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;

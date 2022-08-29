@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Service-layer for importing trades into the system
@@ -57,6 +58,7 @@ public class CMCTradesImportService implements ImportService {
                             .lines()
                             .skip(1)
                             .map(line -> this.generateWrapperFromString(line, delimiter))
+                            .filter(Objects::nonNull)
                             .toList();
 
             Map<String, Trade> tradeMap = new HashMap<>();
@@ -95,18 +97,23 @@ public class CMCTradesImportService implements ImportService {
      */
     private CMCTradeWrapper generateWrapperFromString(String string, String delimiter) {
 
-        String[] array = string.split(delimiter);
+        try {
+            String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter);
 
-        LocalDateTime dateTime = LocalDateTime.parse(array[0], DateTimeFormatter.ofPattern("dd/MM/yyyy H:mm"));
-        String type = array[1];
-        String orderNumber = array[2];
-        String relatedOrderNumber = array[4];
-        String product = array[5];
-        double units = safeParseDouble(array[6]);
-        double price = safeParseDouble(array[7]);
-        double amount = safeParseDouble(array[14]);
+            LocalDateTime dateTime = LocalDateTime.parse(array[0], DateTimeFormatter.ofPattern("dd/MM/yyyy H:mm"));
+            String type = array[1];
+            String orderNumber = array[2];
+            String relatedOrderNumber = array[4];
+            String product = array[5];
+            double units = safeParseDouble(array[6]);
+            double price = safeParseDouble(array[7]);
+            double amount = safeParseDouble(array[14]);
 
-        return new CMCTradeWrapper(dateTime, type, orderNumber, relatedOrderNumber, product, units, price, amount);
+            return new CMCTradeWrapper(dateTime, type, orderNumber, relatedOrderNumber, product, units, price, amount);
+        } catch (Exception e) {
+            LOGGER.error("Error parsing line : {} for reason : {}", string, e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -121,14 +128,7 @@ public class CMCTradesImportService implements ImportService {
             return 0.0;
         }
 
-        return Double.parseDouble(
-                string
-                        .replace(",", StringUtils.EMPTY)
-                        .replace("Uts", StringUtils.EMPTY)
-                        .replace("Ut", StringUtils.EMPTY)
-                        .replace("\"", StringUtils.EMPTY)
-                        .trim()
-        );
+        return Double.parseDouble(string.replaceAll("[^0-9.-]", StringUtils.EMPTY).trim());
     }
 
     /**

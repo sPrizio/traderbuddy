@@ -6,7 +6,7 @@ package com.stephenprizio.traderbuddy.enums;
  * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
  * @version 1.0
  */
-public enum TradesSummaryInterval {
+public enum TradingSummaryInterval {
     DAILY,
     WEEKLY,
     MONTHLY,

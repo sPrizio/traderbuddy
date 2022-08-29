@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.models.nonentities;
+package com.stephenprizio.traderbuddy.models.nonentities.json;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

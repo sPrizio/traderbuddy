@@ -1,9 +1,9 @@
-package com.stephenprizio.traderbuddy.models.records;
+package com.stephenprizio.traderbuddy.models.records.reporting;
 
 import java.time.LocalDateTime;
 
 /**
- * Represents a summary of trades
+ * Represents a summary of trades for a particular time span
  *
  * @param date             {@link LocalDateTime} of period
  * @param target           target goal for profit
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
  * @param percentageProfit profit as a percentage of target
  * @param surplus          net difference between target and profit
  *
- * @author Stephen Prizio
+ * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
  * @version 1.0
  */
-public record TradeSummary(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {
+public record TradingRecord(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {
 }

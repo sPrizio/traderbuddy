@@ -1,8 +1,10 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
-import com.stephenprizio.traderbuddy.enums.TradesSummaryInterval;
+import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.records.TradeSummary;
+import com.stephenprizio.traderbuddy.models.nonentities.statistics.TradingRecordStatistics;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,13 @@ import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.vali
  * @author Stephen Prizio
  * @version 1.0
  */
-@Component("tradesSummaryService")
-public class TradesSummaryService {
+@Component("tradingSummaryService")
+public class TradingSummaryService {
 
     private final TradeRepository tradeRepository;
 
     @Autowired
-    public TradesSummaryService(TradeRepository tradeRepository) {
+    public TradingSummaryService(TradeRepository tradeRepository) {
         this.tradeRepository = tradeRepository;
     }
 
@@ -39,13 +41,13 @@ public class TradesSummaryService {
 
     //  TODO: will need the use of a Goal / Target
     /**
-     * Obtains a {@link TradeSummary} for the given time interval
+     * Obtains a {@link TradingRecord} for the given time interval
      *
      * @param start start of time span
      * @param end end of time span
-     * @return {@link TradeSummary}
+     * @return {@link TradingRecord}
      */
-    public TradeSummary getSummaryForTimeSpan(LocalDateTime start, LocalDateTime end) {
+    public TradingRecord getSummaryForTimeSpan(LocalDateTime start, LocalDateTime end) {
 
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
@@ -63,48 +65,49 @@ public class TradesSummaryService {
                             .multiply(BigDecimal.valueOf(100.0));
         }
 
-        return new TradeSummary(start, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, /*netProfit.subtract(BigDecimal.valueOf(target)).doubleValue()*/0.0);
+        return new TradingRecord(start, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, /*netProfit.subtract(BigDecimal.valueOf(target)).doubleValue()*/0.0);
     }
 
     //  TODO: will need the use of a Goal / Target
     /**
-     * Generates a {@link List} of {@link TradeSummary} for the given time span and interval
+     * Generates a {@link TradingSummary} for the given time span and interval
      *
      * @param start start of time span
      * @param end end of time span
-     * @param interval {@link TradesSummaryInterval}
-     * @return {@link List} of {@link TradeSummary}
+     * @param interval {@link TradingSummaryInterval}
+     * @return {@link TradingSummary}
      */
-    public List<TradeSummary> getReportOfSummariesForTimeSpan(LocalDateTime start, LocalDateTime end, TradesSummaryInterval interval) {
+    public TradingSummary getReportOfSummariesForTimeSpan(LocalDateTime start, LocalDateTime end, TradingSummaryInterval interval) {
+
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
         validateParameterIsNotNull(interval, "interval cannot be null");
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
 
-        List<TradeSummary> summary = new ArrayList<>();
-        LocalDateTime leftBound = interval == TradesSummaryInterval.YEARLY ? start.with(TemporalAdjusters.firstDayOfYear()) : start.with(TemporalAdjusters.firstDayOfMonth());
+        List<TradingRecord> records = new ArrayList<>();
+        LocalDateTime leftBound = interval == TradingSummaryInterval.YEARLY ? start.with(TemporalAdjusters.firstDayOfYear()) : start.with(TemporalAdjusters.firstDayOfMonth());
         LocalDateTime rightBound = getNextDate(leftBound, interval);
 
         do {
-            summary.add(getSummaryForTimeSpan(leftBound, rightBound));
+            records.add(getSummaryForTimeSpan(leftBound, rightBound));
             leftBound = getNextDate(leftBound, interval);
             rightBound = getNextDate(rightBound, interval);
-        } while (interval == TradesSummaryInterval.MONTHLY ? rightBound.isBefore(end.plusMonths(1)) : rightBound.isBefore(end));
+        } while (interval == TradingSummaryInterval.MONTHLY ? rightBound.isBefore(end.plusMonths(1)) : (rightBound.isBefore(end) || rightBound.isEqual(end)));
 
-        return summary;
+        return new TradingSummary(records, new TradingRecordStatistics(records));
     }
 
 
     //  HELPERS
 
     /**
-     * Obtains the next date for the given {@link TradesSummaryInterval}
+     * Obtains the next date for the given {@link TradingSummaryInterval}
      *
      * @param compare {@link LocalDateTime}
-     * @param interval {@link TradesSummaryInterval}
+     * @param interval {@link TradingSummaryInterval}
      * @return offset {@link LocalDateTime}
      */
-    private LocalDateTime getNextDate(LocalDateTime compare, TradesSummaryInterval interval) {
+    private LocalDateTime getNextDate(LocalDateTime compare, TradingSummaryInterval interval) {
         LocalDateTime result;
 
         switch (interval) {
