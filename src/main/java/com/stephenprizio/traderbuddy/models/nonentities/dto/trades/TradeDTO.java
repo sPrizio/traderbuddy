@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 /**
@@ -30,6 +29,10 @@ public class TradeDTO implements GenericDTO {
     @Getter
     @Setter
     private TradeType tradeType;
+
+    @Getter
+    @Setter
+    private String product;
 
     @Getter
     @Setter

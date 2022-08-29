@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.models.nonentities.statistics;
+package com.stephenprizio.traderbuddy.models.records.reporting;
 
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 
@@ -13,13 +13,7 @@ import java.util.OptionalDouble;
  * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
  * @version 1.0
  */
-public class TradingRecordStatistics {
-
-    private final List<TradingRecord> records;
-
-    public TradingRecordStatistics(List<TradingRecord> records) {
-        this.records = records;
-    }
+public record TradingRecordStatistics(List<TradingRecord> records) {
 
 
     //  METHODS
@@ -34,6 +28,7 @@ public class TradingRecordStatistics {
     }
 
     public double getNetProfit() {
-        return this.records.stream().mapToDouble(TradingRecord::netProfit).sum();
+        double sum = this.records.stream().mapToDouble(TradingRecord::netProfit).sum();
+        return BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 }

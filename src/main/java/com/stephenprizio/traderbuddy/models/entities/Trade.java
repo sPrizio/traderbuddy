@@ -31,6 +31,11 @@ public class Trade {
     @Getter
     @Setter
     @Column
+    private String product;
+
+    @Getter
+    @Setter
+    @Column
     private TradingPlatform tradingPlatform;
 
     @Getter

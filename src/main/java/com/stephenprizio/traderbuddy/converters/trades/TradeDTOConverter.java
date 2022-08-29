@@ -30,6 +30,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
 
         tradeDTO.setTradeId(entity.getTradeId());
         tradeDTO.setTradingPlatform(entity.getTradingPlatform());
+        tradeDTO.setProduct(entity.getProduct());
         tradeDTO.setResultOfTrade(entity.getResultOfTrade());
         tradeDTO.setTradeType(entity.getTradeType());
         tradeDTO.setOpenPrice(entity.getOpenPrice());

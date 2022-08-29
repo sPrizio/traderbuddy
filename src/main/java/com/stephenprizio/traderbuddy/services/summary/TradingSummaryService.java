@@ -2,7 +2,7 @@ package com.stephenprizio.traderbuddy.services.summary;
 
 import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.statistics.TradingRecordStatistics;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
@@ -108,8 +108,8 @@ public class TradingSummaryService {
      * @return offset {@link LocalDateTime}
      */
     private LocalDateTime getNextDate(LocalDateTime compare, TradingSummaryInterval interval) {
-        LocalDateTime result;
 
+        LocalDateTime result;
         switch (interval) {
             case DAILY -> result = compare.plusDays(1);
             case WEEKLY -> result = compare.plusWeeks(1);

@@ -37,7 +37,7 @@ public class TradeService {
     public List<Trade> findAllByTradeType(TradeType tradeType) {
         validateParameterIsNotNull(tradeType, "tradeType cannot be null");
 
-        return this.tradeRepository.findAllByTradeType(tradeType);
+        return this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(tradeType);
     }
 
     /**

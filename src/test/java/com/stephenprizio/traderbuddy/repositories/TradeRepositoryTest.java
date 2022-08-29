@@ -53,7 +53,7 @@ public class TradeRepositoryTest extends AbstractGenericTest {
 
     @Test
     public void test_findAllByTradeType_success() {
-        assertThat(this.tradeRepository.findAllByTradeType(TradeType.BUY))
+        assertThat(this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(TradeType.BUY))
                 .hasSize(1)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .containsExactly(Tuple.tuple(13083.41, 13098.67, 14.85));

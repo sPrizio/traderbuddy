@@ -144,6 +144,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setTradeId(wrapper.orderNumber());
         trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
         trade.setResultOfTrade(StringUtils.EMPTY);
+        trade.setProduct(wrapper.product());
         trade.setTradeType(tradeType);
         trade.setClosePrice(0.0);
         trade.setTradeCloseTime(null);

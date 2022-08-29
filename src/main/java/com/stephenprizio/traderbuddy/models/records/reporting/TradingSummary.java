@@ -1,7 +1,5 @@
 package com.stephenprizio.traderbuddy.models.records.reporting;
 
-import com.stephenprizio.traderbuddy.models.nonentities.statistics.TradingRecordStatistics;
-
 import java.util.List;
 
 /**

@@ -46,7 +46,7 @@ public class TradeServiceTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.tradeRepository.findAllByTradeType(TradeType.BUY)).thenReturn(List.of(TEST_TRADE_1));
+        Mockito.when(this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(TradeType.BUY)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findTradeByTradeId("testId1")).thenReturn(TEST_TRADE_1);
     }
