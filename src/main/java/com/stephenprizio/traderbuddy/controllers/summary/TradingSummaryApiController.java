@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
 import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
-import com.stephenprizio.traderbuddy.models.nonentities.json.StandardJsonResponse;
+import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateLocalDateTimeFormat;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateLocalDateTimeFormat;
 
 /**
  * API Controller for {@link TradingRecord}s & {@link TradingSummary}

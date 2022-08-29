@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateDatesAreNotMutuallyExclusive;
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateParameterIsNotNull;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
  * Service-layer for {@link Trade}

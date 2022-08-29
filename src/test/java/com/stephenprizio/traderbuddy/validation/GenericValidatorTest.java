@@ -14,17 +14,17 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
- * Testing class for {@link TraderBuddyValidator}
+ * Testing class for {@link GenericValidator}
  *
  * @author Stephen Prizio
  * @version 1.0
  */
-public class TraderBuddyValidatorTest {
+public class GenericValidatorTest {
 
     @Test
     public void test_validateParameterIsNotNull_success() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateParameterIsNotNull(null, "This is a null test"))
+                .isThrownBy(() -> GenericValidator.validateParameterIsNotNull(null, "This is a null test"))
                 .withMessage("This is a null test");
     }
 
@@ -32,7 +32,7 @@ public class TraderBuddyValidatorTest {
     public void test_validateIfSingleResult_success() {
         List<String> list = List.of("one", "two");
         assertThatExceptionOfType(NonUniqueItemFoundException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateIfSingleResult(list, "This is a single test"))
+                .isThrownBy(() -> GenericValidator.validateIfSingleResult(list, "This is a single test"))
                 .withMessage("This is a single test");
     }
 
@@ -40,7 +40,7 @@ public class TraderBuddyValidatorTest {
     public void test_validateIfAnyResult_success() {
         List<Object> list = List.of();
         assertThatExceptionOfType(NoResultFoundException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateIfAnyResult(list, "This is an empty collection test"))
+                .isThrownBy(() -> GenericValidator.validateIfAnyResult(list, "This is an empty collection test"))
                 .withMessage("This is an empty collection test");
     }
 
@@ -50,14 +50,14 @@ public class TraderBuddyValidatorTest {
         LocalDateTime test2 = LocalDate.of(2021, 1, 1).atStartOfDay();
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateDatesAreNotMutuallyExclusive(test1, test2, "This is a two bad dates test"))
+                .isThrownBy(() -> GenericValidator.validateDatesAreNotMutuallyExclusive(test1, test2, "This is a two bad dates test"))
                 .withMessage("This is a two bad dates test");
     }
 
     @Test
     public void test_validateLocalDateTimeFormat_success() {
         assertThatExceptionOfType(DateTimeException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date test"))
+                .isThrownBy(() -> GenericValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date test"))
                 .withMessage("This is a bad date test");
     }
 
@@ -65,7 +65,7 @@ public class TraderBuddyValidatorTest {
     public void test_validateIfPresent_success() {
         Optional<Integer> optional = Optional.empty();
         assertThatExceptionOfType(NoResultFoundException.class)
-                .isThrownBy(() -> TraderBuddyValidator.validateIfPresent(optional, "This is an empty optional test"))
+                .isThrownBy(() -> GenericValidator.validateIfPresent(optional, "This is an empty optional test"))
                 .withMessage("This is an empty optional test");
     }
 }

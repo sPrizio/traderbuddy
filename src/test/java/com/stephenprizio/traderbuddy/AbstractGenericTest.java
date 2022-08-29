@@ -20,7 +20,7 @@ import java.util.Random;
  * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
  * @version 1.0
  */
-public abstract class AbstractTraderBuddyTest {
+public abstract class AbstractGenericTest {
 
     public Trade generateTestBuyTrade() {
 

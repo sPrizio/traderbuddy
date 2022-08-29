@@ -1,8 +1,10 @@
 package com.stephenprizio.traderbuddy.controllers.trades;
 
+import com.stephenprizio.traderbuddy.converters.trades.TradeDTOConverter;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.json.StandardJsonResponse;
+import com.stephenprizio.traderbuddy.models.nonentities.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.*;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 
 /**
  * API Controller for {@link Trade}s
@@ -27,6 +29,9 @@ import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.*;
 public class TradeApiController {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
+    @Resource(name = "tradeDTOConverter")
+    private TradeDTOConverter tradeDTOConverter;
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
@@ -52,7 +57,7 @@ public class TradeApiController {
         List<Trade> trades = this.tradeService.findAllByTradeType(type);
         validateIfAnyResult(trades, "No trades were found for type %s", type);
 
-        return new StandardJsonResponse(true, trades, StringUtils.EMPTY);
+        return new StandardJsonResponse(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
     }
 
     /**
@@ -72,7 +77,7 @@ public class TradeApiController {
         List<Trade> trades = this.tradeService.findAllTradesWithinDate(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME));
         validateIfAnyResult(trades, "No trades were found within interval: [%s, %s]", start, end);
 
-        return new StandardJsonResponse(true, trades, StringUtils.EMPTY);
+        return new StandardJsonResponse(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
     }
 
     /**
@@ -86,6 +91,6 @@ public class TradeApiController {
     public StandardJsonResponse getTradeForTradeId(final @RequestParam("tradeId") String tradeId) {
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId);
         validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
-        return new StandardJsonResponse(true, trade.get(), StringUtils.EMPTY);
+        return trade.map(value -> new StandardJsonResponse(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(true, new TradeDTO(), StringUtils.EMPTY));
     }
 }

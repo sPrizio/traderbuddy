@@ -17,8 +17,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateDatesAreNotMutuallyExclusive;
-import static com.stephenprizio.traderbuddy.validation.TraderBuddyValidator.validateParameterIsNotNull;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
  * Service for proving summaries and reports of trades for time spans and intervals

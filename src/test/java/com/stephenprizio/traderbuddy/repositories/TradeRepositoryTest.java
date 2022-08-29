@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.repositories;
 
-import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import org.assertj.core.groups.Tuple;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class TradeRepositoryTest extends AbstractTraderBuddyTest {
+public class TradeRepositoryTest extends AbstractGenericTest {
 
     private static final LocalDateTime TEST1 = LocalDate.of(2022, 8, 24).atStartOfDay();
     private static final LocalDateTime TEST2 = LocalDate.of(2022, 8, 25).atStartOfDay();

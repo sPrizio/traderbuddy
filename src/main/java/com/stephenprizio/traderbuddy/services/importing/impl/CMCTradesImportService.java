@@ -4,7 +4,7 @@ import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.importing.TradeImportFailureException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.records.CMCTradeWrapper;
+import com.stephenprizio.traderbuddy.models.records.importing.CMCTradeWrapper;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import com.stephenprizio.traderbuddy.services.importing.ImportService;
 import org.apache.commons.lang3.StringUtils;

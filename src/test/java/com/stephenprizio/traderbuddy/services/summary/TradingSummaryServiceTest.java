@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
-import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TradingSummaryServiceTest extends AbstractTraderBuddyTest {
+public class TradingSummaryServiceTest extends AbstractGenericTest {
 
     private static final LocalDateTime TEST_DAY1 = LocalDate.of(2022, 8, 24).atStartOfDay();
     private static final LocalDateTime TEST_DAY2 = LocalDate.of(2022, 8, 25).atStartOfDay();

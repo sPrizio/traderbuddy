@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.models.records;
+package com.stephenprizio.traderbuddy.models.records.importing;
 
 import java.time.LocalDateTime;
 

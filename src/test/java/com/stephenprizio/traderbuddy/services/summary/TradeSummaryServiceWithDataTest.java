@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
-import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 @DataJpaTest
 @RunWith(SpringRunner.class)
-public class TradeSummaryServiceWithDataTest extends AbstractTraderBuddyTest {
+public class TradeSummaryServiceWithDataTest extends AbstractGenericTest {
 
     private static final LocalDateTime TEST_DAY1 = LocalDate.of(2022, 8, 24).atStartOfDay();
     private static final LocalDateTime TEST_DAY2 = LocalDate.of(2022, 9, 28).atStartOfDay();

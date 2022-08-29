@@ -18,9 +18,9 @@ import java.util.Optional;
  * @author Stephen Prizio
  * @version 1.0
  */
-public class TraderBuddyValidator {
+public class GenericValidator {
 
-    private TraderBuddyValidator() {
+    private GenericValidator() {
         throw new UnsupportedOperationException("Static classes should not be instantiated");
     }
 

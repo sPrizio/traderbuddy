@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.trades;
 
-import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-public class TradeApiControllerTest extends AbstractTraderBuddyTest {
+public class TradeApiControllerTest extends AbstractGenericTest {
 
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
     private final Trade TEST_TRADE_2 = generateTestSellTrade();

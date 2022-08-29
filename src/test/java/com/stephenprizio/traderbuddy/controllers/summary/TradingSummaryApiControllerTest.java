@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
-import com.stephenprizio.traderbuddy.AbstractTraderBuddyTest;
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-public class TradingSummaryApiControllerTest extends AbstractTraderBuddyTest {
+public class TradingSummaryApiControllerTest extends AbstractGenericTest {
 
     private final TradingSummary TRADING_SUMMARY = generateTradingSummary();
 
