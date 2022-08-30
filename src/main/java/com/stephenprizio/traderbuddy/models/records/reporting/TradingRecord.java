@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.models.records.reporting;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 
 /**
  * Represents a summary of trades for a particular time span
@@ -17,4 +18,13 @@ import java.time.LocalDateTime;
  * @version 1.0
  */
 public record TradingRecord(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {
+
+    /**
+     * Determines whether this record is empty
+     *
+     * @return true if weekend or no trades taken
+     */
+    public Boolean isEmpty() {
+        return this.date.get(ChronoField.DAY_OF_WEEK) > 5 || this.numberOfTrades == 0;
+    }
 }

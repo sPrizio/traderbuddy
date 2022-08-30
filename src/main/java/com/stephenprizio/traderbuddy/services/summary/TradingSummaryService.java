@@ -53,14 +53,14 @@ public class TradingSummaryService {
         validateParameterIsNotNull(end, "endDate cannot be null");
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
 
-        List<Trade> trades = this.tradeRepository.findAllTradesWithinDate(start, end);
+        List<Trade> trades = this.tradeRepository.findAllTradesWithinDate(start, end).stream().filter(Trade::getRelevant).toList();
         BigDecimal netProfit = BigDecimal.valueOf(trades.stream().mapToDouble(Trade::getNetProfit).sum()).setScale(2, RoundingMode.HALF_EVEN);
         double winningTrades = trades.stream().filter(t -> t.getNetProfit() > 0.0).toList().size();
 
         BigDecimal winPercentage = BigDecimal.ZERO;
         if (CollectionUtils.isNotEmpty(trades)) {
             winPercentage =
-                    BigDecimal.valueOf(winningTrades)
+                    BigDecimal.valueOf(winningTrades).setScale(2, RoundingMode.HALF_EVEN)
                             .divide(BigDecimal.valueOf(trades.size()), RoundingMode.HALF_EVEN)
                             .multiply(BigDecimal.valueOf(100.0));
         }

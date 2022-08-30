@@ -40,6 +40,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
         tradeDTO.setLotSize(entity.getLotSize());
         tradeDTO.setNetProfit(entity.getNetProfit());
         tradeDTO.setReasonForEntrance(entity.getReasonForEntrance());
+        tradeDTO.setRelevant(entity.getRelevant());
 
         return tradeDTO;
     }
