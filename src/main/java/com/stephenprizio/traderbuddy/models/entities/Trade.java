@@ -82,4 +82,8 @@ public class Trade {
     @Setter
     @Column
     private String resultOfTrade;
+
+    @Getter
+    @Setter
+    private Boolean relevant;
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 /**
  * A DTO representation of a {@link Trade}
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public class TradeDTO implements GenericDTO {
@@ -70,7 +70,7 @@ public class TradeDTO implements GenericDTO {
     //  METHODS
 
     @Override
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return StringUtils.isEmpty(this.tradeId);
     }
 }

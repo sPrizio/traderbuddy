@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.validation;
 
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
+import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -67,5 +69,13 @@ public class GenericValidatorTest {
         assertThatExceptionOfType(NoResultFoundException.class)
                 .isThrownBy(() -> GenericValidator.validateIfPresent(optional, "This is an empty optional test"))
                 .withMessage("This is an empty optional test");
+    }
+
+    @Test
+    public void test_validateJsonIntegrity_success() {
+        Map<String, Object> map = Map.of("test", "value");
+        assertThatExceptionOfType(JsonMissingPropertyException.class)
+                .isThrownBy(() -> GenericValidator.validateJsonIntegrity(map, List.of("missing"), "This is an empty json test"))
+                .withMessage("This is an empty json test");
     }
 }

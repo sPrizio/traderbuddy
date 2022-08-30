@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @param price              price at time of trade
  * @param amount             net profit amount
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public record CMCTradeWrapper(LocalDateTime dateTime, String type, String orderNumber, String relatedOrderNumber, String product, Double units, Double price, Double amount) {

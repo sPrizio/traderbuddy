@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Converter for {@link Trade}s into {@link TradeDTO}s
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @Component("tradeDTOConverter")
@@ -20,7 +20,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
     //  METHODS
 
     @Override
-    public TradeDTO convert(Trade entity) {
+    public TradeDTO convert(final Trade entity) {
 
         if (entity == null) {
             return new TradeDTO();
@@ -45,7 +45,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
     }
 
     @Override
-    public List<TradeDTO> convertAll(List<Trade> entities) {
+    public List<TradeDTO> convertAll(final List<Trade> entities) {
         return entities.stream().map(this::convert).toList();
     }
 }

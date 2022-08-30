@@ -11,12 +11,4 @@ public class NonUniqueItemFoundException extends RuntimeException {
     public NonUniqueItemFoundException(String message) {
         super(message);
     }
-
-    public NonUniqueItemFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public NonUniqueItemFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

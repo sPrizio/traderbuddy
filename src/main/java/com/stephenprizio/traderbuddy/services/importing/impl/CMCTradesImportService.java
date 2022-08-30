@@ -50,7 +50,7 @@ public class CMCTradesImportService implements ImportService {
      * @param filePath file path
      */
     @Override
-    public void importTrades(String filePath, String delimiter) {
+    public void importTrades(final String filePath, final String delimiter) {
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(ResourceUtils.getFile(filePath)))) {
             List<CMCTradeWrapper> trades =
@@ -95,7 +95,7 @@ public class CMCTradesImportService implements ImportService {
      * @param string csv string
      * @return {@link CMCTradeWrapper}
      */
-    private CMCTradeWrapper generateWrapperFromString(String string, String delimiter) {
+    private CMCTradeWrapper generateWrapperFromString(final String string, final String delimiter) {
 
         try {
             String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter);
@@ -122,7 +122,7 @@ public class CMCTradesImportService implements ImportService {
      * @param string {@link String}
      * @return {@link Double}
      */
-    private Double safeParseDouble(String string) {
+    private Double safeParseDouble(final String string) {
 
         if (StringUtils.isEmpty(string) || string.equals("-")) {
             return 0.0;
@@ -138,7 +138,7 @@ public class CMCTradesImportService implements ImportService {
      * @param tradeType {@link TradeType}
      * @return {@link Trade}
      */
-    private Trade createNewTrade(CMCTradeWrapper wrapper, TradeType tradeType) {
+    private Trade createNewTrade(final CMCTradeWrapper wrapper, final TradeType tradeType) {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
@@ -163,7 +163,7 @@ public class CMCTradesImportService implements ImportService {
      * @param wrapper {@link CMCTradeWrapper}
      * @return {@link Trade}
      */
-    private Trade createPromotionalPayment(CMCTradeWrapper wrapper) {
+    private Trade createPromotionalPayment(final CMCTradeWrapper wrapper) {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
@@ -188,7 +188,7 @@ public class CMCTradesImportService implements ImportService {
      * @param matched pre-existing {@link Trade}
      * @return updated {@link Trade}
      */
-    private Trade updateTrade(CMCTradeWrapper wrapper, final Trade matched) {
+    private Trade updateTrade(final CMCTradeWrapper wrapper, final Trade matched) {
         matched.setClosePrice(wrapper.price());
         matched.setTradeCloseTime(wrapper.dateTime());
         matched.setNetProfit(wrapper.amount());

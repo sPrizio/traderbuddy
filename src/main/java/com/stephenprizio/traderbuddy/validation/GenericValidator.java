@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.validation;
 
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
+import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -8,9 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Validator class for method integrity
@@ -110,5 +109,21 @@ public class GenericValidator {
         if (optional.isEmpty()) {
             throw new NoResultFoundException(String.format(message, values));
         }
+    }
+
+    /**
+     * Validates if the given json map contains the given keys
+     *
+     * @param json json as a {@link Map}
+     * @param keys required keys
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateJsonIntegrity(Map<String, Object> json, List<String> keys, String message, Object... values) {
+        keys.forEach(key -> {
+            if (!json.containsKey(key)) {
+                throw new JsonMissingPropertyException(String.format(message, values));
+            }
+        });
     }
 }

@@ -57,16 +57,23 @@ public class TradeServiceTest extends AbstractGenericTest {
     @Test
     public void test_findAllByTradeType_missingParamTradeType() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllByTradeType(null))
+                .isThrownBy(() -> this.tradeService.findAllByTradeType(null, true))
                 .withMessage("tradeType cannot be null");
     }
 
     @Test
     public void test_findAllByTradeType_success() {
-        assertThat(this.tradeService.findAllByTradeType(TradeType.BUY))
+        assertThat(this.tradeService.findAllByTradeType(TradeType.BUY, true))
                 .hasSize(1)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .containsExactly(Tuple.tuple(13083.41, 13098.67, 14.85));
+    }
+
+    @Test
+    public void test_findAllByTradeType_success_empty() {
+        TEST_TRADE_1.setRelevant(false);
+        assertThat(this.tradeService.findAllByTradeType(TradeType.BUY, false))
+                .isEmpty();
     }
 
 
@@ -75,30 +82,38 @@ public class TradeServiceTest extends AbstractGenericTest {
     @Test
     public void test_findAllTradesWithinDate_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(null, LocalDateTime.MAX))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(null, LocalDateTime.MAX, true))
                 .withMessage("startDate cannot be null");
     }
 
     @Test
     public void test_findAllTradesWithinDate_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, null))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, null, true))
                 .withMessage("endDate cannot be null");
     }
 
     @Test
     public void test_findAllTradesWithinDate_invalidInterval() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, LocalDateTime.MIN))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinDate(LocalDateTime.MAX, LocalDateTime.MIN, true))
                 .withMessage("startDate was after endDate or vice versa");
     }
 
     @Test
     public void test_findAllTradesWithinDate_success() {
-        assertThat(this.tradeService.findAllTradesWithinDate(TEST1, TEST2))
+        assertThat(this.tradeService.findAllTradesWithinDate(TEST1, TEST2, true))
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+    }
+
+    @Test
+    public void test_findAllTradesWithinDate_success_empty() {
+        TEST_TRADE_1.setRelevant(false);
+        TEST_TRADE_2.setRelevant(false);
+        assertThat(this.tradeService.findAllTradesWithinDate(TEST1, TEST2, false))
+                .isEmpty();
     }
 
 
@@ -116,5 +131,27 @@ public class TradeServiceTest extends AbstractGenericTest {
         assertThat(this.tradeService.findTradeByTradeId("testId1"))
                 .map(Trade::getTradeId)
                 .hasValue("testId1");
+    }
+
+
+    //  ----------------- disregardTrade -----------------
+
+    @Test
+    public void test_disregardTrade_missingParamTradeId() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.disregardTrade(null))
+                .withMessage("tradeId cannot be null");
+    }
+
+    @Test
+    public void test_disregardTrade_failure() {
+        assertThat(this.tradeService.disregardTrade("badId"))
+                .isFalse();
+    }
+
+    @Test
+    public void test_disregardTrade_success() {
+        assertThat(this.tradeService.disregardTrade("testId1"))
+                .isTrue();
     }
 }

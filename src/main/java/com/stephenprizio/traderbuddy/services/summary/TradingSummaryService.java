@@ -2,8 +2,8 @@ package com.stephenprizio.traderbuddy.services.summary;
 
 import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.repositories.TradeRepository;
 import org.apache.commons.collections4.CollectionUtils;
@@ -47,7 +47,7 @@ public class TradingSummaryService {
      * @param end end of time span
      * @return {@link TradingRecord}
      */
-    public TradingRecord getSummaryForTimeSpan(LocalDateTime start, LocalDateTime end) {
+    public TradingRecord getSummaryForTimeSpan(final LocalDateTime start, final LocalDateTime end) {
 
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
@@ -77,7 +77,7 @@ public class TradingSummaryService {
      * @param interval {@link TradingSummaryInterval}
      * @return {@link TradingSummary}
      */
-    public TradingSummary getReportOfSummariesForTimeSpan(LocalDateTime start, LocalDateTime end, TradingSummaryInterval interval) {
+    public TradingSummary getReportOfSummariesForTimeSpan(final LocalDateTime start, final LocalDateTime end, final TradingSummaryInterval interval) {
 
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
@@ -107,7 +107,7 @@ public class TradingSummaryService {
      * @param interval {@link TradingSummaryInterval}
      * @return offset {@link LocalDateTime}
      */
-    private LocalDateTime getNextDate(LocalDateTime compare, TradingSummaryInterval interval) {
+    private LocalDateTime getNextDate(final LocalDateTime compare, final TradingSummaryInterval interval) {
 
         LocalDateTime result;
         switch (interval) {

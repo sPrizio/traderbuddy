@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @param percentageProfit profit as a percentage of target
  * @param surplus          net difference between target and profit
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public record TradingRecord(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {

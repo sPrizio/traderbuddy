@@ -3,7 +3,7 @@ package com.stephenprizio.traderbuddy.services.importing;
 /**
  * Defines the import service architecture for importing trades into the system
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public interface ImportService {
@@ -14,5 +14,5 @@ public interface ImportService {
      * @param filePath file path
      * @param delimiter delimiter
      */
-    void importTrades(String filePath, String delimiter);
+    void importTrades(final String filePath, final String delimiter);
 }

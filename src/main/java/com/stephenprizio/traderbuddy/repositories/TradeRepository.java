@@ -18,7 +18,7 @@ public interface TradeRepository extends CrudRepository<Trade, Long> {
      * @param tradeType {@link TradeType}
      * @return {@link List} of {@link Trade}s
      */
-    List<Trade> findAllByTradeTypeOrderByTradeOpenTimeAsc(TradeType tradeType);
+    List<Trade> findAllByTradeTypeOrderByTradeOpenTimeAsc(final TradeType tradeType);
 
     /**
      * Returns a {@link List} of {@link Trade}s that are within the given time span
@@ -28,7 +28,7 @@ public interface TradeRepository extends CrudRepository<Trade, Long> {
      * @return {@link List} of {@link Trade}s
      */
     @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 ORDER BY t.tradeOpenTime ASC")
-    List<Trade> findAllTradesWithinDate(LocalDateTime start, LocalDateTime end);
+    List<Trade> findAllTradesWithinDate(final LocalDateTime start, final LocalDateTime end);
 
     /**
      * Returns a {@link Trade} for the given tradeId
@@ -36,5 +36,5 @@ public interface TradeRepository extends CrudRepository<Trade, Long> {
      * @param tradeId trade id
      * @return {@link Trade}
      */
-    Trade findTradeByTradeId(String tradeId);
+    Trade findTradeByTradeId(final String tradeId);
 }

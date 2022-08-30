@@ -32,10 +32,16 @@ public class TradeService {
      * Returns a {@link List} of {@link Trade}s for the given {@link TradeType}
      *
      * @param tradeType {@link TradeType}
+     * @param includeNonRelevant flag to return non-active/relevant trades
      * @return {@link List} of {@link Trade}s
      */
-    public List<Trade> findAllByTradeType(TradeType tradeType) {
+    public List<Trade> findAllByTradeType(final TradeType tradeType, final Boolean includeNonRelevant) {
+
         validateParameterIsNotNull(tradeType, "tradeType cannot be null");
+
+        if (Boolean.FALSE.equals(includeNonRelevant)) {
+            return this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(tradeType).stream().filter(Trade::getRelevant).toList();
+        }
 
         return this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(tradeType);
     }
@@ -45,12 +51,18 @@ public class TradeService {
      *
      * @param start {@link LocalDateTime} start of interval (inclusive)
      * @param end {@link LocalDateTime} end of interval (exclusive)
+     * @param includeNonRelevant flag to return non-active/relevant trades
      * @return {@link List} of {@link Trade}s
      */
-    public List<Trade> findAllTradesWithinDate(LocalDateTime start, LocalDateTime end) {
+    public List<Trade> findAllTradesWithinDate(final LocalDateTime start, final LocalDateTime end, final Boolean includeNonRelevant) {
+
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
+
+        if (Boolean.FALSE.equals(includeNonRelevant)) {
+            return this.tradeRepository.findAllTradesWithinDate(start, end).stream().filter(Trade::getRelevant).toList();
+        }
 
         return this.tradeRepository.findAllTradesWithinDate(start, end);
     }
@@ -61,9 +73,31 @@ public class TradeService {
      * @param tradeId trade id
      * @return {@link Optional} {@link Trade}
      */
-    public Optional<Trade> findTradeByTradeId(String tradeId) {
+    public Optional<Trade> findTradeByTradeId(final String tradeId) {
         validateParameterIsNotNull(tradeId, "tradeId cannot be null");
 
         return Optional.ofNullable(this.tradeRepository.findTradeByTradeId(tradeId));
+    }
+
+    /**
+     * Will mark a {@link Trade} as not relevant to exclude it from consideration
+     *
+     * @param tradeId {@link Trade}'s unique trade id
+     * @return true if successful operation
+     */
+    public Boolean disregardTrade(final String tradeId) {
+
+        validateParameterIsNotNull(tradeId, "tradeId cannot be null");
+
+        Optional<Trade> trade = Optional.ofNullable(this.tradeRepository.findTradeByTradeId(tradeId));
+        if (trade.isPresent()) {
+            final Trade found = trade.get();
+            found.setRelevant(false);
+            this.tradeRepository.save(found);
+
+            return true;
+        }
+
+        return false;
     }
 }

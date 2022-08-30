@@ -10,5 +10,5 @@ package com.stephenprizio.traderbuddy.models.records.json;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record StandardJsonResponse(boolean success, Object data, String message) {
+public record StandardJsonResponse(Boolean success, Object data, String message) {
 }
