@@ -37,6 +37,7 @@ public abstract class AbstractGenericTest {
         trade.setNetProfit(14.85);
         trade.setOpenPrice(13083.41);
         trade.setReasonForEntrance("I have my reasons");
+        trade.setRelevant(true);
 
         return trade;
     }
@@ -56,6 +57,7 @@ public abstract class AbstractGenericTest {
         trade.setNetProfit(-4.50);
         trade.setOpenPrice(13160.09);
         trade.setReasonForEntrance("I continue to have my reasons");
+        trade.setRelevant(true);
 
         return trade;
     }
@@ -80,6 +82,7 @@ public abstract class AbstractGenericTest {
             trade.setNetProfit(BigDecimal.valueOf(random.nextDouble(15.0 + 10.0) - 10.0).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
             trade.setOpenPrice(0.0);
             trade.setReasonForEntrance(StringUtils.EMPTY);
+            trade.setRelevant(true);
 
             trades.add(trade);
 
