@@ -52,7 +52,8 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
     private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
-    private final MockMultipartFile TEST_FILE = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+    private final MockMultipartFile TEST_FILE = new MockMultipartFile("file", "hello.csv", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+    private final MockMultipartFile TEST_FILE2 = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
 
     @MockBean
     private GenericImportService genericImportService;
@@ -190,6 +191,19 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("BAD_PLATFORM is not a valid trading platform or is not currently supported")));
+    }
+
+    @Test
+    public void test_postImportTrades_badFileFormat() throws Exception {
+        MockMvc mockMvc1 = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("delimiter", List.of("|"));
+        map.put("tradePlatform", List.of("UNDEFINED"));
+
+        mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE2).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("The given file hello.txt was not a csv file")));
     }
 
     @Test

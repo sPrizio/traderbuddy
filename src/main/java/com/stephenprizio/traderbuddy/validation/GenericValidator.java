@@ -1,11 +1,15 @@
 package com.stephenprizio.traderbuddy.validation;
 
+import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -125,5 +129,33 @@ public class GenericValidator {
                 throw new JsonMissingPropertyException(String.format(message, values));
             }
         });
+    }
+
+    /**
+     * Validates that the given {@link MultipartFile}'s extension matches the expected one
+     *
+     * @param file {@link MultipartFile}
+     * @param expectedExtension expected extension (.docx, .txt, etc...)
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateImportFileExtension(MultipartFile file, String expectedExtension, String message, Object... values) {
+        if (!FilenameUtils.getExtension(file.getOriginalFilename()).equals(expectedExtension)) {
+            throw new FileExtensionNotSupportedException(String.format(message, values));
+        }
+    }
+
+    /**
+     * Validates that the given {@link File}'s extension matches the expected one
+     *
+     * @param file {@link File}
+     * @param expectedExtension expected extension (.docx, .txt, etc...)
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateImportFileExtension(File file, String expectedExtension, String message, Object... values) {
+        if (!FilenameUtils.getExtension(file.getName()).equals(expectedExtension)) {
+            throw new FileExtensionNotSupportedException(String.format(message, values));
+        }
     }
 }

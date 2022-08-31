@@ -1,11 +1,15 @@
 package com.stephenprizio.traderbuddy.validation;
 
+import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
 import org.junit.Test;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,8 +78,28 @@ public class GenericValidatorTest {
     @Test
     public void test_validateJsonIntegrity_success() {
         Map<String, Object> map = Map.of("test", "value");
+        List<String> list = List.of("missing");
+
         assertThatExceptionOfType(JsonMissingPropertyException.class)
-                .isThrownBy(() -> GenericValidator.validateJsonIntegrity(map, List.of("missing"), "This is an empty json test"))
+                .isThrownBy(() -> GenericValidator.validateJsonIntegrity(map, list, "This is an empty json test"))
                 .withMessage("This is an empty json test");
+    }
+
+    @Test
+    public void test_validateImportFileExtension_multipart_success() {
+        MockMultipartFile testFile = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+
+        assertThatExceptionOfType(FileExtensionNotSupportedException.class)
+                .isThrownBy(() -> GenericValidator.validateImportFileExtension(testFile, "csv", "This is an empty multipart file test"))
+                .withMessage("This is an empty multipart file test");
+    }
+
+    @Test
+    public void test_validateImportFileExtension_success() {
+        File file = new File("test.txt");
+        assertThatExceptionOfType(FileExtensionNotSupportedException.class)
+                .isThrownBy(() -> GenericValidator.validateImportFileExtension(file, "csv", "This is an empty file test"))
+                .withMessage("This is an empty file test");
+        file.delete();
     }
 }

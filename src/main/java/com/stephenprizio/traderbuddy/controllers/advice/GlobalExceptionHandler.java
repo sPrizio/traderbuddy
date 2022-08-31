@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.advice;
 
+import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
 import com.stephenprizio.traderbuddy.exceptions.system.GenericSystemException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
@@ -31,6 +32,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler({
             DateTimeException.class,
+            FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             JsonMissingPropertyException.class,
             NonUniqueItemFoundException.class,

@@ -125,6 +125,8 @@ public class TradeApiController {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid trading platform or is not currently supported", platform));
         }
 
+        validateImportFileExtension(file, "csv", "The given file %s was not a csv file", file.getOriginalFilename());
+
         String result = this.genericImportService.importTrades(file.getInputStream(), delimiter, TradingPlatform.valueOf(platform.toUpperCase()));
         if (StringUtils.isEmpty(result)) {
             return new StandardJsonResponse(true, true, StringUtils.EMPTY);
