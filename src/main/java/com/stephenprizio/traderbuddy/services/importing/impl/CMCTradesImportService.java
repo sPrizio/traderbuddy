@@ -16,6 +16,8 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -48,11 +50,40 @@ public class CMCTradesImportService implements ImportService {
      * Imports trades from a CSV file from the CMC platform
      *
      * @param filePath file path
+     * @param delimiter unit delimiter
      */
     @Override
-    public void importTrades(final String filePath, final String delimiter) {
+    public void importTrades(final String filePath, final Character delimiter) {
+        try {
+            importFile(new BufferedReader(new FileReader(ResourceUtils.getFile(filePath))), delimiter);
+        } catch (Exception e) {
+            LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
+            throw new TradeImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()));
+        }
+    }
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(ResourceUtils.getFile(filePath)))) {
+    /**
+     * Imports trades from a CSV file from the CMC platform
+     *
+     * @param inputStream {@link InputStream}
+     * @param delimiter unit delimiter
+     */
+    @Override
+    public void importTrades(final InputStream inputStream, final Character delimiter) {
+        importFile(new BufferedReader(new InputStreamReader(inputStream)), delimiter);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Imports a file using the given {@link BufferedReader} and delimiter
+     *
+     * @param bufferedReader {@link BufferedReader}
+     * @param delimiter unit delimiter
+     */
+    private void importFile(final BufferedReader bufferedReader, final Character delimiter) {
+        try (bufferedReader) {
             List<CMCTradeWrapper> trades =
                     bufferedReader
                             .lines()
@@ -86,19 +117,16 @@ public class CMCTradesImportService implements ImportService {
         }
     }
 
-
-    //  HELPERS
-
     /**
      * Generates a {@link CMCTradeWrapper} from a CSV string
      *
      * @param string csv string
      * @return {@link CMCTradeWrapper}
      */
-    private CMCTradeWrapper generateWrapperFromString(final String string, final String delimiter) {
+    private CMCTradeWrapper generateWrapperFromString(final String string, final Character delimiter) {
 
         try {
-            String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter);
+            String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter.toString());
 
             LocalDateTime dateTime = LocalDateTime.parse(array[0], DateTimeFormatter.ofPattern("dd/MM/yyyy H:mm"));
             String type = array[1];

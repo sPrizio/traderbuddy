@@ -3,8 +3,11 @@ package com.stephenprizio.traderbuddy.controllers.trades;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.TradeType;
+import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.services.importing.impl.GenericImportService;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +17,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.Map;
@@ -25,8 +32,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,14 +52,24 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
     private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
+    private final MockMultipartFile TEST_FILE = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+
+    @MockBean
+    private GenericImportService genericImportService;
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private TradeService tradeService;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @Before
     public void setUp() {
+        Mockito.when(this.genericImportService.importTrades(any(), anyChar(), any())).thenReturn(StringUtils.EMPTY);
+        Mockito.when(this.genericImportService.importTrades(any(), eq('|'), eq(TradingPlatform.UNDEFINED))).thenReturn("Error Message");
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY, true)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.findAllTradesWithinDate(any(), any(), anyBoolean())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeService.findTradeByTradeId("testId1")).thenReturn(Optional.of(TEST_TRADE_1));
@@ -157,6 +173,49 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trades/for-trade-id").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.tradeId", is("testId1")));
+    }
+
+
+    //  ----------------- postImportTrades -----------------
+
+    @Test
+    public void test_postImportTrades_badParamPlatform() throws Exception {
+
+        MockMvc mockMvc1 = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("delimiter", List.of(","));
+        map.put("tradePlatform", List.of("BAD_PLATFORM"));
+
+        mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD_PLATFORM is not a valid trading platform or is not currently supported")));
+    }
+
+    @Test
+    public void test_postImportTrades_errorDuringImport() throws Exception {
+        MockMvc mockMvc1 = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("delimiter", List.of("|"));
+        map.put("tradePlatform", List.of("UNDEFINED"));
+
+        mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("Error Message")));
+    }
+
+    @Test
+    public void test_postImportTrades_success() throws Exception {
+        MockMvc mockMvc1 = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("delimiter", List.of(","));
+        map.put("tradePlatform", List.of("CMC_MARKETS"));
+
+        mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", is(true)));
     }
 
 

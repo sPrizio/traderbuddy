@@ -7,5 +7,6 @@ package com.stephenprizio.traderbuddy.enums;
  * @version 1.0
  */
 public enum TradingPlatform {
-    CMC_MARKETS
+    CMC_MARKETS,
+    UNDEFINED
 }

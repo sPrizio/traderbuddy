@@ -2,14 +2,17 @@ package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.stephenprizio.traderbuddy.converters.trades.TradeDTOConverter;
 import com.stephenprizio.traderbuddy.enums.TradeType;
+import com.stephenprizio.traderbuddy.enums.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.system.GenericSystemException;
 import com.stephenprizio.traderbuddy.models.entities.Trade;
 import com.stephenprizio.traderbuddy.models.nonentities.dto.trades.TradeDTO;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
+import com.stephenprizio.traderbuddy.services.importing.impl.GenericImportService;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -39,6 +42,9 @@ public class TradeApiController {
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
+
+    @Resource(name = "genericImportService")
+    private GenericImportService genericImportService;
 
 
     //  METHODS
@@ -102,8 +108,40 @@ public class TradeApiController {
     }
 
 
+    //  ----------------- POST REQUESTS -----------------
+
+    /**
+     * File upload endpoint to obtain import files to import {@link Trade}s into the system. The system will only accept CSV files
+     *
+     * @param file {@link MultipartFile}
+     * @param platform trading platform (must be supported by this application)
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PostMapping("/import-trades")
+    public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file, final @RequestParam("delimiter") Character delimiter, final @RequestParam("tradePlatform") String platform) throws Exception {
+
+        if (!EnumUtils.isValidEnumIgnoreCase(TradingPlatform.class, platform)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid trading platform or is not currently supported", platform));
+        }
+
+        String result = this.genericImportService.importTrades(file.getInputStream(), delimiter, TradingPlatform.valueOf(platform.toUpperCase()));
+        if (StringUtils.isEmpty(result)) {
+            return new StandardJsonResponse(true, true, StringUtils.EMPTY);
+        }
+
+        return new StandardJsonResponse(false, null, result);
+    }
+
+
     //  ----------------- PUT REQUESTS -----------------
 
+    /**
+     * PUT endpoint that will modify a {@link Trade} with the given id to be marked as not relevant
+     *
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
     @ResponseBody
     @PutMapping("/disregard")
     public StandardJsonResponse putDisregardTrade(final @RequestBody Map<String, Object> requestBody) {

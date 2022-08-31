@@ -12,8 +12,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,14 +51,15 @@ public class CMCTradesImportServiceTest {
     @Order(1)
     public void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
-                .isThrownBy(() -> this.cmcTradesImportService.importTrades("src/main/resources/testing/NotFound.csv", ";"))
+                .isThrownBy(() -> this.cmcTradesImportService.importTrades("src/main/resources/testing/NotFound.csv", ';'))
                 .withMessageContaining("The import process failed with reason");
     }
 
     @Test
     @Order(2)
     public void test_importTrades_success() {
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
+
+        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
 
         assertThat(this.tradeRepository.findAll())
                 .hasSize(3)
@@ -71,10 +74,27 @@ public class CMCTradesImportServiceTest {
     @Test
     @Order(3)
     public void testImportTrades_success_unchanged() {
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ";");
+
+        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
+        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
 
         assertThat(this.tradeRepository.findAll())
                 .hasSize(3);
+    }
+
+    @Test
+    @Order(4)
+    public void test_importTrades_success_inputStream() throws Exception {
+
+        this.cmcTradesImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/History.csv")), ';');
+
+        assertThat(this.tradeRepository.findAll())
+                .hasSize(3)
+                .extracting("tradeId", "lotSize", "tradeOpenTime", "tradeCloseTime", "openPrice", "closePrice", "netProfit")
+                .contains(
+                        Tuple.tuple("O5-77-5H7P05", 0.80, LocalDateTime.of(2022, 8, 24, 11, 23), LocalDateTime.of(2022, 8, 24, 11, 27), 12960.00, 12972.38, 12.78),
+                        Tuple.tuple("O5-77-5H7MXX", 0.75, LocalDateTime.of(2022, 8, 24, 11, 13), LocalDateTime.of(2022, 8, 24, 11, 14), 12935.17, 12943.36, -8.0),
+                        Tuple.tuple("1109841303", 0.0, LocalDateTime.of(2022, 8, 24, 11, 14), LocalDateTime.of(2022, 8, 24, 11, 14), 0.0, 0.0, 8.0)
+                );
     }
 }

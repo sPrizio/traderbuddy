@@ -1,5 +1,7 @@
 package com.stephenprizio.traderbuddy.services.importing;
 
+import java.io.InputStream;
+
 /**
  * Defines the import service architecture for importing trades into the system
  *
@@ -9,10 +11,18 @@ package com.stephenprizio.traderbuddy.services.importing;
 public interface ImportService {
 
     /**
-     * Imports trades from a CSV file from the CMC platform
+     * Imports trades from a CSV file using a file path
      *
      * @param filePath file path
      * @param delimiter delimiter
      */
-    void importTrades(final String filePath, final String delimiter);
+    void importTrades(final String filePath, final Character delimiter);
+
+    /**
+     * Imports trades from a CSV file using an {@link InputStream}
+     *
+     * @param inputStream {@link InputStream}
+     * @param delimiter unit delimiter
+     */
+    void importTrades(final InputStream inputStream, final Character delimiter);
 }
