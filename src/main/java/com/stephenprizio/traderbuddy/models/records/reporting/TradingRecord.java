@@ -25,6 +25,15 @@ public record TradingRecord(LocalDateTime date, Double target, Integer numberOfT
      * @return true if weekend or no trades taken
      */
     public Boolean isEmpty() {
-        return this.date.get(ChronoField.DAY_OF_WEEK) > 5 || this.numberOfTrades == 0;
+        return isWeekend() || this.numberOfTrades == 0;
+    }
+
+    /**
+     * Determines whether this record is a weekend entry
+     *
+     * @return true if weekend entry
+     */
+    public Boolean isWeekend() {
+        return this.date.get(ChronoField.DAY_OF_WEEK) > 5;
     }
 }

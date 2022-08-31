@@ -86,5 +86,5 @@ public class Trade {
     @Getter
     @Setter
     @Column
-    private Boolean relevant = false;
+    private Boolean relevant = true;
 }

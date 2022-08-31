@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -126,22 +127,52 @@ public class CMCTradesImportService implements ImportService {
     private CMCTradeWrapper generateWrapperFromString(final String string, final Character delimiter) {
 
         try {
-            String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter.toString());
+            String[] array = string.replace("(T) ", StringUtils.EMPTY).replace("(T)", StringUtils.EMPTY).split(delimiter.toString() + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-            LocalDateTime dateTime = LocalDateTime.parse(array[0], DateTimeFormatter.ofPattern("dd/MM/yyyy H:mm"));
-            String type = array[1];
-            String orderNumber = array[2];
-            String relatedOrderNumber = array[4];
-            String product = array[5];
-            double units = safeParseDouble(array[6]);
-            double price = safeParseDouble(array[7]);
-            double amount = safeParseDouble(array[14]);
+            LocalDateTime dateTime = getTradeTime(sanitizeString(array[0]));
+            String type = sanitizeString(array[1]);
+            String orderNumber = sanitizeString(array[2]);
+            String relatedOrderNumber = sanitizeString(array[4]);
+            String product = sanitizeString(array[5]);
+            double units = safeParseDouble(sanitizeString(array[6]));
+            double price = safeParseDouble(sanitizeString(array[7]));
+            double amount = safeParseDouble(sanitizeString(array[14]));
 
             return new CMCTradeWrapper(dateTime, type, orderNumber, relatedOrderNumber, product, units, price, amount);
         } catch (Exception e) {
             LOGGER.error("Error parsing line : {} for reason : {}", string, e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Attempts to compute a {@link LocalDateTime} for the given string
+     *
+     * @param string date time string
+     * @return {@link LocalDateTime}
+     */
+    private LocalDateTime getTradeTime(String string) {
+        try {
+            return LocalDateTime.parse(string, DateTimeFormatter.ofPattern("dd/MM/yyyy H:mm"));
+        } catch (Exception e) {
+            try {
+                String[] input = string.split(" ");
+                input[1] = input[1] + ".";
+                return LocalDateTime.parse(String.join(" ", input), DateTimeFormatter.ofPattern("dd MMM yyyy H:mm:ss"));
+            } catch (Exception ex) {
+                throw new DateTimeException(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Sanitizes the given string
+     *
+     * @param string input string
+     * @return sanitized string
+     */
+    private String sanitizeString(String string) {
+        return string.replace("\"", StringUtils.EMPTY);
     }
 
     /**
@@ -156,7 +187,7 @@ public class CMCTradesImportService implements ImportService {
             return 0.0;
         }
 
-        return Double.parseDouble(string.replaceAll("[^0-9.-]", StringUtils.EMPTY).trim());
+        return Double.parseDouble(string.replaceAll("[^\\d.-]", StringUtils.EMPTY).trim());
     }
 
     /**
@@ -181,6 +212,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setNetProfit(0.0);
         trade.setOpenPrice(wrapper.price());
         trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setRelevant(true);
 
         return trade;
     }
@@ -205,6 +237,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setNetProfit(wrapper.amount());
         trade.setOpenPrice(0.0);
         trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setRelevant(true);
 
         return trade;
     }
