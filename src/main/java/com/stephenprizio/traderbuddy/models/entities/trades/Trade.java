@@ -1,7 +1,7 @@
-package com.stephenprizio.traderbuddy.models.entities;
+package com.stephenprizio.traderbuddy.models.entities.trades;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import lombok.Getter;
 import lombok.Setter;
 

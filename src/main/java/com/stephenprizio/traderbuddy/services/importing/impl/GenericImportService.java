@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.services.importing.impl;
 
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,9 +1,9 @@
-package com.stephenprizio.traderbuddy.models.nonentities.dto.trades;
+package com.stephenprizio.traderbuddy.models.dto.trades;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.dto.GenericDTO;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
-package com.stephenprizio.traderbuddy.repositories;
+package com.stephenprizio.traderbuddy.repositories.trades;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository for {@link Trade}s
+ *
+ * @author Stephen Prizio
+ * @version 1.0
+ */
 @Repository
 public interface TradeRepository extends CrudRepository<Trade, Long> {
 

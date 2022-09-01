@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.enums;
+package com.stephenprizio.traderbuddy.enums.trades;
 
 /**
  * Enum for representing the interval for summary reporting

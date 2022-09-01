@@ -1,8 +1,8 @@
 package com.stephenprizio.traderbuddy.services.trades;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

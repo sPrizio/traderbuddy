@@ -2,8 +2,8 @@ package com.stephenprizio.traderbuddy.services.summary;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

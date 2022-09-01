@@ -1,8 +1,8 @@
 package com.stephenprizio.traderbuddy.converters.trades;
 
 import com.stephenprizio.traderbuddy.converters.GenericDTOConverter;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.models.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

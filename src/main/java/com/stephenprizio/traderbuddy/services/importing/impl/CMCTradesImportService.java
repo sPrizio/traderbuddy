@@ -1,11 +1,11 @@
 package com.stephenprizio.traderbuddy.services.importing.impl;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.importing.TradeImportFailureException;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.importing.CMCTradeWrapper;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import com.stephenprizio.traderbuddy.services.importing.ImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

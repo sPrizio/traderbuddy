@@ -1,11 +1,11 @@
 package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.stephenprizio.traderbuddy.converters.trades.TradeDTOConverter;
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.system.GenericSystemException;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.models.nonentities.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.models.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.importing.impl.GenericImportService;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
@@ -68,7 +68,7 @@ public class TradeApiController {
 
         TradeType type = TradeType.valueOf(tradeType.toUpperCase());
         List<Trade> trades = this.tradeService.findAllByTradeType(type, includeNonRelevant);
-        validateIfAnyResult(trades, "No trades were found for type %s", type);
+        validateIfAnyResult(trades, "No trades were found for type %s", type.name());
 
         return new StandardJsonResponse(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
     }

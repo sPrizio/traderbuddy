@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.services.importing.impl;
 
 import com.stephenprizio.traderbuddy.exceptions.importing.TradeImportFailureException;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;

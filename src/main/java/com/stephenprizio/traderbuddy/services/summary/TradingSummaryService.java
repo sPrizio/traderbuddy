@@ -1,11 +1,11 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
-import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.enums.trades.TradingSummaryInterval;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

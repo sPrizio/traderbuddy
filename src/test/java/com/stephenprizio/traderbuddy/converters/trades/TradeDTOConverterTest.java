@@ -1,10 +1,9 @@
-package com.stephenprizio.traderbuddy.converters;
+package com.stephenprizio.traderbuddy.converters.trades;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.converters.trades.TradeDTOConverter;
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
-import com.stephenprizio.traderbuddy.models.nonentities.dto.trades.TradeDTO;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.dto.trades.TradeDTO;
 import org.junit.Test;
 
 import java.time.LocalDateTime;

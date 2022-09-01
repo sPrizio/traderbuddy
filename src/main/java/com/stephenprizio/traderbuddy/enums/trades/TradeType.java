@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.enums;
+package com.stephenprizio.traderbuddy.enums.trades;
 
 /**
  * Enum representing the type of trade that can be taken

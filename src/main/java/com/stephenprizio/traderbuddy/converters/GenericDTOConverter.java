@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.converters;
 
-import com.stephenprizio.traderbuddy.models.nonentities.dto.GenericDTO;
+import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 
 import java.util.List;
 

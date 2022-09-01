@@ -1,10 +1,10 @@
 package com.stephenprizio.traderbuddy.services.trades;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.enums.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
-import com.stephenprizio.traderbuddy.repositories.TradeRepository;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,11 +38,11 @@ public class TradeServiceTest extends AbstractGenericTest {
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
     private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
-    @Autowired
-    private TradeService tradeService;
-
     @MockBean
     private TradeRepository tradeRepository;
+
+    @Autowired
+    private TradeService tradeService;
 
     @Before
     public void setUp() {

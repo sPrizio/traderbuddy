@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.models.nonentities.dto;
+package com.stephenprizio.traderbuddy.models.dto;
 
 /**
  * Global DTO parent across the app

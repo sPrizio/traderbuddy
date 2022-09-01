@@ -1,14 +1,17 @@
 package com.stephenprizio.traderbuddy;
 
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,5 +97,31 @@ public abstract class AbstractGenericTest {
 
     public TradingSummary generateTradingSummary() {
         return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11)), null);
+    }
+
+    public Goal generateTestGoal() {
+        Goal goal = new Goal();
+
+        goal.setActive(true);
+        goal.setName("Test Goal Active");
+        goal.setStartDate(LocalDate.of(2022, 1, 1));
+        goal.setEndDate(LocalDate.of(2025, 1, 1));
+        goal.setProfitTarget(528491.0);
+        goal.setStatus(GoalStatus.IN_PROGRESS);
+
+        return goal;
+    }
+
+    public Goal generateInactiveTestGoal() {
+        Goal goal = new Goal();
+
+        goal.setActive(false);
+        goal.setName("Test Goal Inactive");
+        goal.setStartDate(LocalDate.of(2023, 1, 1));
+        goal.setEndDate(LocalDate.of(2025, 1, 1));
+        goal.setProfitTarget(12345.0);
+        goal.setStatus(GoalStatus.NOT_STARTED);
+
+        return goal;
     }
 }

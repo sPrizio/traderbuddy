@@ -2,9 +2,9 @@ package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.services.importing.impl.GenericImportService;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.StringUtils;

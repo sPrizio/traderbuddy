@@ -1,8 +1,8 @@
-package com.stephenprizio.traderbuddy.repositories;
+package com.stephenprizio.traderbuddy.repositories.trades;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.enums.TradeType;
-import com.stephenprizio.traderbuddy.models.entities.Trade;
+import com.stephenprizio.traderbuddy.enums.trades.TradeType;
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;

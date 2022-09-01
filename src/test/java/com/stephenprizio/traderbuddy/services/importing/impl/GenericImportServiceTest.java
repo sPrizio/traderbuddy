@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.services.importing.impl;
 
-import com.stephenprizio.traderbuddy.enums.TradingPlatform;
+import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import com.stephenprizio.traderbuddy.exceptions.importing.TradeImportFailureException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import org.junit.Before;
@@ -14,7 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.InputStream;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Testing class for {@link GenericImportService}

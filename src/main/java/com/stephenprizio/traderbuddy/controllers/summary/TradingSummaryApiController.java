@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
-import com.stephenprizio.traderbuddy.enums.TradingSummaryInterval;
+import com.stephenprizio.traderbuddy.enums.trades.TradingSummaryInterval;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
