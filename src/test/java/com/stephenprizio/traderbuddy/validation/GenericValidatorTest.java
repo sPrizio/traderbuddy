@@ -63,7 +63,14 @@ public class GenericValidatorTest {
     @Test
     public void test_validateLocalDateTimeFormat_success() {
         assertThatExceptionOfType(DateTimeException.class)
-                .isThrownBy(() -> GenericValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date test"))
+                .isThrownBy(() -> GenericValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date & time test"))
+                .withMessage("This is a bad date & time test");
+    }
+
+    @Test
+    public void test_validateLocalDateFormat_success() {
+        assertThatExceptionOfType(DateTimeException.class)
+                .isThrownBy(() -> GenericValidator.validateLocalDateFormat("1/1/1999", "yyyy-MM-dd", "This is a bad date test"))
                 .withMessage("This is a bad date test");
     }
 

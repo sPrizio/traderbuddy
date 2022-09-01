@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -97,6 +98,22 @@ public class GenericValidator {
     public static void validateLocalDateTimeFormat(String date, String format, String message, Object... values) {
         try {
             LocalDateTime.parse(date, DateTimeFormatter.ofPattern(format));
+        } catch (Exception e) {
+            throw new DateTimeException(String.format(message, values));
+        }
+    }
+
+    /**
+     * Validates if the given date is of the given format
+     *
+     * @param date date to test
+     * @param format date expected format
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateLocalDateFormat(String date, String format, String message, Object... values) {
+        try {
+            LocalDate.parse(date, DateTimeFormatter.ofPattern(format));
         } catch (Exception e) {
             throw new DateTimeException(String.format(message, values));
         }

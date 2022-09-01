@@ -17,7 +17,7 @@ import java.time.LocalDate;
  * @version 1.0
  */
 @Entity
-@Table(name = "goals")
+@Table(name = "goals", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndStartDateAndEndDate", columnNames = {"name", "start_date", "end_date"}))
 public class Goal {
 
     @Id
@@ -27,17 +27,17 @@ public class Goal {
 
     @Getter
     @Setter
-    @Column
+    @Column(name = "name")
     private String name;
 
     @Getter
     @Setter
-    @Column
+    @Column(name = "start_date")
     private LocalDate startDate;
 
     @Getter
     @Setter
-    @Column
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @Getter

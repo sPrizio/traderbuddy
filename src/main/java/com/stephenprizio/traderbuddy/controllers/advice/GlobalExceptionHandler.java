@@ -1,11 +1,10 @@
 package com.stephenprizio.traderbuddy.controllers.advice;
 
 import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
+import com.stephenprizio.traderbuddy.exceptions.system.EntityCreationException;
+import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationException;
 import com.stephenprizio.traderbuddy.exceptions.system.GenericSystemException;
-import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
-import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
-import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
-import com.stephenprizio.traderbuddy.exceptions.validation.NonUniqueItemFoundException;
+import com.stephenprizio.traderbuddy.exceptions.validation.*;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,7 @@ public class GlobalExceptionHandler {
             FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             JsonMissingPropertyException.class,
+            MissingRequiredDataException.class,
             NonUniqueItemFoundException.class,
             NoResultFoundException.class,
             UnsupportedOperationException.class
@@ -46,6 +46,8 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
+            EntityCreationException.class,
+            EntityModificationException.class,
             GenericSystemException.class
     })
     public StandardJsonResponse handleServerError(Exception exception) {

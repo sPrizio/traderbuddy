@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -62,5 +64,26 @@ public class GoalRepositoryTest extends AbstractGenericTest {
                 .hasSize(1)
                 .extracting("profitTarget", "name")
                 .containsExactly(Tuple.tuple(528491.0, "Test Goal Active"));
+    }
+
+
+    //  ----------------- findGoalByNameAndStartDateAndEndDate -----------------
+
+    @Test
+    public void test_findGoalByNameAndStartDateAndEndDate_success() {
+        assertThat(this.goalRepository.findGoalByNameAndStartDateAndEndDate("Test Goal Active", LocalDate.of(2022, 1, 1), LocalDate.of(2025, 1, 1)))
+                .isNotNull()
+                .extracting("profitTarget", "name")
+                .containsExactly(528491.0, "Test Goal Active");
+    }
+
+
+    //  ----------------- resetGoals -----------------
+
+    @Test
+    public void test_resetGoals_success() {
+        assertThat(this.goalRepository.resetGoals())
+                .isNotNull()
+                .isEqualTo(1);
     }
 }

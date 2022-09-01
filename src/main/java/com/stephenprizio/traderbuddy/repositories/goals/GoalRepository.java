@@ -2,9 +2,12 @@ package com.stephenprizio.traderbuddy.repositories.goals;
 
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -31,4 +34,21 @@ public interface GoalRepository extends CrudRepository<Goal, Long> {
      * @return {@link List} of {@link Goal}s
      */
     List<Goal> findAllByStatus(GoalStatus status);
+
+    /**
+     * Returns a {@link Goal} for the given name, start date and end date
+     *
+     * @param name goal name
+     * @param startDate {@link LocalDate} start
+     * @param endDate {@link LocalDate} end
+     * @return {@link Goal}
+     */
+    Goal findGoalByNameAndStartDateAndEndDate(String name, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Will reset all active goals to inactive
+     */
+    @Modifying
+    @Query("UPDATE Goal g SET g.active = false WHERE g.active = true")
+    int resetGoals();
 }

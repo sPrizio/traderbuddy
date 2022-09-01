@@ -11,11 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateIfAnyResult;
-import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateIfPresent;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 
 /**
  * API Controller for {@link Goal}s
@@ -26,6 +28,9 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.validate
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/goals")
 public class GoalApiController {
+
+    private static final List<String> REQUIRED_JSON_VALUES = List.of("status", "active", "name", "startDate", "endDate", "profitTarget");
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Resource(name = "goalDTOConverter")
     private GoalDTOConverter goalDTOConverter;
@@ -71,5 +76,29 @@ public class GoalApiController {
         validateIfAnyResult(goals, "No goals were found for type %s", goalStatus.name());
 
         return new StandardJsonResponse(true, this.goalDTOConverter.convertAll(goals), StringUtils.EMPTY);
+    }
+
+
+    //  ----------------- POST REQUESTS -----------------
+
+    @ResponseBody
+    @PostMapping("/create")
+    public StandardJsonResponse postCreateGoal(final @RequestBody Map<String, Object> requestBody) {
+        validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+        return new StandardJsonResponse(true, this.goalDTOConverter.convert(this.goalService.createGoal(requestBody)), StringUtils.EMPTY);
+    }
+
+
+    //  ----------------- PUT REQUESTS -----------------
+
+    @ResponseBody
+    @PutMapping("/update")
+    public StandardJsonResponse putUpdateGoal(final @RequestParam("name") String name, final @RequestParam("startDate") String startDate, final @RequestParam("endDate") String endDate, final @RequestBody Map<String, Object> requestBody) {
+
+        validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+        validateLocalDateFormat(startDate, DATE_FORMAT, "The start date %s was not of the expected format %s", startDate, DATE_FORMAT);
+        validateLocalDateFormat(endDate, DATE_FORMAT, "The end date %s was not of the expected format %s", endDate, DATE_FORMAT);
+
+        return new StandardJsonResponse(true, this.goalDTOConverter.convert(this.goalService.updateGoal(name, LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE), LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE), requestBody)), StringUtils.EMPTY);
     }
 }
