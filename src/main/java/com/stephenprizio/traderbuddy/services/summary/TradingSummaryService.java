@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,15 +85,24 @@ public class TradingSummaryService {
         validateParameterIsNotNull(interval, "interval cannot be null");
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
 
+        List<Trade> allTrades = this.tradeRepository.findAllTradesWithinDate(start, end);
+        LocalDateTime earliestTradeTime = start;
+        LocalDateTime mostRecentTradeTime = end;
+
+        if (CollectionUtils.isNotEmpty(allTrades)) {
+            earliestTradeTime = (start.isAfter(allTrades.get(0).getTradeOpenTime()) ? start : allTrades.get(0).getTradeOpenTime()).with(LocalTime.MIN);
+            mostRecentTradeTime = (end.isBefore(allTrades.get(allTrades.size() - 1).getTradeOpenTime()) ? end : allTrades.get(allTrades.size() - 1).getTradeOpenTime().plusMonths(1).with(TemporalAdjusters.firstDayOfMonth())).with(LocalTime.MIN);
+        }
+
         List<TradingRecord> records = new ArrayList<>();
-        LocalDateTime leftBound = interval == TradingSummaryInterval.YEARLY ? start.with(TemporalAdjusters.firstDayOfYear()) : start.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDateTime leftBound = interval == TradingSummaryInterval.YEARLY ? earliestTradeTime.with(TemporalAdjusters.firstDayOfYear()) : earliestTradeTime.with(TemporalAdjusters.firstDayOfMonth());
         LocalDateTime rightBound = getNextDate(leftBound, interval);
 
         do {
             records.add(getSummaryForTimeSpan(leftBound, rightBound));
             leftBound = getNextDate(leftBound, interval);
             rightBound = getNextDate(rightBound, interval);
-        } while (interval == TradingSummaryInterval.MONTHLY ? rightBound.isBefore(end.plusMonths(1)) : (rightBound.isBefore(end) || rightBound.isEqual(end)));
+        } while (interval == TradingSummaryInterval.MONTHLY ? rightBound.isBefore(mostRecentTradeTime.plusMonths(1)) : (rightBound.isBefore(mostRecentTradeTime) || rightBound.isEqual(mostRecentTradeTime)));
 
         return new TradingSummary(records, new TradingRecordStatistics(records));
     }
