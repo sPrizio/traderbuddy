@@ -96,7 +96,7 @@ public abstract class AbstractGenericTest {
     }
 
     public TradingSummary generateTradingSummary() {
-        return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11)), null);
+        return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11, true)), null);
     }
 
     public Goal generateTestGoal() {

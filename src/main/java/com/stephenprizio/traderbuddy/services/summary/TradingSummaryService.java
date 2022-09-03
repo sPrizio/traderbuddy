@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +42,12 @@ public class TradingSummaryService {
     //  METHODS
 
     //  TODO: will need the use of a Goal / Target
+
     /**
      * Obtains a {@link TradingRecord} for the given time interval
      *
      * @param start start of time span
-     * @param end end of time span
+     * @param end   end of time span
      * @return {@link TradingRecord}
      */
     public TradingRecord getSummaryForTimeSpan(final LocalDateTime start, final LocalDateTime end) {
@@ -66,15 +68,16 @@ public class TradingSummaryService {
                             .multiply(BigDecimal.valueOf(100.0));
         }
 
-        return new TradingRecord(start, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, /*netProfit.subtract(BigDecimal.valueOf(target)).doubleValue()*/0.0);
+        return new TradingRecord(start, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, /*netProfit.subtract(BigDecimal.valueOf(target)).doubleValue()*/0.0, ChronoUnit.DAYS.between(start, end) > 1);
     }
 
     //  TODO: will need the use of a Goal / Target
+
     /**
      * Generates a {@link TradingSummary} for the given time span and interval
      *
-     * @param start start of time span
-     * @param end end of time span
+     * @param start    start of time span
+     * @param end      end of time span
      * @param interval {@link TradingSummaryInterval}
      * @return {@link TradingSummary}
      */
@@ -90,8 +93,8 @@ public class TradingSummaryService {
         LocalDateTime mostRecentTradeTime = end;
 
         if (CollectionUtils.isNotEmpty(allTrades)) {
-            earliestTradeTime = (start.isAfter(allTrades.get(0).getTradeOpenTime()) ? start : allTrades.get(0).getTradeOpenTime()).with(LocalTime.MIN);
-            mostRecentTradeTime = (end.isBefore(allTrades.get(allTrades.size() - 1).getTradeOpenTime()) ? end : allTrades.get(allTrades.size() - 1).getTradeOpenTime().plusMonths(1).with(TemporalAdjusters.firstDayOfMonth())).with(LocalTime.MIN);
+            earliestTradeTime = computeEarliestTradeTime(start, allTrades, interval);
+            mostRecentTradeTime = computeMostRecentTradeTime(end, allTrades, interval);
         }
 
         List<TradingRecord> records = new ArrayList<>();
@@ -113,7 +116,7 @@ public class TradingSummaryService {
     /**
      * Obtains the next date for the given {@link TradingSummaryInterval}
      *
-     * @param compare {@link LocalDateTime}
+     * @param compare  {@link LocalDateTime}
      * @param interval {@link TradingSummaryInterval}
      * @return offset {@link LocalDateTime}
      */
@@ -129,5 +132,40 @@ public class TradingSummaryService {
         }
 
         return result;
+    }
+
+    /**
+     * Computes the earliest trade time based on the given time interval
+     *
+     * @param test     {@link LocalDateTime}
+     * @param trades   {@link List} of {@link Trade}
+     * @param interval {@link TradingSummaryInterval}
+     * @return {@link LocalDateTime}
+     */
+    private LocalDateTime computeEarliestTradeTime(final LocalDateTime test, final List<Trade> trades, final TradingSummaryInterval interval) {
+        return switch (interval) {
+            case DAILY, WEEKLY, MONTHLY ->
+                    (test.isAfter(trades.get(0).getTradeOpenTime()) ? test : trades.get(0).getTradeOpenTime()).with(TemporalAdjusters.firstDayOfMonth()).with(LocalTime.MIN);
+            case YEARLY ->
+                    (test.isAfter(trades.get(0).getTradeOpenTime()) ? test : trades.get(0).getTradeOpenTime()).with(TemporalAdjusters.firstDayOfYear()).with(LocalTime.MIN);
+        };
+    }
+
+    /**
+     * Computes the most recent trade time based on the given time interval
+     *
+     * @param test     {@link LocalDateTime}
+     * @param trades   {@link List} of {@link Trade}
+     * @param interval {@link TradingSummaryInterval}
+     * @return {@link LocalDateTime}
+     */
+    private LocalDateTime computeMostRecentTradeTime(final LocalDateTime test, final List<Trade> trades, final TradingSummaryInterval interval) {
+        return
+                switch (interval) {
+                    case DAILY, WEEKLY, MONTHLY ->
+                            (test.isBefore(trades.get(trades.size() - 1).getTradeOpenTime()) ? test : trades.get(trades.size() - 1).getTradeOpenTime()).plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).with(LocalTime.MIN);
+                    case YEARLY ->
+                            (test.isBefore(trades.get(trades.size() - 1).getTradeOpenTime()) ? test : trades.get(trades.size() - 1).getTradeOpenTime()).plusYears(1).with(TemporalAdjusters.firstDayOfYear()).with(LocalTime.MIN);
+                };
     }
 }

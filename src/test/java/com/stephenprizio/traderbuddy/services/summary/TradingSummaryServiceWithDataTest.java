@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 @DataJpaTest
 @RunWith(SpringRunner.class)
-public class TradeSummaryServiceWithDataTest extends AbstractGenericTest {
+public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
 
     private static final LocalDateTime TEST_DAY1 = LocalDate.of(2022, 8, 24).atStartOfDay();
     private static final LocalDateTime TEST_DAY2 = LocalDate.of(2022, 9, 28).atStartOfDay();

@@ -17,7 +17,7 @@ import java.time.temporal.ChronoField;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record TradingRecord(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus) {
+public record TradingRecord(LocalDateTime date, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus, Boolean show) {
 
     /**
      * Determines whether this record is empty
@@ -25,6 +25,10 @@ public record TradingRecord(LocalDateTime date, Double target, Integer numberOfT
      * @return true if weekend or no trades taken
      */
     public Boolean isEmpty() {
+        if (Boolean.TRUE.equals(this.show)) {
+            return false;
+        }
+
         return isWeekend() || this.numberOfTrades == 0;
     }
 
@@ -34,6 +38,10 @@ public record TradingRecord(LocalDateTime date, Double target, Integer numberOfT
      * @return true if weekend entry
      */
     public Boolean isWeekend() {
+        if (Boolean.TRUE.equals(this.show)) {
+            return false;
+        }
+
         return this.date.get(ChronoField.DAY_OF_WEEK) > 5;
     }
 }
