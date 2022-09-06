@@ -29,7 +29,7 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 @RequestMapping("${base.api.controller.endpoint}/goals")
 public class GoalApiController {
 
-    private static final List<String> REQUIRED_JSON_VALUES = List.of("status", "active", "name", "startDate", "endDate", "profitTarget");
+    private static final List<String> REQUIRED_JSON_VALUES = List.of("status", "active", "name", "startDate", "endDate", "profitTarget", "compoundFrequency", "startingBalance");
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Resource(name = "goalDTOConverter")

@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.models.dto.goals;
 
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
@@ -39,6 +40,14 @@ public class GoalDTO implements GenericDTO {
     @Getter
     @Setter
     private GoalStatus status;
+
+    @Getter
+    @Setter
+    private CompoundFrequency compoundFrequency;
+
+    @Getter
+    @Setter
+    private Double startingBalance;
 
 
     //  METHODS

@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.services.goals;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityCreationException;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationException;
@@ -40,6 +41,7 @@ public class GoalServiceTest extends AbstractGenericTest {
     private static final LocalDate TEST_START = LocalDate.of(2022, 1, 1);
     private static final LocalDate TEST_END = LocalDate.of(2025, 1, 1);
     private static final Double TEST_PROFIT = 528491.0;
+    private static final CompoundFrequency TEST_FREQUENCY = CompoundFrequency.DAILY;
 
     private final Goal TEST_GOAL_ACTIVE = generateTestGoal();
 
@@ -139,8 +141,9 @@ public class GoalServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_createGoal_erroneousCreation() {
+        Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
-                .isThrownBy(() -> this.goalService.createGoal(Map.of("bad", "input")))
+                .isThrownBy(() -> this.goalService.createGoal(map))
                 .withMessage("A Goal entity could not be created : Cannot invoke \"Object.toString()\" because the return value of \"java.util.Map.get(Object)\" is null");
     }
 
@@ -154,7 +157,9 @@ public class GoalServiceTest extends AbstractGenericTest {
                         "name", TEST_NAME,
                         "startDate", TEST_START,
                         "endDate", TEST_END,
-                        "profitTarget", TEST_PROFIT
+                        "profitTarget", TEST_PROFIT,
+                        "compoundFrequency", TEST_FREQUENCY,
+                        "startingBalance", 1000.0
                 );
 
         assertThat(this.goalService.createGoal(data))
@@ -175,8 +180,9 @@ public class GoalServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_updateGoal_erroneousModification() {
+        Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityModificationException.class)
-                .isThrownBy(() -> this.goalService.updateGoal(TEST_NAME, TEST_START, TEST_END, Map.of("bad", "input")))
+                .isThrownBy(() -> this.goalService.updateGoal(TEST_NAME, TEST_START, TEST_END, map))
                 .withMessage("An error occurred while modifying the Goal : Cannot invoke \"Object.toString()\" because the return value of \"java.util.Map.get(Object)\" is null");
     }
 
@@ -190,12 +196,14 @@ public class GoalServiceTest extends AbstractGenericTest {
                         "name", "updated name",
                         "startDate", LocalDate.of(2024, 2 ,2),
                         "endDate", LocalDate.of(2025, 3, 3),
-                        "profitTarget", 123.0
+                        "profitTarget", 123.0,
+                        "compoundFrequency", CompoundFrequency.MONTHLY,
+                        "startingBalance", 1500.0
                 );
 
         assertThat(this.goalService.updateGoal(TEST_NAME, TEST_START, TEST_END, data))
                 .isNotNull()
-                .extracting("status", "name", "startDate", "endDate", "profitTarget")
-                .containsExactly(GoalStatus.COMPLETED, "updated name", LocalDate.of(2024, 2, 2), LocalDate.of(2025, 3, 3), 123.0);
+                .extracting("status", "name", "startDate", "endDate", "profitTarget", "compoundFrequency", "startingBalance")
+                .containsExactly(GoalStatus.COMPLETED, "updated name", LocalDate.of(2024, 2, 2), LocalDate.of(2025, 3, 3), 123.0, CompoundFrequency.MONTHLY, 1500.0);
     }
 }

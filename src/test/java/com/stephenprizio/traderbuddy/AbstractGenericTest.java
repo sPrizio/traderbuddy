@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy;
 
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
@@ -108,6 +109,8 @@ public abstract class AbstractGenericTest {
         goal.setEndDate(LocalDate.of(2025, 1, 1));
         goal.setProfitTarget(528491.0);
         goal.setStatus(GoalStatus.IN_PROGRESS);
+        goal.setCompoundFrequency(CompoundFrequency.DAILY);
+        goal.setStartingBalance(1000.0);
 
         return goal;
     }

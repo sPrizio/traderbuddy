@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.services.goals;
 
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityCreationException;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationException;
@@ -94,7 +95,7 @@ public class GoalService {
             Goal goal = this.goalRepository.save(applyChanges(new Goal(), data));
 
             //  set all other goals as inactive
-            if (goal.getActive()) {
+            if (Boolean.TRUE.equals(goal.getActive())) {
                 this.goalRepository.resetGoals();
             }
 
@@ -138,12 +139,15 @@ public class GoalService {
      * @return {@link Goal}
      */
     private Goal applyChanges(final Goal goal, Map<String, Object> data) {
+
         goal.setStatus(GoalStatus.valueOf(data.get("status").toString().toUpperCase()));
         goal.setActive(Boolean.parseBoolean(data.get("active").toString()));
         goal.setName(data.get("name").toString());
         goal.setStartDate(LocalDate.parse(data.get("startDate").toString(), DateTimeFormatter.ISO_DATE));
         goal.setEndDate(LocalDate.parse(data.get("endDate").toString(), DateTimeFormatter.ISO_DATE));
         goal.setProfitTarget(BigDecimal.valueOf(Double.parseDouble(data.get("profitTarget").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+        goal.setCompoundFrequency(CompoundFrequency.valueOf(data.get("compoundFrequency").toString()));
+        goal.setStartingBalance(BigDecimal.valueOf(Double.parseDouble(data.get("startingBalance").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
 
         return this.goalRepository.save(goal);
     }

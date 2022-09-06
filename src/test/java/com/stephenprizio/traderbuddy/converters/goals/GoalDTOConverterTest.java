@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.converters.goals;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.models.dto.goals.GoalDTO;
 import org.junit.Test;
@@ -32,14 +33,16 @@ public class GoalDTOConverterTest extends AbstractGenericTest {
     public void test_convert_success() {
         assertThat(this.goalDTOConverter.convert(generateTestGoal()))
                 .isNotNull()
-                .extracting("active", "name", "startDate", "endDate", "profitTarget", "status")
+                .extracting("active", "name", "startDate", "endDate", "profitTarget", "status", "compoundFrequency", "startingBalance")
                 .containsExactly(
                         true,
                         "Test Goal Active",
                         LocalDate.of(2022, 1, 1),
                         LocalDate.of(2025, 1, 1),
                         528491.0,
-                        GoalStatus.IN_PROGRESS
+                        GoalStatus.IN_PROGRESS,
+                        CompoundFrequency.DAILY,
+                        1000.0
                 );
 
     }
@@ -49,14 +52,16 @@ public class GoalDTOConverterTest extends AbstractGenericTest {
         assertThat(this.goalDTOConverter.convertAll(List.of(generateTestGoal())))
                 .isNotEmpty()
                 .first()
-                .extracting("active", "name", "startDate", "endDate", "profitTarget", "status")
+                .extracting("active", "name", "startDate", "endDate", "profitTarget", "status", "compoundFrequency", "startingBalance")
                 .containsExactly(
                         true,
                         "Test Goal Active",
                         LocalDate.of(2022, 1, 1),
                         LocalDate.of(2025, 1, 1),
                         528491.0,
-                        GoalStatus.IN_PROGRESS
+                        GoalStatus.IN_PROGRESS,
+                        CompoundFrequency.DAILY,
+                        1000.0
                 );
     }
 }

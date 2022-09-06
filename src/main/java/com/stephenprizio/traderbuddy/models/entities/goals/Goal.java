@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.models.entities.goals;
 
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
@@ -54,4 +55,14 @@ public class Goal {
     @Setter
     @Column
     private GoalStatus status;
+
+    @Getter
+    @Setter
+    @Column
+    private CompoundFrequency compoundFrequency;
+
+    @Getter
+    @Setter
+    @Column
+    private Double startingBalance;
 }

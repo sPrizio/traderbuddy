@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.controllers.goals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
 import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
 import com.stephenprizio.traderbuddy.services.goals.GoalService;
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,7 +100,7 @@ public class GoalApiControllerTest extends AbstractGenericTest {
     public void test_postCreateGoal_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/goals/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget]")));
+                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget, compoundFrequency, startingBalance]")));
     }
 
     @Test
@@ -113,7 +113,9 @@ public class GoalApiControllerTest extends AbstractGenericTest {
                         "name", "updated name",
                         "startDate", "2024-02-02",
                         "endDate", "2024-02-02",
-                        "profitTarget", 123.0
+                        "profitTarget", 123.0,
+                        "compoundFrequency", CompoundFrequency.DAILY,
+                        "startingBalance", 1000.0
                 );
 
         this.mockMvc.perform(post("/api/v1/goals/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
@@ -135,7 +137,7 @@ public class GoalApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/goals/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget]")));
+                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget, compoundFrequency, startingBalance]")));
     }
 
     @Test
@@ -153,7 +155,9 @@ public class GoalApiControllerTest extends AbstractGenericTest {
                         "name", "updated name",
                         "startDate", "2024-02-02",
                         "endDate", "2024-02-02",
-                        "profitTarget", 123.0
+                        "profitTarget", 123.0,
+                        "compoundFrequency", CompoundFrequency.DAILY,
+                        "startingBalance", 1000.0
                 );
 
         this.mockMvc.perform(put("/api/v1/goals/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
@@ -176,7 +180,9 @@ public class GoalApiControllerTest extends AbstractGenericTest {
                         "name", "updated name",
                         "startDate", "2024-02-02",
                         "endDate", "2024-02-02",
-                        "profitTarget", 123.0
+                        "profitTarget", 123.0,
+                        "compoundFrequency", CompoundFrequency.DAILY,
+                        "startingBalance", 1000.0
                 );
 
         this.mockMvc.perform(put("/api/v1/goals/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
@@ -199,7 +205,9 @@ public class GoalApiControllerTest extends AbstractGenericTest {
                         "name", "updated name",
                         "startDate", "2024-02-02",
                         "endDate", "2024-02-02",
-                        "profitTarget", 123.0
+                        "profitTarget", 123.0,
+                        "compoundFrequency", CompoundFrequency.DAILY,
+                        "startingBalance", 1000.0
                 );
 
         this.mockMvc.perform(put("/api/v1/goals/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))

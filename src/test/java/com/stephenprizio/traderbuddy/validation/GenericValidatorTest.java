@@ -1,5 +1,7 @@
 package com.stephenprizio.traderbuddy.validation;
 
+import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedNegativeValueException;
+import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedZeroValueException;
 import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.exceptions.validation.JsonMissingPropertyException;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -27,12 +30,18 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 public class GenericValidatorTest {
 
+
+    //  ----------------- validateParameterIsNotNull -----------------
+
     @Test
     public void test_validateParameterIsNotNull_success() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> GenericValidator.validateParameterIsNotNull(null, "This is a null test"))
                 .withMessage("This is a null test");
     }
+
+
+    //  ----------------- validateIfSingleResult -----------------
 
     @Test
     public void test_validateIfSingleResult_success() {
@@ -42,6 +51,9 @@ public class GenericValidatorTest {
                 .withMessage("This is a single test");
     }
 
+
+    //  ----------------- validateIfAnyResult -----------------
+
     @Test
     public void test_validateIfAnyResult_success() {
         List<Object> list = List.of();
@@ -49,6 +61,9 @@ public class GenericValidatorTest {
                 .isThrownBy(() -> GenericValidator.validateIfAnyResult(list, "This is an empty collection test"))
                 .withMessage("This is an empty collection test");
     }
+
+
+    //  ----------------- validateDatesAreNotMutuallyExclusive -----------------
 
     @Test
     public void test_validateDatesAreNotMutuallyExclusive_success() {
@@ -60,12 +75,18 @@ public class GenericValidatorTest {
                 .withMessage("This is a two bad dates test");
     }
 
+
+    //  ----------------- validateLocalDateTimeFormat -----------------
+
     @Test
     public void test_validateLocalDateTimeFormat_success() {
         assertThatExceptionOfType(DateTimeException.class)
                 .isThrownBy(() -> GenericValidator.validateLocalDateTimeFormat("1/1/1999", "yyyy-MM-dd'T'HH:mm:ss", "This is a bad date & time test"))
                 .withMessage("This is a bad date & time test");
     }
+
+
+    //  ----------------- validateLocalDateFormat -----------------
 
     @Test
     public void test_validateLocalDateFormat_success() {
@@ -74,6 +95,9 @@ public class GenericValidatorTest {
                 .withMessage("This is a bad date test");
     }
 
+
+    //  ----------------- validateIfPresent -----------------
+
     @Test
     public void test_validateIfPresent_success() {
         Optional<Integer> optional = Optional.empty();
@@ -81,6 +105,9 @@ public class GenericValidatorTest {
                 .isThrownBy(() -> GenericValidator.validateIfPresent(optional, "This is an empty optional test"))
                 .withMessage("This is an empty optional test");
     }
+
+
+    //  ----------------- validateJsonIntegrity -----------------
 
     @Test
     public void test_validateJsonIntegrity_success() {
@@ -91,6 +118,9 @@ public class GenericValidatorTest {
                 .isThrownBy(() -> GenericValidator.validateJsonIntegrity(map, list, "This is an empty json test"))
                 .withMessage("This is an empty json test");
     }
+
+
+    //  ----------------- validateImportFileExtension -----------------
 
     @Test
     public void test_validateImportFileExtension_multipart_success() {
@@ -108,5 +138,59 @@ public class GenericValidatorTest {
                 .isThrownBy(() -> GenericValidator.validateImportFileExtension(file, "csv", "This is an empty file test"))
                 .withMessage("This is an empty file test");
         file.delete();
+    }
+
+
+    //  ----------------- validateNonNegativeValue -----------------
+
+    @Test
+    public void test_validateNonNegativeValue_success() {
+        assertThatExceptionOfType(UnexpectedNegativeValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonNegativeValue(-1, "This is an empty number int"))
+                .withMessage("This is an empty number int");
+
+        assertThatExceptionOfType(UnexpectedNegativeValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonNegativeValue(-1L, "This is an empty number long"))
+                .withMessage("This is an empty number long");
+
+        assertThatExceptionOfType(UnexpectedNegativeValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonNegativeValue(-1.0F, "This is an empty number float"))
+                .withMessage("This is an empty number float");
+
+        assertThatExceptionOfType(UnexpectedNegativeValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonNegativeValue(-1.0, "This is an empty number double"))
+                .withMessage("This is an empty number double");
+
+        AtomicInteger integer = new AtomicInteger(5);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> GenericValidator.validateNonNegativeValue(integer, "Called validateNonNegativeValue() with an unsupported numerical type. Supported types are: [Integer, Long, Float, Double]"))
+                .withMessageContaining("[Integer, Long, Float, Double]");
+    }
+
+
+    //  ----------------- validateNonZeroValue -----------------
+
+    @Test
+    public void test_validateNonZeroValue_success() {
+        assertThatExceptionOfType(UnexpectedZeroValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonZeroValue(0, "This is a zero number int"))
+                .withMessage("This is a zero number int");
+
+        assertThatExceptionOfType(UnexpectedZeroValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonZeroValue(0L, "This is a zero number long"))
+                .withMessage("This is a zero number long");
+
+        assertThatExceptionOfType(UnexpectedZeroValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonZeroValue(0.0F, "This is a zero number float"))
+                .withMessage("This is a zero number float");
+
+        assertThatExceptionOfType(UnexpectedZeroValueException.class)
+                .isThrownBy(() -> GenericValidator.validateNonZeroValue(0.0, "This is a zero number double"))
+                .withMessage("This is a zero number double");
+
+        AtomicInteger integer = new AtomicInteger(5);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> GenericValidator.validateNonZeroValue(integer, "Called validateNonZeroValue() with an unsupported numerical type. Supported types are: [Integer, Long, Float, Double]"))
+                .withMessageContaining("[Integer, Long, Float, Double]");
     }
 }

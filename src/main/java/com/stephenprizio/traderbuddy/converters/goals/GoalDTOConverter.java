@@ -34,6 +34,8 @@ public class GoalDTOConverter implements GenericDTOConverter<Goal, GoalDTO> {
         goalDTO.setEndDate(entity.getEndDate());
         goalDTO.setProfitTarget(entity.getProfitTarget());
         goalDTO.setStatus(entity.getStatus());
+        goalDTO.setCompoundFrequency(entity.getCompoundFrequency());
+        goalDTO.setStartingBalance(entity.getStartingBalance());
 
         return goalDTO;
     }
