@@ -1,21 +1,21 @@
-package com.stephenprizio.traderbuddy.models.dto.goals;
+package com.stephenprizio.traderbuddy.models.dto.plans;
 
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
-import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
+import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
-import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
+import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 /**
- * A DTO representation of a {@link Goal}
+ * A DTO representation of a {@link TradingPlan}
  *
  * @author Stephen Prizio
  * @version 1.0
  */
-public class GoalDTO implements GenericDTO {
+public class TradingPlanDTO implements GenericDTO {
 
     @Getter
     @Setter
@@ -39,7 +39,7 @@ public class GoalDTO implements GenericDTO {
 
     @Getter
     @Setter
-    private GoalStatus status;
+    private TradingPlanStatus status;
 
     @Getter
     @Setter

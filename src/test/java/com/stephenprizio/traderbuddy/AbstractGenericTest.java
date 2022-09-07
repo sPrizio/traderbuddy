@@ -1,10 +1,10 @@
 package com.stephenprizio.traderbuddy;
 
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
-import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
+import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
-import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
+import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
@@ -100,31 +100,31 @@ public abstract class AbstractGenericTest {
         return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11, true)), null);
     }
 
-    public Goal generateTestGoal() {
-        Goal goal = new Goal();
+    public TradingPlan generateTestTradingPlan() {
+        TradingPlan tradingPlan = new TradingPlan();
 
-        goal.setActive(true);
-        goal.setName("Test Goal Active");
-        goal.setStartDate(LocalDate.of(2022, 1, 1));
-        goal.setEndDate(LocalDate.of(2025, 1, 1));
-        goal.setProfitTarget(528491.0);
-        goal.setStatus(GoalStatus.IN_PROGRESS);
-        goal.setCompoundFrequency(CompoundFrequency.DAILY);
-        goal.setStartingBalance(1000.0);
+        tradingPlan.setActive(true);
+        tradingPlan.setName("Test Trading Plan Active");
+        tradingPlan.setStartDate(LocalDate.of(2022, 1, 1));
+        tradingPlan.setEndDate(LocalDate.of(2025, 1, 1));
+        tradingPlan.setProfitTarget(528491.0);
+        tradingPlan.setStatus(TradingPlanStatus.IN_PROGRESS);
+        tradingPlan.setCompoundFrequency(CompoundFrequency.DAILY);
+        tradingPlan.setStartingBalance(1000.0);
 
-        return goal;
+        return tradingPlan;
     }
 
-    public Goal generateInactiveTestGoal() {
-        Goal goal = new Goal();
+    public TradingPlan generateInactiveTestTradingPlan() {
+        TradingPlan tradingPlan = new TradingPlan();
 
-        goal.setActive(false);
-        goal.setName("Test Goal Inactive");
-        goal.setStartDate(LocalDate.of(2023, 1, 1));
-        goal.setEndDate(LocalDate.of(2025, 1, 1));
-        goal.setProfitTarget(12345.0);
-        goal.setStatus(GoalStatus.NOT_STARTED);
+        tradingPlan.setActive(false);
+        tradingPlan.setName("Test Trading Plan Inactive");
+        tradingPlan.setStartDate(LocalDate.of(2023, 1, 1));
+        tradingPlan.setEndDate(LocalDate.of(2025, 1, 1));
+        tradingPlan.setProfitTarget(12345.0);
+        tradingPlan.setStatus(TradingPlanStatus.NOT_STARTED);
 
-        return goal;
+        return tradingPlan;
     }
 }

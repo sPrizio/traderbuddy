@@ -1,7 +1,7 @@
-package com.stephenprizio.traderbuddy.models.entities.goals;
+package com.stephenprizio.traderbuddy.models.entities.plans;
 
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
-import com.stephenprizio.traderbuddy.enums.goals.GoalStatus;
+import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import lombok.Getter;
@@ -11,15 +11,14 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 /**
- * Class representation of a target/goal. In this system a Goal is the end result of a trading plan. A {@link Goal} will be used
- * to assess the effectiveness of individual {@link Trade}s as part of a {@link TradingRecord}
+ * Class representation of a trading plan. A {@link TradingPlan} will be used to assess the effectiveness of individual {@link Trade}s as part of a {@link TradingRecord}
  *
  * @author Stephen Prizio
  * @version 1.0
  */
 @Entity
-@Table(name = "goals", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndStartDateAndEndDate", columnNames = {"name", "start_date", "end_date"}))
-public class Goal {
+@Table(name = "trading_plans", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndStartDateAndEndDate", columnNames = {"name", "start_date", "end_date"}))
+public class TradingPlan {
 
     @Id
     @Getter
@@ -54,7 +53,7 @@ public class Goal {
     @Getter
     @Setter
     @Column
-    private GoalStatus status;
+    private TradingPlanStatus status;
 
     @Getter
     @Setter

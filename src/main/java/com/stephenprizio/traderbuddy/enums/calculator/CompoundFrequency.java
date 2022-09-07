@@ -1,11 +1,11 @@
 package com.stephenprizio.traderbuddy.enums.calculator;
 
-import com.stephenprizio.traderbuddy.models.entities.goals.Goal;
+import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.services.calculator.CompoundInterestCalculator;
 import lombok.Getter;
 
 /**
- * Eum representing the compound frequency for a {@link Goal}
+ * Eum representing the compound frequency for a {@link TradingPlan}
  *
  * @author Stephen Prizio
  * @version 1.0
