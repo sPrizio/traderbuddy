@@ -121,7 +121,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(post("/api/v1/trading-plans/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.profitTarget", is(528491.0)))
-                .andExpect(jsonPath("$.data.name", is("Test TradingPlan Active")));
+                .andExpect(jsonPath("$.data.name", is("Test Trading Plan Active")));
     }
 
 

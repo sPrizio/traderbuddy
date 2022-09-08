@@ -78,7 +78,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
     public void test_findTradingPlansForStatus_missingParamStatus() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradingPlanService.findTradingPlansForStatus(null))
-                .withMessage("trading plan status cannot be null");
+                .withMessage("tradingPlan status cannot be null");
     }
 
     @Test

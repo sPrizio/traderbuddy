@@ -4,7 +4,11 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.dto.plans.DepositPlanDTO;
+import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
+import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
@@ -100,6 +104,42 @@ public abstract class AbstractGenericTest {
         return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11, true)), null);
     }
 
+    public DepositPlan generateDepositPlan() {
+        DepositPlan depositPlan = new DepositPlan();
+
+        depositPlan.setAmount(350.0);
+        depositPlan.setFrequency(CompoundFrequency.MONTHLY);
+
+        return depositPlan;
+    }
+
+    public WithdrawalPlan generateWithdrawalPlan() {
+        WithdrawalPlan withdrawalPlan = new WithdrawalPlan();
+
+        withdrawalPlan.setAmount(120.0);
+        withdrawalPlan.setFrequency(CompoundFrequency.MONTHLY);
+
+        return withdrawalPlan;
+    }
+
+    public DepositPlanDTO generateDepositPlanDTO() {
+        DepositPlanDTO depositPlan = new DepositPlanDTO();
+
+        depositPlan.setAmount(350.0);
+        depositPlan.setFrequency(CompoundFrequency.MONTHLY);
+
+        return depositPlan;
+    }
+
+    public WithdrawalPlanDTO generateWithdrawalPlanDTO() {
+        WithdrawalPlanDTO withdrawalPlan = new WithdrawalPlanDTO();
+
+        withdrawalPlan.setAmount(120.0);
+        withdrawalPlan.setFrequency(CompoundFrequency.MONTHLY);
+
+        return withdrawalPlan;
+    }
+
     public TradingPlan generateTestTradingPlan() {
         TradingPlan tradingPlan = new TradingPlan();
 
@@ -111,6 +151,8 @@ public abstract class AbstractGenericTest {
         tradingPlan.setStatus(TradingPlanStatus.IN_PROGRESS);
         tradingPlan.setCompoundFrequency(CompoundFrequency.DAILY);
         tradingPlan.setStartingBalance(1000.0);
+        tradingPlan.setDepositPlan(generateDepositPlan());
+        tradingPlan.setWithdrawalPlan(generateWithdrawalPlan());
 
         return tradingPlan;
     }
@@ -124,6 +166,8 @@ public abstract class AbstractGenericTest {
         tradingPlan.setEndDate(LocalDate.of(2025, 1, 1));
         tradingPlan.setProfitTarget(12345.0);
         tradingPlan.setStatus(TradingPlanStatus.NOT_STARTED);
+        tradingPlan.setDepositPlan(generateDepositPlan());
+        tradingPlan.setWithdrawalPlan(generateWithdrawalPlan());
 
         return tradingPlan;
     }

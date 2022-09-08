@@ -2,7 +2,9 @@ package com.stephenprizio.traderbuddy.repositories.plans;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
+import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +30,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TradingPlanRepositoryTest extends AbstractGenericTest {
 
+    private final DepositPlan TEST_DEPOSIT_PLAN = generateDepositPlan();
+    private final WithdrawalPlan TEST_WITHDRAWAL_PLAN = generateWithdrawalPlan();
     private final TradingPlan TEST_TRADING_PLAN_ACTIVE = generateTestTradingPlan();
-    private final TradingPlan TEST_TRADING_INACTIVE = generateInactiveTestTradingPlan();
+    private final TradingPlan TEST_TRADING_PLAN_INACTIVE = generateInactiveTestTradingPlan();
 
     @Autowired
     private TestEntityManager entityManager;
@@ -39,8 +43,18 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
+        this.entityManager.persist(TEST_DEPOSIT_PLAN);
+        this.entityManager.persist(TEST_WITHDRAWAL_PLAN);
+        this.entityManager.flush();
+
+        TEST_TRADING_PLAN_ACTIVE.setDepositPlan(TEST_DEPOSIT_PLAN);
+        TEST_TRADING_PLAN_ACTIVE.setWithdrawalPlan(TEST_WITHDRAWAL_PLAN);
+
+        TEST_TRADING_PLAN_INACTIVE.setDepositPlan(TEST_DEPOSIT_PLAN);
+        TEST_TRADING_PLAN_INACTIVE.setWithdrawalPlan(TEST_WITHDRAWAL_PLAN);
+
         this.entityManager.persist(TEST_TRADING_PLAN_ACTIVE);
-        this.entityManager.persist(TEST_TRADING_INACTIVE);
+        this.entityManager.persist(TEST_TRADING_PLAN_INACTIVE);
         this.entityManager.flush();
     }
 
@@ -51,8 +65,8 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
     public void test_findTradingPlanByActiveIsTrue_success() {
         assertThat(this.tradingPlanRepository.findTradingPlanByActiveIsTrue())
                 .hasSize(1)
-                .extracting("profitTarget", "name")
-                .containsExactly(Tuple.tuple(528491.0, "Test Trading Plan Active"));
+                .extracting("profitTarget", "name", "depositPlan.amount")
+                .containsExactly(Tuple.tuple(528491.0, "Test Trading Plan Active", generateDepositPlan().getAmount()));
     }
 
 

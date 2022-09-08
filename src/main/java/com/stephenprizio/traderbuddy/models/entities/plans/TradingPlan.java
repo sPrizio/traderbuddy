@@ -67,13 +67,11 @@ public class TradingPlan {
 
     @Getter
     @Setter
-    @Column
     @OneToOne
     private DepositPlan depositPlan;
 
     @Getter
     @Setter
-    @Column
     @OneToOne
     private WithdrawalPlan withdrawalPlan;
 }
