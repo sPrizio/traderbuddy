@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.services.calculator;
 
+import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.models.records.calculator.CompoundedInterestRecord;
 import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class CompoundInterestCalculator {
     /**
      * Computes a compounding interest schedule
      *
-     * @param start starting date {@link LocalDate}
+     * @param start       starting date {@link LocalDate}
      * @param financeInfo {@link FinancingInfoRecord}
      * @return {@link List} of {@link CompoundedInterestRecord}s
      */
@@ -42,7 +43,7 @@ public class CompoundInterestCalculator {
         LocalDate compare = start.with(TemporalAdjusters.firstDayOfMonth()).plusMonths(1);
         LocalDate end = start.plusMonths((financeInfo.period() + 1)).with(TemporalAdjusters.firstDayOfMonth()).minusDays(1);
 
-        BigDecimal accruedInterest  = BigDecimal.ZERO;
+        BigDecimal accruedInterest = BigDecimal.ZERO;
         BigDecimal balance = BigDecimal.valueOf(financeInfo.principal());
 
         List<CompoundedInterestRecord> records = new ArrayList<>();
@@ -80,7 +81,7 @@ public class CompoundInterestCalculator {
         final BigDecimal n = BigDecimal.valueOf(financeInfo.compoundFrequency().getFrequency());
         final BigDecimal t = BigDecimal.valueOf(financeInfo.period()).divide(BigDecimal.valueOf(12.0), 10, RoundingMode.HALF_EVEN);
 
-        final double result = Math.pow(BigDecimal.ONE.add(r.divide(n, 15, RoundingMode.HALF_EVEN)).setScale(10, RoundingMode.HALF_EVEN).doubleValue(), n.multiply(t).setScale(10, RoundingMode.HALF_EVEN).doubleValue());
+        final double result = Math.pow(BigDecimal.ONE.add(r).setScale(10, RoundingMode.HALF_EVEN).doubleValue(), Double.valueOf(financeInfo.period()));
         return BigDecimal.valueOf(result).multiply(p);
     }
 
@@ -91,7 +92,7 @@ public class CompoundInterestCalculator {
      * @return interest gain expressed as a {@link BigDecimal}
      */
     public BigDecimal computeInterest(final FinancingInfoRecord financeInfo) {
-        return computeTotal(new FinancingInfoRecord(financeInfo.principal(), financeInfo.interestRate(), financeInfo.compoundFrequency(), financeInfo.period())).subtract(BigDecimal.valueOf(financeInfo.principal()));
+        return computeTotal(financeInfo).subtract(BigDecimal.valueOf(financeInfo.principal()));
     }
 
     /**
