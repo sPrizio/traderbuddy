@@ -144,7 +144,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
                 .isThrownBy(() -> this.tradingPlanService.createTradingPlan(map))
-                .withMessage("A TradingPlan entity could not be created : Cannot invoke \"Object.toString()\" because the return value of \"java.util.Map.get(Object)\" is null");
+                .withMessage("A TradingPlan entity could not be created : Cannot invoke \"java.util.Map.get(Object)\" because \"plan\" is null");
     }
 
     @Test
@@ -152,20 +152,33 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
 
         Map<String, Object> data =
                 Map.of(
-                        "status", TradingPlanStatus.IN_PROGRESS,
-                        "active", true,
-                        "name", TEST_NAME,
-                        "startDate", TEST_START,
-                        "endDate", TEST_END,
-                        "profitTarget", TEST_PROFIT,
-                        "compoundFrequency", TEST_FREQUENCY,
-                        "startingBalance", 1000.0
+                        "plan",
+                        Map.of(
+                                "status", TradingPlanStatus.IN_PROGRESS,
+                                "active", true,
+                                "name", TEST_NAME,
+                                "startDate", TEST_START,
+                                "endDate", TEST_END,
+                                "profitTarget", TEST_PROFIT,
+                                "compoundFrequency", TEST_FREQUENCY,
+                                "startingBalance", 1000.0
+                        ),
+                        "depositPlan",
+                        Map.of(
+                                "amount", 350.00,
+                                "frequency", CompoundFrequency.MONTHLY
+                        ),
+                        "withdrawalPlan",
+                        Map.of(
+                                "amount", 350.00,
+                                "frequency", CompoundFrequency.MONTHLY
+                        )
                 );
 
         assertThat(this.tradingPlanService.createTradingPlan(data))
                 .isNotNull()
-                .extracting("profitTarget", "name")
-                .containsExactly(TEST_PROFIT, TEST_NAME);
+                .extracting("profitTarget", "name", "depositPlan.amount", "withdrawalPlan.amount")
+                .containsExactly(TEST_PROFIT, TEST_NAME, 350.0, 120.0);
     }
 
 
@@ -183,7 +196,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityModificationException.class)
                 .isThrownBy(() -> this.tradingPlanService.updateTradingPlan(TEST_NAME, TEST_START, TEST_END, map))
-                .withMessage("An error occurred while modifying the TradingPlan : Cannot invoke \"Object.toString()\" because the return value of \"java.util.Map.get(Object)\" is null");
+                .withMessage("An error occurred while modifying the TradingPlan : Cannot invoke \"java.util.Map.get(Object)\" because \"plan\" is null");
     }
 
     @Test
@@ -191,19 +204,32 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
 
         Map<String, Object> data =
                 Map.of(
-                        "status", TradingPlanStatus.COMPLETED,
-                        "active", true,
-                        "name", "updated name",
-                        "startDate", LocalDate.of(2024, 2 ,2),
-                        "endDate", LocalDate.of(2025, 3, 3),
-                        "profitTarget", 123.0,
-                        "compoundFrequency", CompoundFrequency.MONTHLY,
-                        "startingBalance", 1500.0
+                        "plan",
+                        Map.of(
+                                "status", TradingPlanStatus.COMPLETED,
+                                "active", true,
+                                "name", "updated name",
+                                "startDate", LocalDate.of(2024, 2 ,2),
+                                "endDate", LocalDate.of(2025, 3, 3),
+                                "profitTarget", 123.0,
+                                "compoundFrequency", CompoundFrequency.MONTHLY,
+                                "startingBalance", 1500.0
+                        ),
+                        "depositPlan",
+                        Map.of(
+                                "amount", 400.0,
+                                "frequency", CompoundFrequency.YEARLY
+                        ),
+                        "withdrawalPlan",
+                        Map.of(
+                                "amount", 100.0,
+                                "frequency", CompoundFrequency.YEARLY
+                        )
                 );
 
         assertThat(this.tradingPlanService.updateTradingPlan(TEST_NAME, TEST_START, TEST_END, data))
                 .isNotNull()
-                .extracting("status", "name", "startDate", "endDate", "profitTarget", "compoundFrequency", "startingBalance")
-                .containsExactly(TradingPlanStatus.COMPLETED, "updated name", LocalDate.of(2024, 2, 2), LocalDate.of(2025, 3, 3), 123.0, CompoundFrequency.MONTHLY, 1500.0);
+                .extracting("status", "name", "startDate", "endDate", "profitTarget", "compoundFrequency", "startingBalance", "depositPlan.amount", "withdrawalPlan.amount")
+                .containsExactly(TradingPlanStatus.COMPLETED, "updated name", LocalDate.of(2024, 2, 2), LocalDate.of(2025, 3, 3), 123.0, CompoundFrequency.MONTHLY, 1500.0, 400.0, 100.0);
     }
 }

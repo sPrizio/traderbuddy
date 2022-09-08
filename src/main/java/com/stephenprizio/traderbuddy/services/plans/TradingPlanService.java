@@ -6,8 +6,12 @@ import com.stephenprizio.traderbuddy.exceptions.system.EntityCreationException;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationException;
 import com.stephenprizio.traderbuddy.exceptions.validation.MissingRequiredDataException;
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
+import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
+import com.stephenprizio.traderbuddy.repositories.plans.DepositPlanRepository;
 import com.stephenprizio.traderbuddy.repositories.plans.TradingPlanRepository;
+import com.stephenprizio.traderbuddy.repositories.plans.WithdrawalPlanRepository;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +35,14 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 @Component("tradingPlanService")
 public class TradingPlanService {
 
+    @Resource(name = "depositPlanRepository")
+    private DepositPlanRepository depositPlanRepository;
+
     @Resource(name = "tradingPlanRepository")
     private TradingPlanRepository tradingPlanRepository;
+
+    @Resource(name = "withdrawalPlanRepository")
+    private WithdrawalPlanRepository withdrawalPlanRepository;
 
 
     //  METHODS
@@ -140,14 +150,38 @@ public class TradingPlanService {
      */
     private TradingPlan applyChanges(final TradingPlan tradingPlan, Map<String, Object> data) {
 
-        tradingPlan.setStatus(TradingPlanStatus.valueOf(data.get("status").toString().toUpperCase()));
-        tradingPlan.setActive(Boolean.parseBoolean(data.get("active").toString()));
-        tradingPlan.setName(data.get("name").toString());
-        tradingPlan.setStartDate(LocalDate.parse(data.get("startDate").toString(), DateTimeFormatter.ISO_DATE));
-        tradingPlan.setEndDate(LocalDate.parse(data.get("endDate").toString(), DateTimeFormatter.ISO_DATE));
-        tradingPlan.setProfitTarget(BigDecimal.valueOf(Double.parseDouble(data.get("profitTarget").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
-        tradingPlan.setCompoundFrequency(CompoundFrequency.valueOf(data.get("compoundFrequency").toString()));
-        tradingPlan.setStartingBalance(BigDecimal.valueOf(Double.parseDouble(data.get("startingBalance").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+        Map<String, Object> plan = (Map<String, Object>) data.get("plan");
+
+        tradingPlan.setStatus(TradingPlanStatus.valueOf(plan.get("status").toString().toUpperCase()));
+        tradingPlan.setActive(Boolean.parseBoolean(plan.get("active").toString()));
+        tradingPlan.setName(plan.get("name").toString());
+        tradingPlan.setStartDate(LocalDate.parse(plan.get("startDate").toString(), DateTimeFormatter.ISO_DATE));
+        tradingPlan.setEndDate(LocalDate.parse(plan.get("endDate").toString(), DateTimeFormatter.ISO_DATE));
+        tradingPlan.setProfitTarget(BigDecimal.valueOf(Double.parseDouble(plan.get("profitTarget").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+        tradingPlan.setCompoundFrequency(CompoundFrequency.valueOf(plan.get("compoundFrequency").toString()));
+        tradingPlan.setStartingBalance(BigDecimal.valueOf(Double.parseDouble(plan.get("startingBalance").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+
+        if (data.containsKey("depositPlan")) {
+            DepositPlan depositPlan = new DepositPlan();
+            Map<String, Object> depPlan = (Map<String, Object>) data.get("depositPlan");
+
+            depositPlan.setAmount(BigDecimal.valueOf(Double.parseDouble(depPlan.get("amount").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+            depositPlan.setFrequency(CompoundFrequency.valueOf(depPlan.get("frequency").toString().toUpperCase()));
+
+            depositPlan = this.depositPlanRepository.save(depositPlan);
+            tradingPlan.setDepositPlan(depositPlan);
+        }
+
+        if (data.containsKey("withdrawalPlan")) {
+            WithdrawalPlan withdrawalPlan = new WithdrawalPlan();
+            Map<String, Object> witPlan = (Map<String, Object>) data.get("withdrawalPlan");
+
+            withdrawalPlan.setAmount(BigDecimal.valueOf(Double.parseDouble(witPlan.get("amount").toString())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+            withdrawalPlan.setFrequency(CompoundFrequency.valueOf(witPlan.get("frequency").toString().toUpperCase()));
+
+            withdrawalPlan = this.withdrawalPlanRepository.save(withdrawalPlan);
+            tradingPlan.setWithdrawalPlan(withdrawalPlan);
+        }
 
         return this.tradingPlanRepository.save(tradingPlan);
     }

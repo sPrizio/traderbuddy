@@ -81,24 +81,59 @@ public class TradingPlanApiController {
 
     //  ----------------- POST REQUESTS -----------------
 
+    /**
+     * Creates a new {@link TradingPlan}
+     *
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
     @ResponseBody
     @PostMapping("/create")
     public StandardJsonResponse postCreateTradingPlan(final @RequestBody Map<String, Object> requestBody) {
         validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+        validateAdditionalParameters(requestBody);
         return new StandardJsonResponse(true, this.tradingPlanDTOConverter.convert(this.tradingPlanService.createTradingPlan(requestBody)), StringUtils.EMPTY);
     }
 
 
     //  ----------------- PUT REQUESTS -----------------
 
+    /**
+     * Modifies an existing {@link TradingPlan}
+     *
+     * @param name plan name
+     * @param startDate plan start date
+     * @param endDate plan end date
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
     @ResponseBody
     @PutMapping("/update")
     public StandardJsonResponse putUpdateTradingPlan(final @RequestParam("name") String name, final @RequestParam("startDate") String startDate, final @RequestParam("endDate") String endDate, final @RequestBody Map<String, Object> requestBody) {
 
         validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+        validateAdditionalParameters(requestBody);
         validateLocalDateFormat(startDate, DATE_FORMAT, "The start date %s was not of the expected format %s", startDate, DATE_FORMAT);
         validateLocalDateFormat(endDate, DATE_FORMAT, "The end date %s was not of the expected format %s", endDate, DATE_FORMAT);
 
         return new StandardJsonResponse(true, this.tradingPlanDTOConverter.convert(this.tradingPlanService.updateTradingPlan(name, LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE), LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE), requestBody)), StringUtils.EMPTY);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Validates extra parameters
+     *
+     * @param requestBody json request
+     */
+    private void validateAdditionalParameters(final Map<String, Object> requestBody) {
+        if (requestBody.containsKey("depositPlan")) {
+            validateJsonIntegrity((Map<String, Object>) requestBody.get("depositPlan"), List.of("amount", "frequency"), "json did contain the required keys: [amount, frequency]");
+        }
+
+        if (requestBody.containsKey("withdrawalPlan")) {
+            validateJsonIntegrity((Map<String, Object>) requestBody.get("withdrawalPlan"), List.of("amount", "frequency"), "json did contain the required keys: [amount, frequency]");
+        }
     }
 }
