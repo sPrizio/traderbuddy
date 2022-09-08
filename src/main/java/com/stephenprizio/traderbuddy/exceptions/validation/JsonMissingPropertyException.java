@@ -1,9 +1,9 @@
 package com.stephenprizio.traderbuddy.exceptions.validation;
 
 /**
- * Exception for a missing json propetry
+ * Exception for a missing json property
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public class JsonMissingPropertyException extends RuntimeException {

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 /**
  * Testing class for {@link CompoundInterestCalculator}
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 public class CompoundInterestCalculatorTest {

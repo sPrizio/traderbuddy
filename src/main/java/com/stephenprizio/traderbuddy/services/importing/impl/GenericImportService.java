@@ -13,7 +13,7 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.validate
 /**
  * Generic importing service to handle incoming files, will delegate to specific import services
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @Component("genericImportService")

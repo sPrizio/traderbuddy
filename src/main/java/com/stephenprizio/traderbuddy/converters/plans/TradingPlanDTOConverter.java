@@ -5,6 +5,7 @@ import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -15,6 +16,12 @@ import java.util.List;
  */
 @Component("tradingPlanDTOConverter")
 public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan, TradingPlanDTO> {
+
+    @Resource(name = "depositPlanDTOConverter")
+    private DepositPlanDTOConverter depositPlanDTOConverter;
+
+    @Resource(name = "withdrawalPlanDTOConverter")
+    private WithdrawalPlanDTOConverter withdrawalPlanDTOConverter;
 
 
     //  METHODS
@@ -36,6 +43,8 @@ public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan,
         tradingPlanDTO.setStatus(entity.getStatus());
         tradingPlanDTO.setCompoundFrequency(entity.getCompoundFrequency());
         tradingPlanDTO.setStartingBalance(entity.getStartingBalance());
+        tradingPlanDTO.setDepositPlan(this.depositPlanDTOConverter.convert(entity.getDepositPlan()));
+        tradingPlanDTO.setWithdrawalPlan(this.withdrawalPlanDTOConverter.convert(entity.getWithdrawalPlan()));
 
         return tradingPlanDTO;
     }

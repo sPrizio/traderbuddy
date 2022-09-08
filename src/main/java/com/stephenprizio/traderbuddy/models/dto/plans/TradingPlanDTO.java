@@ -49,6 +49,14 @@ public class TradingPlanDTO implements GenericDTO {
     @Setter
     private Double startingBalance;
 
+    @Getter
+    @Setter
+    private DepositPlanDTO depositPlan;
+
+    @Getter
+    @Setter
+    private WithdrawalPlanDTO withdrawalPlan;
+
 
     //  METHODS
 

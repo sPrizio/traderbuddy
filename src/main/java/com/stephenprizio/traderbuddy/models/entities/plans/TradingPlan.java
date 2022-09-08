@@ -64,4 +64,16 @@ public class TradingPlan {
     @Setter
     @Column
     private Double startingBalance;
+
+    @Getter
+    @Setter
+    @Column
+    @OneToOne
+    private DepositPlan depositPlan;
+
+    @Getter
+    @Setter
+    @Column
+    @OneToOne
+    private WithdrawalPlan withdrawalPlan;
 }
