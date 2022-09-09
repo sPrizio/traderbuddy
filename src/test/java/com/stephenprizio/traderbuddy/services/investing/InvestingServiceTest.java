@@ -110,9 +110,9 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setWithdrawalPlan(generateWithdrawalPlan());
 
         assertThat(this.investingService.forecast(TEST_PLAN))
-                .element(4)
+                .element(43)
                 .extracting("earnings", "balance")
-                .containsExactly();
+                .containsExactly(28.05, 2272.15);
     }
 
     @Test

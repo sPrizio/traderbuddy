@@ -1,6 +1,5 @@
 package com.stephenprizio.traderbuddy.services.calculator;
 
-import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.models.records.calculator.CompoundedInterestRecord;
 import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
 import org.springframework.stereotype.Component;
@@ -78,10 +77,8 @@ public class CompoundInterestCalculator {
 
         final BigDecimal p = BigDecimal.valueOf(financeInfo.principal());
         final BigDecimal r = BigDecimal.valueOf(financeInfo.interestRate() > 1.0 ? BigDecimal.valueOf(financeInfo.interestRate()).divide(BigDecimal.valueOf(100.0), 10, RoundingMode.HALF_EVEN).doubleValue() : financeInfo.interestRate());
-        final BigDecimal n = BigDecimal.valueOf(financeInfo.compoundFrequency().getFrequency());
-        final BigDecimal t = BigDecimal.valueOf(financeInfo.period()).divide(BigDecimal.valueOf(12.0), 10, RoundingMode.HALF_EVEN);
 
-        final double result = Math.pow(BigDecimal.ONE.add(r).setScale(10, RoundingMode.HALF_EVEN).doubleValue(), Double.valueOf(financeInfo.period()));
+        final double result = Math.pow(BigDecimal.ONE.add(r).setScale(10, RoundingMode.HALF_EVEN).doubleValue(), financeInfo.period());
         return BigDecimal.valueOf(result).multiply(p);
     }
 

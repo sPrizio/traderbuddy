@@ -98,7 +98,7 @@ public class CompoundInterestCalculatorTest {
                 .isNotEmpty()
                 .element(6)
                 .extracting("periodIndex", "interest", "accruedInterest", "balance")
-                .containsExactly(6, 42.72, 295.34, 10295.34);
+                .containsExactly(6, 670.05, 4071.0, 14071.0);
     }
 
 
@@ -107,13 +107,13 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeTotal_success() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 240);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 240);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 240);
+        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
+        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
+        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
 
-        assertThat(this.compoundInterestCalculator.computeTotal(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(108925.54);
-        assertThat(this.compoundInterestCalculator.computeTotal(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(1076631.08);
-        assertThat(this.compoundInterestCalculator.computeTotal(record3).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(121885.98);
+        assertThat(this.compoundInterestCalculator.computeTotal(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(38959.76);
+        assertThat(this.compoundInterestCalculator.computeTotal(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(88026.75);
+        assertThat(this.compoundInterestCalculator.computeTotal(record3).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(62954.25);
     }
 
 
@@ -122,13 +122,13 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeInterest_success() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 240);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 240);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 240);
+        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
+        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
+        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
 
-        assertThat(this.compoundInterestCalculator.computeInterest(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(98925.54);
-        assertThat(this.compoundInterestCalculator.computeInterest(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(1071631.08);
-        assertThat(this.compoundInterestCalculator.computeInterest(record3).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(96885.98);
+        assertThat(this.compoundInterestCalculator.computeInterest(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(28959.76);
+        assertThat(this.compoundInterestCalculator.computeInterest(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(83026.75);
+        assertThat(this.compoundInterestCalculator.computeInterest(record3).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(37954.25);
     }
 
 

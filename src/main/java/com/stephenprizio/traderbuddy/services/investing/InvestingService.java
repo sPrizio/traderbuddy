@@ -61,13 +61,9 @@ public class InvestingService {
         BigDecimal balance = BigDecimal.valueOf(tradingPlan.getStartingBalance());
 
         while (compare.isBefore(endDate)) {
-            if (tradingPlan.getDepositPlan() != null && compare.getDayOfMonth() == 1) {
-                balance = balance.add(BigDecimal.valueOf(tradingPlan.getDepositPlan().getAmount()));
-            }
 
-            if (tradingPlan.getWithdrawalPlan() != null && compare.getDayOfMonth() == 1) {
-                balance = balance.subtract(BigDecimal.valueOf(tradingPlan.getWithdrawalPlan().getAmount()));
-            }
+            balance = computeDepositBalance(tradingPlan, compare, balance);
+            balance = computeWithdrawalBalance(tradingPlan, compare, balance);
 
             BigDecimal earnings = this.compoundInterestCalculator.computeInterest(new FinancingInfoRecord(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), tradingPlan.getProfitTarget(), tradingPlan.getCompoundFrequency(), 1));
             accruedEarnings = accruedEarnings.add(earnings);
@@ -80,8 +76,8 @@ public class InvestingService {
                             earnings.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             accruedEarnings.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
-                            tradingPlan.getDepositPlan() != null ? tradingPlan.getDepositPlan().getAmount() : 0.0,
-                            tradingPlan.getWithdrawalPlan() != null ? tradingPlan.getWithdrawalPlan().getAmount() : 0.0
+                            computeDepositBalance(tradingPlan, compare, balance).equals(balance) ? 0.0 : tradingPlan.getDepositPlan().getAmount(),
+                            computeWithdrawalBalance(tradingPlan, compare, balance).equals(balance) ? 0.0 : tradingPlan.getWithdrawalPlan().getAmount()
                     )
             );
 
@@ -116,7 +112,7 @@ public class InvestingService {
     /**
      * Computes an appropriate start date base on the given date and {@link CompoundFrequency}
      *
-     * @param date {@link LocalDate}
+     * @param date      {@link LocalDate}
      * @param frequency {@link CompoundFrequency}
      * @return {@link LocalDate}
      */
@@ -140,5 +136,21 @@ public class InvestingService {
                     case MONTHLY -> date.with(TemporalAdjusters.firstDayOfMonth());
                     default -> date;
                 };
+    }
+
+    private BigDecimal computeDepositBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance) {
+        if (tradingPlan.getDepositPlan() != null && compare.getDayOfMonth() == 1) {
+            return balance.add(BigDecimal.valueOf(tradingPlan.getDepositPlan().getAmount()));
+        }
+
+        return balance;
+    }
+
+    private BigDecimal computeWithdrawalBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance) {
+        if (tradingPlan.getWithdrawalPlan() != null && compare.getDayOfMonth() == 1) {
+            return balance.subtract(BigDecimal.valueOf(tradingPlan.getWithdrawalPlan().getAmount()));
+        }
+
+        return balance;
     }
 }
