@@ -1,10 +1,12 @@
 package com.stephenprizio.traderbuddy.services.investing;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
 import com.stephenprizio.traderbuddy.services.calculator.CompoundInterestCalculator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -37,7 +39,16 @@ public class InvestingService {
 
     //  METHODS
 
-    public List<ForecastEntry> forecast(final TradingPlan tradingPlan) {
+    /**
+     * Generates a {@link List} of {@link ForecastEntry}
+     *
+     * @param tradingPlan {@link TradingPlan}
+     * @param start start of period
+     * @param end end of period
+     * @param interval {@link AggregateInterval}
+     * @return {@link List} of {@link ForecastEntry}
+     */
+    public List<ForecastEntry> forecast(final TradingPlan tradingPlan, final LocalDate start, final LocalDate end, final AggregateInterval interval) {
 
         validateParameterIsNotNull(tradingPlan, "tradingPlan cannot be null");
 
@@ -46,9 +57,13 @@ public class InvestingService {
         }
 
         validateParameterIsNotNull(tradingPlan.getCompoundFrequency(), "compound frequency cannot be null");
-        validateParameterIsNotNull(tradingPlan.getProfitTarget(), "profit target cannot be null");
-        validateParameterIsNotNull(tradingPlan.getStartDate(), "start date cannot be null");
-        validateParameterIsNotNull(tradingPlan.getEndDate(), "end date cannot be null");
+        validateParameterIsNotNull(tradingPlan.getProfitTarget(), "trading plan profit target cannot be null");
+        validateParameterIsNotNull(tradingPlan.getStartDate(), "trading plan start date cannot be null");
+        validateParameterIsNotNull(tradingPlan.getEndDate(), "trading plan end date cannot be null");
+
+        validateParameterIsNotNull(start, "start date cannot be null");
+        validateParameterIsNotNull(end, "end date cannot be null");
+        validateParameterIsNotNull(interval, "interval cannot be null");
 
         LocalDate startDate = computeStart(tradingPlan.getStartDate(), tradingPlan.getCompoundFrequency());
         LocalDate endDate = tradingPlan.getEndDate();
@@ -60,10 +75,11 @@ public class InvestingService {
         BigDecimal accruedEarnings = BigDecimal.ZERO;
         BigDecimal balance = BigDecimal.valueOf(tradingPlan.getStartingBalance());
 
+        int index = 0;
         while (compare.isBefore(endDate)) {
 
-            balance = computeDepositBalance(tradingPlan, compare, balance);
-            balance = computeWithdrawalBalance(tradingPlan, compare, balance);
+            balance = computeDepositBalance(tradingPlan, compare, balance, index);
+            balance = computeWithdrawalBalance(tradingPlan, compare, balance, index);
 
             BigDecimal earnings = this.compoundInterestCalculator.computeInterest(new FinancingInfoRecord(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), tradingPlan.getProfitTarget(), tradingPlan.getCompoundFrequency(), 1));
             accruedEarnings = accruedEarnings.add(earnings);
@@ -76,8 +92,8 @@ public class InvestingService {
                             earnings.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             accruedEarnings.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
-                            computeDepositBalance(tradingPlan, compare, balance).equals(balance) ? 0.0 : tradingPlan.getDepositPlan().getAmount(),
-                            computeWithdrawalBalance(tradingPlan, compare, balance).equals(balance) ? 0.0 : tradingPlan.getWithdrawalPlan().getAmount()
+                            computeDepositBalance(tradingPlan, compare, balance, index).equals(balance) ? 0.0 : tradingPlan.getDepositPlan().getAmount(),
+                            computeWithdrawalBalance(tradingPlan, compare, balance, index).equals(balance) ? 0.0 : tradingPlan.getWithdrawalPlan().getAmount()
                     )
             );
 
@@ -85,9 +101,11 @@ public class InvestingService {
             while (tradingPlan.getCompoundFrequency().equals(CompoundFrequency.DAILY_NO_WEEKENDS) && (compare.getDayOfWeek().equals(DayOfWeek.SATURDAY) || compare.getDayOfWeek().equals(DayOfWeek.SUNDAY))) {
                 compare = compare.plus(1, computeUnit(tradingPlan.getCompoundFrequency()));
             }
+
+            index += 1;
         }
 
-        return entries;
+        return aggregate(entries, start, end, tradingPlan.getCompoundFrequency(), interval);
     }
 
 
@@ -103,6 +121,22 @@ public class InvestingService {
         return
                 switch (frequency) {
                     case DAILY, DAILY_NO_WEEKENDS -> ChronoUnit.DAYS;
+                    case WEEKLY -> ChronoUnit.WEEKS;
+                    case MONTHLY -> ChronoUnit.MONTHS;
+                    default -> ChronoUnit.YEARS;
+                };
+    }
+
+    /**
+     * Returns the {@link TemporalUnit} for the given {@link CompoundFrequency}
+     *
+     * @param interval {@link AggregateInterval}
+     * @return {@link TemporalUnit}
+     */
+    private TemporalUnit computeUnit(AggregateInterval interval) {
+        return
+                switch (interval) {
+                    case DAILY -> ChronoUnit.DAYS;
                     case WEEKLY -> ChronoUnit.WEEKS;
                     case MONTHLY -> ChronoUnit.MONTHS;
                     default -> ChronoUnit.YEARS;
@@ -138,19 +172,138 @@ public class InvestingService {
                 };
     }
 
-    private BigDecimal computeDepositBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance) {
-        if (tradingPlan.getDepositPlan() != null && compare.getDayOfMonth() == 1) {
+    /**
+     * Computes the deposit balance
+     *
+     * @param tradingPlan {@link TradingPlan}
+     * @param compare {@link LocalDate}
+     * @param balance current balance
+     * @param index index
+     * @return new balance
+     */
+    private BigDecimal computeDepositBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance, final Integer index) {
+        if (tradingPlan.getDepositPlan() != null && isFirstBusinessDayOfMonth(compare) && index != 0) {
             return balance.add(BigDecimal.valueOf(tradingPlan.getDepositPlan().getAmount()));
         }
 
         return balance;
     }
 
-    private BigDecimal computeWithdrawalBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance) {
-        if (tradingPlan.getWithdrawalPlan() != null && compare.getDayOfMonth() == 1) {
+    /**
+     * Computes the withdrawal balance
+     *
+     * @param tradingPlan {@link TradingPlan}
+     * @param compare {@link LocalDate}
+     * @param balance current balance
+     * @param index index
+     * @return new balance
+     */
+    private BigDecimal computeWithdrawalBalance(final TradingPlan tradingPlan, final LocalDate compare, final BigDecimal balance, final Integer index) {
+        if (tradingPlan.getWithdrawalPlan() != null && isFirstBusinessDayOfMonth(compare) && index != 0) {
             return balance.subtract(BigDecimal.valueOf(tradingPlan.getWithdrawalPlan().getAmount()));
         }
 
         return balance;
+    }
+
+    /**
+     * Computes the first Monday of the month
+     *
+     * @param compare {@link LocalDate}
+     * @return true if the given date is the first monday of the month
+     */
+    private boolean isFirstBusinessDayOfMonth(final LocalDate compare) {
+        LocalDate firstBusinessDayOfMonth = compare.with(TemporalAdjusters.firstDayOfMonth());
+        while (firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SATURDAY) || firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            firstBusinessDayOfMonth = firstBusinessDayOfMonth.plusDays(1);
+        }
+
+        return firstBusinessDayOfMonth.isEqual(compare);
+    }
+
+    /**
+     * Aggregates a {@link List} of {@link ForecastEntry}s for an {@link AggregateInterval}. The idea here is to generate a forecast for daily compounding (for example) but then display it on a per month basis
+     *
+     * @param entries {@link List} of {@link ForecastEntry}s
+     * @param start start of interval
+     * @param end end of interval
+     * @param interval {@link AggregateInterval}
+     * @return {@link List} of {@link ForecastEntry}s
+     */
+    private List<ForecastEntry> aggregate(final List<ForecastEntry> entries, final LocalDate start, final LocalDate end, final CompoundFrequency frequency, final AggregateInterval interval) {
+
+        if (CollectionUtils.isEmpty(entries)) {
+            return Collections.emptyList();
+        }
+
+        if (areIntervalsEqual(frequency, interval)) {
+            return entries;
+        }
+
+        List<ForecastEntry> result = new ArrayList<>();
+        LocalDate compare = start.plus(1L, computeUnit(interval));
+
+        result.add(new ForecastEntry(start, compare, 0.0, 0.0, 0.0, 0.0, 0.0));
+        while (compare.isBefore(end)) {
+            result.add(new ForecastEntry(compare, compare.plus(1L, computeUnit(interval)), 0.0, 0.0, 0.0, 0.0, 0.0));
+            compare = compare.plus(1L, computeUnit(interval));
+        }
+
+        BigDecimal e;
+        BigDecimal b = BigDecimal.valueOf(entries.get(0).balance()).subtract(BigDecimal.valueOf(entries.get(0).netEarnings()));
+        BigDecimal d;
+        BigDecimal w;
+
+        for (int i = 0; i < result.size(); i++) {
+
+            e = BigDecimal.ZERO;
+            d = BigDecimal.ZERO;
+            w = BigDecimal.ZERO;
+
+            for (ForecastEntry child : entries) {
+                if (
+                        (child.startDate().isEqual(result.get(i).startDate()) || child.startDate().isAfter(result.get(i).startDate())) &&
+                        (child.endDate().isBefore(result.get(i).endDate()) || child.endDate().isEqual(result.get(i).endDate()))
+                ) {
+                    e = e.add(BigDecimal.valueOf(child.earnings()));
+                    d = d.add(BigDecimal.valueOf(child.deposits()));
+                    w = w.add(BigDecimal.valueOf(child.withdrawals()));
+                }
+            }
+
+            b = b.add(e).add(d).subtract(w);
+
+            result.set(
+                    i,
+                    new ForecastEntry(
+                            result.get(i).startDate(),
+                            result.get(i).endDate(),
+                            e.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                            e.add(d).setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                            b.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                            d.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                            w.setScale(2, RoundingMode.HALF_EVEN).doubleValue()
+                    )
+            );
+        }
+
+        return result;
+    }
+
+    /**
+     * Looks for equivalence between the given {@link CompoundFrequency} & {@link AggregateInterval}
+     *
+     * @param frequency {@link CompoundFrequency}
+     * @param interval {@link AggregateInterval}
+     * @return true if they're equivalent
+     */
+    private boolean areIntervalsEqual(final CompoundFrequency frequency, final AggregateInterval interval) {
+        return switch (frequency) {
+            case DAILY, DAILY_NO_WEEKENDS -> interval.equals(AggregateInterval.DAILY);
+            case WEEKLY -> interval.equals(AggregateInterval.WEEKLY);
+            case MONTHLY -> interval.equals(AggregateInterval.MONTHLY);
+            case YEARLY -> interval.equals(AggregateInterval.YEARLY);
+            default -> true;
+        };
     }
 }

@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.enums.trades.TradingSummaryInterval;
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
@@ -58,14 +58,14 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
     @Test
     public void test_getReportOfSummariesForTimeSpan_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(null, LocalDateTime.MAX, TradingSummaryInterval.DAILY))
+                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(null, LocalDateTime.MAX, AggregateInterval.DAILY))
                 .withMessage("startDate cannot be null");
     }
 
     @Test
     public void test_getReportOfSummariesForTimeSpan_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(LocalDateTime.MIN, null, TradingSummaryInterval.DAILY))
+                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(LocalDateTime.MIN, null, AggregateInterval.DAILY))
                 .withMessage("endDate cannot be null");
     }
 
@@ -79,13 +79,13 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
     @Test
     public void test_getReportOfSummariesForTimeSpan_invalidTimespan() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(LocalDateTime.MAX, LocalDateTime.MIN, TradingSummaryInterval.DAILY))
+                .isThrownBy(() -> this.tradingSummaryService.getReportOfSummariesForTimeSpan(LocalDateTime.MAX, LocalDateTime.MIN, AggregateInterval.DAILY))
                 .withMessage("startDate was after endDate or vice versa");
     }
 
     @Test
     public void test_getReportOfSummariesForTimeSpan_success_daily() {
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, TradingSummaryInterval.DAILY).records())
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.DAILY).records())
                 .isNotEmpty()
                 .element(23)
                 .extracting("netProfit", "numberOfTrades")
@@ -99,7 +99,7 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, TradingSummaryInterval.WEEKLY).records())
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.WEEKLY).records())
                 .isNotEmpty()
                 .element(3)
                 .extracting("netProfit", "numberOfTrades")
@@ -113,7 +113,7 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, TradingSummaryInterval.MONTHLY).records())
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.MONTHLY).records())
                 .isNotEmpty()
                 .first()
                 .extracting("netProfit", "numberOfTrades")
@@ -127,7 +127,7 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, TradingSummaryInterval.YEARLY).records())
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.YEARLY).records())
                 .isNotEmpty()
                 .first()
                 .extracting("netProfit", "numberOfTrades")

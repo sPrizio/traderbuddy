@@ -1,10 +1,12 @@
 package com.stephenprizio.traderbuddy.controllers.plans;
 
 import com.stephenprizio.traderbuddy.converters.plans.TradingPlanDTOConverter;
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
+import com.stephenprizio.traderbuddy.services.investing.InvestingService;
 import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,9 @@ public class TradingPlanApiController {
 
     private static final List<String> REQUIRED_JSON_VALUES = List.of("status", "active", "name", "startDate", "endDate", "profitTarget", "compoundFrequency", "startingBalance");
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    @Resource(name = "investingService")
+    private InvestingService investingService;
 
     @Resource(name = "tradingPlanDTOConverter")
     private TradingPlanDTOConverter tradingPlanDTOConverter;
@@ -77,6 +82,28 @@ public class TradingPlanApiController {
 
         return new StandardJsonResponse(true, this.tradingPlanDTOConverter.convertAll(tradingPlans), StringUtils.EMPTY);
     }
+
+    /**
+     * Obtains the forecast for the currently active {@link TradingPlan}
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/forecast")
+    public StandardJsonResponse getForecast(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
+
+        validateLocalDateFormat(start, DATE_FORMAT, "The start date %s was not of the expected format %s", start, DATE_FORMAT);
+        validateLocalDateFormat(end, DATE_FORMAT, "The end date %s was not of the expected format %s", end, DATE_FORMAT);
+
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid interval", interval));
+        }
+
+        Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+        return tradingPlan.map(plan -> new StandardJsonResponse(true, this.investingService.forecast(plan, LocalDate.parse(start, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(DATE_FORMAT)), AggregateInterval.valueOf(interval.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, "No active trading plan was found"));
+    }
+
+
 
 
     //  ----------------- POST REQUESTS -----------------

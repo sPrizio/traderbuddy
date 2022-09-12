@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.services.summary;
 
-import com.stephenprizio.traderbuddy.enums.trades.TradingSummaryInterval;
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
@@ -78,10 +78,10 @@ public class TradingSummaryService {
      *
      * @param start    start of time span
      * @param end      end of time span
-     * @param interval {@link TradingSummaryInterval}
+     * @param interval {@link AggregateInterval}
      * @return {@link TradingSummary}
      */
-    public TradingSummary getReportOfSummariesForTimeSpan(final LocalDateTime start, final LocalDateTime end, final TradingSummaryInterval interval) {
+    public TradingSummary getReportOfSummariesForTimeSpan(final LocalDateTime start, final LocalDateTime end, final AggregateInterval interval) {
 
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
@@ -98,14 +98,14 @@ public class TradingSummaryService {
         }
 
         List<TradingRecord> records = new ArrayList<>();
-        LocalDateTime leftBound = interval == TradingSummaryInterval.YEARLY ? earliestTradeTime.with(TemporalAdjusters.firstDayOfYear()) : earliestTradeTime.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDateTime leftBound = interval == AggregateInterval.YEARLY ? earliestTradeTime.with(TemporalAdjusters.firstDayOfYear()) : earliestTradeTime.with(TemporalAdjusters.firstDayOfMonth());
         LocalDateTime rightBound = getNextDate(leftBound, interval);
 
         do {
             records.add(getSummaryForTimeSpan(leftBound, rightBound));
             leftBound = getNextDate(leftBound, interval);
             rightBound = getNextDate(rightBound, interval);
-        } while (interval == TradingSummaryInterval.MONTHLY ? rightBound.isBefore(mostRecentTradeTime.plusMonths(1)) : (rightBound.isBefore(mostRecentTradeTime) || rightBound.isEqual(mostRecentTradeTime)));
+        } while (interval == AggregateInterval.MONTHLY ? rightBound.isBefore(mostRecentTradeTime.plusMonths(1)) : (rightBound.isBefore(mostRecentTradeTime) || rightBound.isEqual(mostRecentTradeTime)));
 
         return new TradingSummary(records, new TradingRecordStatistics(records));
     }
@@ -114,13 +114,13 @@ public class TradingSummaryService {
     //  HELPERS
 
     /**
-     * Obtains the next date for the given {@link TradingSummaryInterval}
+     * Obtains the next date for the given {@link AggregateInterval}
      *
      * @param compare  {@link LocalDateTime}
-     * @param interval {@link TradingSummaryInterval}
+     * @param interval {@link AggregateInterval}
      * @return offset {@link LocalDateTime}
      */
-    private LocalDateTime getNextDate(final LocalDateTime compare, final TradingSummaryInterval interval) {
+    private LocalDateTime getNextDate(final LocalDateTime compare, final AggregateInterval interval) {
 
         LocalDateTime result;
         switch (interval) {
@@ -139,10 +139,10 @@ public class TradingSummaryService {
      *
      * @param test     {@link LocalDateTime}
      * @param trades   {@link List} of {@link Trade}
-     * @param interval {@link TradingSummaryInterval}
+     * @param interval {@link AggregateInterval}
      * @return {@link LocalDateTime}
      */
-    private LocalDateTime computeEarliestTradeTime(final LocalDateTime test, final List<Trade> trades, final TradingSummaryInterval interval) {
+    private LocalDateTime computeEarliestTradeTime(final LocalDateTime test, final List<Trade> trades, final AggregateInterval interval) {
         return switch (interval) {
             case DAILY, WEEKLY, MONTHLY ->
                     (test.isAfter(trades.get(0).getTradeOpenTime()) ? test : trades.get(0).getTradeOpenTime()).with(TemporalAdjusters.firstDayOfMonth()).with(LocalTime.MIN);
@@ -156,10 +156,10 @@ public class TradingSummaryService {
      *
      * @param test     {@link LocalDateTime}
      * @param trades   {@link List} of {@link Trade}
-     * @param interval {@link TradingSummaryInterval}
+     * @param interval {@link AggregateInterval}
      * @return {@link LocalDateTime}
      */
-    private LocalDateTime computeMostRecentTradeTime(final LocalDateTime test, final List<Trade> trades, final TradingSummaryInterval interval) {
+    private LocalDateTime computeMostRecentTradeTime(final LocalDateTime test, final List<Trade> trades, final AggregateInterval interval) {
         return
                 switch (interval) {
                     case DAILY, WEEKLY, MONTHLY ->

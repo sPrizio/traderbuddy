@@ -1,6 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
-import com.stephenprizio.traderbuddy.enums.trades.TradingSummaryInterval;
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
@@ -65,7 +65,7 @@ public class TradingSummaryApiController {
         validateLocalDateTimeFormat(start, DATE_FORMAT, "The start date %s was not of the expected format %s", start, DATE_FORMAT);
         validateLocalDateTimeFormat(end, DATE_FORMAT, "The end date %s was not of the expected format %s", end, DATE_FORMAT);
 
-        if (!EnumUtils.isValidEnumIgnoreCase(TradingSummaryInterval.class, interval)) {
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid time interval", interval));
         }
 
@@ -73,7 +73,7 @@ public class TradingSummaryApiController {
                 this.tradingSummaryService.getReportOfSummariesForTimeSpan(
                         LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME),
                         LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME),
-                        TradingSummaryInterval.valueOf(interval.toUpperCase())
+                        AggregateInterval.valueOf(interval.toUpperCase())
                 );
         return new StandardJsonResponse(true, summary, StringUtils.EMPTY);
     }

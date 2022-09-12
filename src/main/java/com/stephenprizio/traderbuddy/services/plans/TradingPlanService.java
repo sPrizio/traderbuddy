@@ -55,6 +55,7 @@ public class TradingPlanService {
     public Optional<TradingPlan> findCurrentlyActiveTradingPlan() {
         List<TradingPlan> tradingPlans = this.tradingPlanRepository.findTradingPlanByActiveIsTrue();
 
+        validateIfAnyResult(tradingPlans, "No active trading plans were found");
         validateIfSingleResult(tradingPlans, "One or more active tradingPlans was found. This is not allowed. Only 1 tradingPlan can be active");
 
         return Optional.of(tradingPlans.get(0));

@@ -1,4 +1,4 @@
-package com.stephenprizio.traderbuddy.enums.trades;
+package com.stephenprizio.traderbuddy.enums;
 
 /**
  * Enum for representing the interval for summary reporting
@@ -6,7 +6,7 @@ package com.stephenprizio.traderbuddy.enums.trades;
  * @author Stephen Prizio
  * @version 1.0
  */
-public enum TradingSummaryInterval {
+public enum AggregateInterval {
     DAILY,
     WEEKLY,
     MONTHLY,
