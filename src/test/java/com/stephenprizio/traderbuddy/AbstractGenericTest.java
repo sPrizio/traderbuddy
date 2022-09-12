@@ -10,6 +10,7 @@ import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import org.apache.commons.lang3.StringUtils;
@@ -170,5 +171,11 @@ public abstract class AbstractGenericTest {
         tradingPlan.setWithdrawalPlan(generateWithdrawalPlan());
 
         return tradingPlan;
+    }
+
+    public List<ForecastEntry> generateForecast() {
+        return List.of(
+                new ForecastEntry(LocalDate.MIN, LocalDate.MAX, 1.0, 1.0, 1.0, 1.0, 1.0)
+        );
     }
 }

@@ -43,12 +43,11 @@ public class InvestingService {
      * Generates a {@link List} of {@link ForecastEntry}
      *
      * @param tradingPlan {@link TradingPlan}
-     * @param start start of period
-     * @param end end of period
      * @param interval {@link AggregateInterval}
+     * @param limit end date for aggregation
      * @return {@link List} of {@link ForecastEntry}
      */
-    public List<ForecastEntry> forecast(final TradingPlan tradingPlan, final LocalDate start, final LocalDate end, final AggregateInterval interval) {
+    public List<ForecastEntry> forecast(final TradingPlan tradingPlan, final AggregateInterval interval, final LocalDate begin, final LocalDate limit) {
 
         validateParameterIsNotNull(tradingPlan, "tradingPlan cannot be null");
 
@@ -60,10 +59,10 @@ public class InvestingService {
         validateParameterIsNotNull(tradingPlan.getProfitTarget(), "trading plan profit target cannot be null");
         validateParameterIsNotNull(tradingPlan.getStartDate(), "trading plan start date cannot be null");
         validateParameterIsNotNull(tradingPlan.getEndDate(), "trading plan end date cannot be null");
-
-        validateParameterIsNotNull(start, "start date cannot be null");
-        validateParameterIsNotNull(end, "end date cannot be null");
         validateParameterIsNotNull(interval, "interval cannot be null");
+        validateParameterIsNotNull(begin, "begin cannot be null");
+        validateParameterIsNotNull(limit, "limit cannot be null");
+        validateDatesAreNotMutuallyExclusive(begin.atStartOfDay(), limit.atStartOfDay(), "The start date was after the end date or vice versa");
 
         LocalDate startDate = computeStart(tradingPlan.getStartDate(), tradingPlan.getCompoundFrequency());
         LocalDate endDate = tradingPlan.getEndDate();
@@ -105,7 +104,8 @@ public class InvestingService {
             index += 1;
         }
 
-        return aggregate(entries, start, end, tradingPlan.getCompoundFrequency(), interval);
+
+        return aggregate(entries, (begin.isBefore(tradingPlan.getStartDate()) ? tradingPlan.getStartDate() : begin),  (limit.isAfter(tradingPlan.getEndDate()) ? tradingPlan.getEndDate() : limit), tradingPlan.getCompoundFrequency(), interval);
     }
 
 

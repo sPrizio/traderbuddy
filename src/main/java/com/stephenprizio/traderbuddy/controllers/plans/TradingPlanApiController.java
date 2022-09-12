@@ -90,17 +90,23 @@ public class TradingPlanApiController {
      */
     @ResponseBody
     @GetMapping("/forecast")
-    public StandardJsonResponse getForecast(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
+    public StandardJsonResponse getForecast(final @RequestParam("interval") String interval, final @RequestParam("begin") String begin, final @RequestParam("limit") String limit) {
 
-        validateLocalDateFormat(start, DATE_FORMAT, "The start date %s was not of the expected format %s", start, DATE_FORMAT);
-        validateLocalDateFormat(end, DATE_FORMAT, "The end date %s was not of the expected format %s", end, DATE_FORMAT);
+        validateLocalDateFormat(begin, DATE_FORMAT, "The start date %s was not of the expected format %s", begin, DATE_FORMAT);
+        validateLocalDateFormat(limit, DATE_FORMAT, "The end date %s was not of the expected format %s", limit, DATE_FORMAT);
 
         if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid interval", interval));
         }
 
         Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
-        return tradingPlan.map(plan -> new StandardJsonResponse(true, this.investingService.forecast(plan, LocalDate.parse(start, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(DATE_FORMAT)), AggregateInterval.valueOf(interval.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, "No active trading plan was found"));
+        return
+                tradingPlan
+                        .map(plan ->
+                                new StandardJsonResponse(true, this.investingService.forecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT))), StringUtils.EMPTY)
+                        ).orElseGet(() ->
+                                new StandardJsonResponse(false, null, "No active trading plan was found")
+                        );
     }
 
 

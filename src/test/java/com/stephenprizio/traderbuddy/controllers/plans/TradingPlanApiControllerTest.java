@@ -5,6 +5,7 @@ import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.services.investing.InvestingService;
 import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +51,16 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
     @MockBean
     private TradingPlanService tradingPlanService;
 
+    @MockBean
+    private InvestingService investingService;
+
     @Before
     public void setUp() {
         Mockito.when(this.tradingPlanService.findCurrentlyActiveTradingPlan()).thenReturn(Optional.of(TEST_TRADING_PLAN_ACTIVE));
         Mockito.when(this.tradingPlanService.findTradingPlansForStatus(TradingPlanStatus.IN_PROGRESS)).thenReturn(List.of(TEST_TRADING_PLAN_ACTIVE));
         Mockito.when(this.tradingPlanService.createTradingPlan(any())).thenReturn(TEST_TRADING_PLAN_ACTIVE);
         Mockito.when(this.tradingPlanService.updateTradingPlan(any(), any(), any(), any())).thenReturn(TEST_TRADING_PLAN_ACTIVE);
+        Mockito.when(this.investingService.forecast(any(), any(), any(), any())).thenReturn(generateForecast());
     }
 
 
@@ -91,6 +96,62 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trading-plans/for-status").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].profitTarget", is(528491.0)));
+    }
+
+
+    //  ----------------- forecast -----------------
+
+    @Test
+    public void test_forecast_badRequest_interval() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("BAD"));
+        map.put("begin", List.of("2022-01-01"));
+        map.put("limit", List.of("2022-01-01"));
+
+        this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD is not a valid interval")));
+    }
+
+    @Test
+    public void test_forecast_badRequest_begin() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("MONTHLY"));
+        map.put("begin", List.of("adfsffaf"));
+        map.put("limit", List.of("2022-01-01"));
+
+
+        this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("The start date adfsffaf was not of the expected format yyyy-MM-dd")));
+    }
+
+    @Test
+    public void test_forecast_badRequest_limit() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("MONTHLY"));
+        map.put("begin", List.of("2022-01-01"));
+        map.put("limit", List.of("adfsffaf"));
+
+        this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("The end date adfsffaf was not of the expected format yyyy-MM-dd")));
+    }
+
+    @Test
+    public void test_forecast_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("MONTHLY"));
+        map.put("begin", List.of("2022-01-01"));
+        map.put("limit", List.of("2022-01-01"));
+
+        this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].earnings", is(1.0)));
     }
 
 

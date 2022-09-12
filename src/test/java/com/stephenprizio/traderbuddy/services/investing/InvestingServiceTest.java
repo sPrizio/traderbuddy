@@ -29,8 +29,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class InvestingServiceTest extends AbstractGenericTest {
 
     private final TradingPlan TEST_PLAN = new TradingPlan();
-    private final LocalDate START = LocalDate.of(2022, 1, 1);
-    private final LocalDate END = LocalDate.of(2023, 1, 1);
 
     @Resource(name = "investingService")
     private InvestingService investingService;
@@ -52,55 +50,61 @@ public class InvestingServiceTest extends AbstractGenericTest {
     public void test_forecast_inactive() {
         TradingPlan tradingPlan = new TradingPlan();
         tradingPlan.setActive(false);
-        assertThat(this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+        assertThat(this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .isEmpty();
     }
 
     @Test
     public void test_forecast_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(null, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(null, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("tradingPlan cannot be null");
 
         TradingPlan tradingPlan = new TradingPlan();
         tradingPlan.setActive(true);
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("compound frequency cannot be null");
         tradingPlan.setCompoundFrequency(CompoundFrequency.DAILY);
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("trading plan profit target cannot be null");
         tradingPlan.setProfitTarget(1.0);
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("trading plan start date cannot be null");
         tradingPlan.setStartDate(LocalDate.MAX);
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("trading plan end date cannot be null");
         tradingPlan.setEndDate(LocalDate.MIN);
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, AggregateInterval.MONTHLY))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("start date cannot be after end date or vice versa");
 
         tradingPlan.setStartDate(LocalDate.MIN);
         tradingPlan.setEndDate(LocalDate.MAX);
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, null, END, AggregateInterval.MONTHLY))
-                .withMessage("start date cannot be null");
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, null, AggregateInterval.MONTHLY))
-                .withMessage("end date cannot be null");
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.investingService.forecast(tradingPlan, START, END, null))
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, null, LocalDate.MIN, LocalDate.MAX))
                 .withMessage("interval cannot be null");
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, null, LocalDate.MAX))
+                .withMessage("begin cannot be null");
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, null))
+                .withMessage("limit cannot be null");
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.investingService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MAX, LocalDate.MIN))
+                .withMessage("The start date was after the end date or vice versa");
     }
 
     @Test
@@ -110,7 +114,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setProfitTarget(1.25);
         TEST_PLAN.setCompoundFrequency(CompoundFrequency.DAILY_NO_WEEKENDS);
 
-        assertThat(this.investingService.forecast(TEST_PLAN, START, END, AggregateInterval.DAILY))
+        assertThat(this.investingService.forecast(TEST_PLAN, AggregateInterval.DAILY, LocalDate.MIN, LocalDate.MAX))
                 .element(12)
                 .extracting("earnings", "balance")
                 .containsExactly(14.51, 1175.26);
@@ -125,7 +129,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setDepositPlan(generateDepositPlan());
         TEST_PLAN.setWithdrawalPlan(generateWithdrawalPlan());
 
-        assertThat(this.investingService.forecast(TEST_PLAN, START, END, AggregateInterval.DAILY))
+        assertThat(this.investingService.forecast(TEST_PLAN, AggregateInterval.DAILY, LocalDate.MIN, LocalDate.MAX))
                 .element(43)
                 .extracting("earnings", "balance")
                 .containsExactly(28.05, 2272.15);
@@ -138,7 +142,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setProfitTarget(9.1);
         TEST_PLAN.setCompoundFrequency(CompoundFrequency.WEEKLY);
 
-        assertThat(this.investingService.forecast(TEST_PLAN, START, END, AggregateInterval.WEEKLY))
+        assertThat(this.investingService.forecast(TEST_PLAN, AggregateInterval.WEEKLY, LocalDate.MIN, LocalDate.MAX))
                 .element(2)
                 .extracting("earnings", "balance")
                 .containsExactly(108.32, 1298.6);
@@ -151,7 +155,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setProfitTarget(11.38);
         TEST_PLAN.setCompoundFrequency(CompoundFrequency.MONTHLY);
 
-        assertThat(this.investingService.forecast(TEST_PLAN, START, END, AggregateInterval.MONTHLY))
+        assertThat(this.investingService.forecast(TEST_PLAN, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .element(2)
                 .extracting("earnings", "balance")
                 .containsExactly(141.17, 1381.73);
@@ -166,7 +170,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setDepositPlan(generateDepositPlan());
         TEST_PLAN.setWithdrawalPlan(null);
 
-        assertThat(this.investingService.forecast(TEST_PLAN, LocalDate.of(2022, 8, 1), LocalDate.of(2023, 8, 1), AggregateInterval.MONTHLY))
+        assertThat(this.investingService.forecast(TEST_PLAN, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
                 .isNotEmpty()
                 .element(7)
                 .extracting("earnings", "balance")
