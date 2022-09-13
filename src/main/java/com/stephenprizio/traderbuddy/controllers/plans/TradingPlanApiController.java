@@ -5,6 +5,9 @@ import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
+import com.stephenprizio.traderbuddy.models.records.investing.ForecastStatistics;
+import com.stephenprizio.traderbuddy.models.records.investing.ForecastSummary;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
 import com.stephenprizio.traderbuddy.services.investing.InvestingService;
 import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
@@ -102,9 +105,10 @@ public class TradingPlanApiController {
         Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
         return
                 tradingPlan
-                        .map(plan ->
-                                new StandardJsonResponse(true, this.investingService.forecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT))), StringUtils.EMPTY)
-                        ).orElseGet(() ->
+                        .map(plan -> {
+                            final List<ForecastEntry> entries = this.investingService.forecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT)));
+                            return new StandardJsonResponse(true, new ForecastSummary(entries, new ForecastStatistics(entries)), StringUtils.EMPTY);
+                        }).orElseGet(() ->
                                 new StandardJsonResponse(false, null, "No active trading plan was found")
                         );
     }

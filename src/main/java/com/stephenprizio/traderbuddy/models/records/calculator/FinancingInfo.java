@@ -13,5 +13,5 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record FinancingInfoRecord(Double principal, Double interestRate, CompoundFrequency compoundFrequency, Integer period) {
+public record FinancingInfo(Double principal, Double interestRate, CompoundFrequency compoundFrequency, Integer period) {
 }

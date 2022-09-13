@@ -3,6 +3,7 @@ package com.stephenprizio.traderbuddy.models.records.reporting;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalDouble;
 
 /**
@@ -16,17 +17,61 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
 
     //  METHODS
 
+    /**
+     * Obtains the sum of numberOfTrades
+     *
+     * @return {@link Integer}
+     */
     public Integer getTotalNumberOfTrades() {
-        return this.records.stream().filter(r -> !r.isEmpty()).mapToInt(TradingRecord::numberOfTrades).sum();
+        return
+                this.records
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .mapToInt(TradingRecord::numberOfTrades)
+                        .sum();
     }
 
+    /**
+     * Obtains the average of winPercentage (rounded to the nearest whole number)
+     *
+     * @return {@link Integer}
+     */
     public Integer getAverageWinPercentage() {
-        OptionalDouble average = this.records.stream().filter(r -> !r.isEmpty()).mapToInt(TradingRecord::winPercentage).average();
-        return BigDecimal.valueOf(average.orElse(0.0)).setScale(0, RoundingMode.HALF_EVEN).intValue();
+
+        OptionalDouble average =
+                this.records.
+                        stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .mapToInt(TradingRecord::winPercentage)
+                        .average();
+
+        return
+                BigDecimal
+                        .valueOf(average.orElse(0.0))
+                        .setScale(0, RoundingMode.HALF_EVEN)
+                        .intValue();
     }
 
+    /**
+     * Obtains the sum of netProfit
+     *
+     * @return {@link Double}
+     */
     public Double getNetProfit() {
-        double sum = this.records.stream().filter(r -> !r.isEmpty()).mapToDouble(TradingRecord::netProfit).sum();
-        return BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+
+        double sum =
+                this.records
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .mapToDouble(TradingRecord::netProfit)
+                        .sum();
+
+        return BigDecimal
+                .valueOf(sum)
+                .setScale(2, RoundingMode.HALF_EVEN)
+                .doubleValue();
     }
 }

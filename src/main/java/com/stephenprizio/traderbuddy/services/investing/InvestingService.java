@@ -3,7 +3,7 @@ package com.stephenprizio.traderbuddy.services.investing;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
-import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
+import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfo;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
 import com.stephenprizio.traderbuddy.services.calculator.CompoundInterestCalculator;
 import org.apache.commons.collections4.CollectionUtils;
@@ -80,7 +80,7 @@ public class InvestingService {
             balance = computeDepositBalance(tradingPlan, compare, balance, index);
             balance = computeWithdrawalBalance(tradingPlan, compare, balance, index);
 
-            BigDecimal earnings = this.compoundInterestCalculator.computeInterest(new FinancingInfoRecord(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), tradingPlan.getProfitTarget(), tradingPlan.getCompoundFrequency(), 1));
+            BigDecimal earnings = this.compoundInterestCalculator.computeInterest(new FinancingInfo(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), tradingPlan.getProfitTarget(), tradingPlan.getCompoundFrequency(), 1));
             accruedEarnings = accruedEarnings.add(earnings);
             balance = balance.add(earnings);
 

@@ -6,5 +6,5 @@ package com.stephenprizio.traderbuddy.models.records.calculator;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record CompoundedInterestRecord(Integer periodIndex, Double interest, Double accruedInterest, Double balance) {
+public record CompoundedInterest(Integer periodIndex, Double interest, Double accruedInterest, Double balance) {
 }

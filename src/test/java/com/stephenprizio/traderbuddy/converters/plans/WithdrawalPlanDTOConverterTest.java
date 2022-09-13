@@ -1,13 +1,9 @@
 package com.stephenprizio.traderbuddy.converters.plans;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
-import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
-import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
 import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

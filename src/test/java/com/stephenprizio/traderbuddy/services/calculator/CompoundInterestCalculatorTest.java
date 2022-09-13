@@ -4,7 +4,7 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedNegativeValueException;
 import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedZeroValueException;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
-import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
+import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfo;
 import org.junit.Test;
 
 import java.math.RoundingMode;
@@ -31,11 +31,11 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeSchedule_missingParams() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(1.0, 1.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(null, 1.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(1.0, null, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record4 = new FinancingInfoRecord(1.0, 1.0, null, 1);
-        FinancingInfoRecord record5 = new FinancingInfoRecord(1.0, 1.0, CompoundFrequency.WEEKLY, null);
+        FinancingInfo record1 = new FinancingInfo(1.0, 1.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record2 = new FinancingInfo(null, 1.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record3 = new FinancingInfo(1.0, null, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record4 = new FinancingInfo(1.0, 1.0, null, 1);
+        FinancingInfo record5 = new FinancingInfo(1.0, 1.0, CompoundFrequency.WEEKLY, null);
 
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.compoundInterestCalculator.computeSchedule(null, record1))
@@ -57,9 +57,9 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeSchedule_negativeParams() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(-1.0, 1.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(1.0, -1.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(1.0, 1.0, CompoundFrequency.WEEKLY, -1);
+        FinancingInfo record1 = new FinancingInfo(-1.0, 1.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record2 = new FinancingInfo(1.0, -1.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record3 = new FinancingInfo(1.0, 1.0, CompoundFrequency.WEEKLY, -1);
 
         assertThatExceptionOfType(UnexpectedNegativeValueException.class)
                 .isThrownBy(() -> this.compoundInterestCalculator.computeSchedule(TEST_DATE, record1))
@@ -75,9 +75,9 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeSchedule_zeroValueParams() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(0.0, 1.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(1.0, 0.0, CompoundFrequency.WEEKLY, 1);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(1.0, 1.0, CompoundFrequency.WEEKLY, 0);
+        FinancingInfo record1 = new FinancingInfo(0.0, 1.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record2 = new FinancingInfo(1.0, 0.0, CompoundFrequency.WEEKLY, 1);
+        FinancingInfo record3 = new FinancingInfo(1.0, 1.0, CompoundFrequency.WEEKLY, 0);
 
         assertThatExceptionOfType(UnexpectedZeroValueException.class)
                 .isThrownBy(() -> this.compoundInterestCalculator.computeSchedule(TEST_DATE, record1))
@@ -93,7 +93,7 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeSchedule_success() {
 
-        FinancingInfoRecord record = new FinancingInfoRecord(10000.0, 5.0, CompoundFrequency.MONTHLY, 15);
+        FinancingInfo record = new FinancingInfo(10000.0, 5.0, CompoundFrequency.MONTHLY, 15);
         assertThat(this.compoundInterestCalculator.computeSchedule(LocalDate.of(2022, 9, 6), record))
                 .isNotEmpty()
                 .element(6)
@@ -107,9 +107,9 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeTotal_success() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
+        FinancingInfo record1 = new FinancingInfo(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
+        FinancingInfo record2 = new FinancingInfo(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
+        FinancingInfo record3 = new FinancingInfo(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
 
         assertThat(this.compoundInterestCalculator.computeTotal(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(38959.76);
         assertThat(this.compoundInterestCalculator.computeTotal(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(88026.75);
@@ -122,9 +122,9 @@ public class CompoundInterestCalculatorTest {
     @Test
     public void test_computeInterest_success() {
 
-        FinancingInfoRecord record1 = new FinancingInfoRecord(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
-        FinancingInfoRecord record2 = new FinancingInfoRecord(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
-        FinancingInfoRecord record3 = new FinancingInfoRecord(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
+        FinancingInfo record1 = new FinancingInfo(10000.0, 12.0, CompoundFrequency.MONTHLY, 12);
+        FinancingInfo record2 = new FinancingInfo(5000.0, 27.0, CompoundFrequency.BI_WEEKLY, 12);
+        FinancingInfo record3 = new FinancingInfo(25000.0, 8.0, CompoundFrequency.QUARTERLY, 12);
 
         assertThat(this.compoundInterestCalculator.computeInterest(record1).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(28959.76);
         assertThat(this.compoundInterestCalculator.computeInterest(record2).setScale(2, RoundingMode.HALF_EVEN).doubleValue()).isEqualTo(83026.75);

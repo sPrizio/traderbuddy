@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Convert that converts {@link DepositPlan}s into {@link DepositPlanDTO}s
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @Component("depositPlanDTOConverter")

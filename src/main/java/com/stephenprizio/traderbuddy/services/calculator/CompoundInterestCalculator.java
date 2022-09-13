@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.services.calculator;
 
-import com.stephenprizio.traderbuddy.models.records.calculator.CompoundedInterestRecord;
-import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfoRecord;
+import com.stephenprizio.traderbuddy.models.records.calculator.CompoundedInterest;
+import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -31,10 +31,10 @@ public class CompoundInterestCalculator {
      * Computes a compounding interest schedule
      *
      * @param start       starting date {@link LocalDate}
-     * @param financeInfo {@link FinancingInfoRecord}
-     * @return {@link List} of {@link CompoundedInterestRecord}s
+     * @param financeInfo {@link FinancingInfo}
+     * @return {@link List} of {@link CompoundedInterest}s
      */
-    public List<CompoundedInterestRecord> computeSchedule(final LocalDate start, final FinancingInfoRecord financeInfo) {
+    public List<CompoundedInterest> computeSchedule(final LocalDate start, final FinancingInfo financeInfo) {
 
         validateParameterIsNotNull(start, "start date cannot be null");
         validateFinancialInfo(financeInfo);
@@ -45,15 +45,15 @@ public class CompoundInterestCalculator {
         BigDecimal accruedInterest = BigDecimal.ZERO;
         BigDecimal balance = BigDecimal.valueOf(financeInfo.principal());
 
-        List<CompoundedInterestRecord> records = new ArrayList<>();
+        List<CompoundedInterest> records = new ArrayList<>();
         while (compare.isBefore(end) || compare.isEqual(end)) {
 
-            BigDecimal interest = computeInterest(new FinancingInfoRecord(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), financeInfo.interestRate(), financeInfo.compoundFrequency(), 1));
+            BigDecimal interest = computeInterest(new FinancingInfo(balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), financeInfo.interestRate(), financeInfo.compoundFrequency(), 1));
             accruedInterest = accruedInterest.add(interest);
             balance = balance.add(interest);
 
             records.add(
-                    new CompoundedInterestRecord(
+                    new CompoundedInterest(
                             (int) ChronoUnit.MONTHS.between(start, compare),
                             interest.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             accruedInterest.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
@@ -70,10 +70,10 @@ public class CompoundInterestCalculator {
     /**
      * Computes the future value of the given principal by applying the compound interest formula
      *
-     * @param financeInfo {@link FinancingInfoRecord}
+     * @param financeInfo {@link FinancingInfo}
      * @return future value of principal expressed as a {@link BigDecimal}
      */
-    public BigDecimal computeTotal(final FinancingInfoRecord financeInfo) {
+    public BigDecimal computeTotal(final FinancingInfo financeInfo) {
 
         final BigDecimal p = BigDecimal.valueOf(financeInfo.principal());
         final BigDecimal r = BigDecimal.valueOf(financeInfo.interestRate() > 1.0 ? BigDecimal.valueOf(financeInfo.interestRate()).divide(BigDecimal.valueOf(100.0), 10, RoundingMode.HALF_EVEN).doubleValue() : financeInfo.interestRate());
@@ -85,10 +85,10 @@ public class CompoundInterestCalculator {
     /**
      * Computes the interest gain on principal by applying the compounding interest formula
      *
-     * @param financeInfo {@link FinancingInfoRecord}
+     * @param financeInfo {@link FinancingInfo}
      * @return interest gain expressed as a {@link BigDecimal}
      */
-    public BigDecimal computeInterest(final FinancingInfoRecord financeInfo) {
+    public BigDecimal computeInterest(final FinancingInfo financeInfo) {
         return computeTotal(financeInfo).subtract(BigDecimal.valueOf(financeInfo.principal()));
     }
 
@@ -106,11 +106,11 @@ public class CompoundInterestCalculator {
     //  HELPERS
 
     /**
-     * Validates the given {@link FinancingInfoRecord}
+     * Validates the given {@link FinancingInfo}
      *
-     * @param financingInfo {@link FinancingInfoRecord}
+     * @param financingInfo {@link FinancingInfo}
      */
-    private void validateFinancialInfo(final FinancingInfoRecord financingInfo) {
+    private void validateFinancialInfo(final FinancingInfo financingInfo) {
         validateParameterIsNotNull(financingInfo.principal(), "principal cannot be null");
         validateParameterIsNotNull(financingInfo.interestRate(), "interest rate cannot be null");
         validateParameterIsNotNull(financingInfo.compoundFrequency(), "compound frequency cannot be null");

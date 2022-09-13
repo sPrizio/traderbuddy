@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Converter for converting {@link WithdrawalPlan}s into {@link WithdrawalPlanDTO}s
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @Component("withdrawalPlanDTOConverter")

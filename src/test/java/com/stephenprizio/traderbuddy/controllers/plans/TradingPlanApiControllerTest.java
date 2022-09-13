@@ -151,7 +151,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].earnings", is(1.0)));
+                .andExpect(jsonPath("$.data.entries[0].earnings", is(1.0)));
     }
 
 
