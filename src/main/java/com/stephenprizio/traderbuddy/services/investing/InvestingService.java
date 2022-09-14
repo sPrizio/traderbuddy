@@ -237,16 +237,23 @@ public class InvestingService {
         }
 
         if (areIntervalsEqual(frequency, interval)) {
-            return entries;
+            return
+                    recomputeEarnings(
+                            entries
+                                    .stream()
+                                    .filter(e -> e.startDate().isEqual(start) || e.startDate().isAfter(start))
+                                    .filter(e -> e.endDate().isBefore(end) || e.endDate().isEqual(end))
+                                    .toList()
+                    );
         }
 
         List<ForecastEntry> result = new ArrayList<>();
-        LocalDate compare = start.plus(1L, computeUnit(interval));
+        LocalDate compare = computeAddition(start, interval);
 
         result.add(new ForecastEntry(start, compare, 0.0, 0.0, 0.0, 0.0, 0.0));
         while (compare.isBefore(end)) {
             result.add(new ForecastEntry(compare, compare.plus(1L, computeUnit(interval)), 0.0, 0.0, 0.0, 0.0, 0.0));
-            compare = compare.plus(1L, computeUnit(interval));
+            compare = computeAddition(compare, interval);
         }
 
         BigDecimal e;
@@ -305,5 +312,45 @@ public class InvestingService {
             case YEARLY -> interval.equals(AggregateInterval.YEARLY);
             default -> true;
         };
+    }
+
+    /**
+     * Recomputes the earnings where necessary
+     *
+     * @param entries {@link List} of {@link ForecastEntry}
+     * @return {@link List} of {@link ForecastEntry}
+     */
+    private List<ForecastEntry> recomputeEarnings(final List<ForecastEntry> entries) {
+
+        if (CollectionUtils.isEmpty(entries)) {
+            return Collections.emptyList();
+        }
+
+        BigDecimal decimal = BigDecimal.ZERO;
+        List<ForecastEntry> result = new ArrayList<>(entries);
+
+        for (int i = 0; i < result.size(); i++) {
+            ForecastEntry temp = result.get(i);
+            decimal = decimal.add(BigDecimal.valueOf(temp.earnings()));
+            result.set(i, new ForecastEntry(temp.startDate(), temp.endDate(), temp.earnings(), decimal.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), temp.balance(), temp.deposits(), temp.withdrawals()));
+        }
+
+        return result;
+    }
+
+    /**
+     * Computes how to manipulate the given {@link LocalDate} based on the given {@link AggregateInterval}
+     *
+     * @param compare {@link LocalDate}
+     * @param interval {@link AggregateInterval}
+     * @return adjusted {@link LocalDate}
+     */
+    private LocalDate computeAddition(final LocalDate compare, final AggregateInterval interval) {
+
+        if (interval.equals(AggregateInterval.YEARLY)) {
+            return compare.plusMonths(ChronoUnit.MONTHS.between(compare, compare.plusYears(1L).with(TemporalAdjusters.firstDayOfYear())));
+        }
+
+        return compare.plus(1L, computeUnit(interval));
     }
 }

@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record ForecastStatistics(List<ForecastEntry> entries) {
+public record ForecastStatistics(Double startingBalance, List<ForecastEntry> entries) {
 
 
     //  METHODS
@@ -66,17 +66,10 @@ public record ForecastStatistics(List<ForecastEntry> entries) {
      * @return {@link Double}
      */
     public Double getTotalNetEarnings() {
-
-        double netEarnings =
-                this.entries
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .mapToDouble(ForecastEntry::netEarnings)
-                        .sum();
-
         return
                 BigDecimal
-                        .valueOf(netEarnings)
+                        .valueOf(this.getTotalEarnings())
+                        .add(BigDecimal.valueOf(this.getTotalDeposits()))
                         .setScale(2, RoundingMode.HALF_EVEN)
                         .doubleValue();
     }
@@ -109,16 +102,13 @@ public record ForecastStatistics(List<ForecastEntry> entries) {
      */
     public Double getTotalBalance() {
 
-        double balance =
-                this.entries
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .mapToDouble(ForecastEntry::balance)
-                        .sum();
+        if (this.entries.isEmpty()) {
+            return 0.0;
+        }
 
         return
                 BigDecimal
-                        .valueOf(balance)
+                        .valueOf(this.entries.get(this.entries.size() - 1).balance())
                         .setScale(2, RoundingMode.HALF_EVEN)
                         .doubleValue();
     }

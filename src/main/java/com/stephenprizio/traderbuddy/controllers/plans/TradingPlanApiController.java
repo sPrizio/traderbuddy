@@ -107,7 +107,7 @@ public class TradingPlanApiController {
                 tradingPlan
                         .map(plan -> {
                             final List<ForecastEntry> entries = this.investingService.forecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT)));
-                            return new StandardJsonResponse(true, new ForecastSummary(entries, new ForecastStatistics(entries)), StringUtils.EMPTY);
+                            return new StandardJsonResponse(true, new ForecastSummary(entries, new ForecastStatistics(plan.getStartingBalance(), entries)), StringUtils.EMPTY);
                         }).orElseGet(() ->
                                 new StandardJsonResponse(false, null, "No active trading plan was found")
                         );
