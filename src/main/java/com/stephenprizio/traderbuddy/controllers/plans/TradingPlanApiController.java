@@ -106,14 +106,39 @@ public class TradingPlanApiController {
         return
                 tradingPlan
                         .map(plan -> {
-                            final List<ForecastEntry> entries = this.investingService.forecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT)));
+                            final List<ForecastEntry> entries =
+                                    this.investingService.forecast(
+                                            plan,
+                                            AggregateInterval.valueOf(interval.toUpperCase()),
+                                            LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                            LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT))
+                                    );
                             return new StandardJsonResponse(true, new ForecastSummary(entries, new ForecastStatistics(plan.getStartingBalance(), entries)), StringUtils.EMPTY);
                         }).orElseGet(() ->
                                 new StandardJsonResponse(false, null, "No active trading plan was found")
                         );
     }
 
+    @ResponseBody
+    @GetMapping("/performance")
+    public StandardJsonResponse getPerformanceForForecast(final @RequestParam("interval") String interval, final @RequestParam("begin") String begin, final @RequestParam("limit") String limit) {
 
+        validateLocalDateFormat(begin, DATE_FORMAT, "The start date %s was not of the expected format %s", begin, DATE_FORMAT);
+        validateLocalDateFormat(limit, DATE_FORMAT, "The end date %s was not of the expected format %s", limit, DATE_FORMAT);
+
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid interval", interval));
+        }
+
+        Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+        return
+                tradingPlan
+                        .map(plan ->
+                                new StandardJsonResponse(true, this.investingService.obtainTradingPerformanceForForecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT))), StringUtils.EMPTY))
+                        .orElseGet(() ->
+                                new StandardJsonResponse(false, null, "No active trading plan was found")
+                        );
+    }
 
 
     //  ----------------- POST REQUESTS -----------------
@@ -138,9 +163,9 @@ public class TradingPlanApiController {
     /**
      * Modifies an existing {@link TradingPlan}
      *
-     * @param name plan name
-     * @param startDate plan start date
-     * @param endDate plan end date
+     * @param name        plan name
+     * @param startDate   plan start date
+     * @param endDate     plan end date
      * @param requestBody json request
      * @return {@link StandardJsonResponse}
      */

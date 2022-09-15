@@ -41,8 +41,6 @@ public class TradingSummaryService {
 
     //  METHODS
 
-    //  TODO: will need the use of a Goal / Target
-
     /**
      * Obtains a {@link TradingRecord} for the given time interval
      *
@@ -68,10 +66,8 @@ public class TradingSummaryService {
                             .multiply(BigDecimal.valueOf(100.0));
         }
 
-        return new TradingRecord(start, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, /*netProfit.subtract(BigDecimal.valueOf(target)).doubleValue()*/0.0, ChronoUnit.DAYS.between(start, end) > 1);
+        return new TradingRecord(start, end, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, 0.0, ChronoUnit.DAYS.between(start, end) > 1, null);
     }
-
-    //  TODO: will need the use of a Goal / Target
 
     /**
      * Generates a {@link TradingSummary} for the given time span and interval

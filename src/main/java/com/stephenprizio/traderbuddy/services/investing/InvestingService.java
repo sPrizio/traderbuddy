@@ -5,7 +5,11 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.records.calculator.FinancingInfo;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecordStatistics;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
 import com.stephenprizio.traderbuddy.services.calculator.CompoundInterestCalculator;
+import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +21,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
@@ -35,6 +37,9 @@ public class InvestingService {
 
     @Resource(name = "compoundInterestCalculator")
     private CompoundInterestCalculator compoundInterestCalculator;
+
+    @Resource(name = "tradingSummaryService")
+    public TradingSummaryService tradingSummaryService;
 
 
     //  METHODS
@@ -92,7 +97,8 @@ public class InvestingService {
                             accruedEarnings.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             balance.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             computeDepositBalance(tradingPlan, compare, balance, index).equals(balance) ? 0.0 : tradingPlan.getDepositPlan().getAmount(),
-                            computeWithdrawalBalance(tradingPlan, compare, balance, index).equals(balance) ? 0.0 : tradingPlan.getWithdrawalPlan().getAmount()
+                            computeWithdrawalBalance(tradingPlan, compare, balance, index).equals(balance) ? 0.0 : tradingPlan.getWithdrawalPlan().getAmount(),
+                            tradingPlan.getProfitTarget()
                     )
             );
 
@@ -106,6 +112,43 @@ public class InvestingService {
 
 
         return aggregate(entries, (begin.isBefore(tradingPlan.getStartDate()) ? tradingPlan.getStartDate() : begin),  (limit.isAfter(tradingPlan.getEndDate()) ? tradingPlan.getEndDate() : limit), tradingPlan.getCompoundFrequency(), interval);
+    }
+
+    public TradingSummary obtainTradingPerformanceForForecast(final TradingPlan tradingPlan, final AggregateInterval interval, final LocalDate begin, final LocalDate limit) {
+
+        List<ForecastEntry> entries = forecast(tradingPlan, interval, begin, limit);
+        Map<LocalDate, ForecastEntry> entryMap = new HashMap<>();
+        entries.forEach(e -> entryMap.put(e.startDate(), e));
+
+        List<TradingRecord> records = this.tradingSummaryService.getReportOfSummariesForTimeSpan(begin.atStartOfDay(), limit.atStartOfDay(), interval).records();
+        List<TradingRecord> result = new ArrayList<>();
+
+        for (TradingRecord tradingRecord : records) {
+            ForecastEntry tempEntry = entryMap.get(tradingRecord.start().toLocalDate());
+
+            if (tempEntry != null) {
+                LocalDate now = LocalDate.now();
+                BigDecimal percentageProfit = computePercentageProfit(tempEntry.earnings(), tradingRecord.netProfit(), tradingPlan.getProfitTarget());
+                BigDecimal surplus = BigDecimal.valueOf(tradingRecord.netProfit()).subtract(BigDecimal.valueOf(tempEntry.earnings())).setScale(2, RoundingMode.HALF_EVEN);
+
+                result.add(
+                        new TradingRecord(
+                                tradingRecord.start(),
+                                tradingRecord.end(),
+                                tempEntry.earnings(),
+                                tradingRecord.numberOfTrades(),
+                                tradingRecord.winPercentage(),
+                                tradingRecord.netProfit(),
+                                tradingRecord.end().toLocalDate().isBefore(now) ? percentageProfit.doubleValue() : 0.0,
+                                tradingRecord.end().toLocalDate().isBefore(now) ? surplus.doubleValue() : 0.0,
+                                tradingRecord.show(),
+                                tradingRecord.end().toLocalDate().isBefore(now) ? percentageProfit.doubleValue() >= tradingPlan.getProfitTarget() : null
+                        )
+                );
+            }
+        }
+
+        return new TradingSummary(result, new TradingRecordStatistics(result));
     }
 
 
@@ -250,9 +293,9 @@ public class InvestingService {
         List<ForecastEntry> result = new ArrayList<>();
         LocalDate compare = computeAddition(start, interval);
 
-        result.add(new ForecastEntry(start, compare, 0.0, 0.0, 0.0, 0.0, 0.0));
+        result.add(new ForecastEntry(start, compare, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
         while (compare.isBefore(end)) {
-            result.add(new ForecastEntry(compare, compare.plus(1L, computeUnit(interval)), 0.0, 0.0, 0.0, 0.0, 0.0));
+            result.add(new ForecastEntry(compare, compare.plus(1L, computeUnit(interval)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
             compare = computeAddition(compare, interval);
         }
 
@@ -289,7 +332,8 @@ public class InvestingService {
                             e.add(d).setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             b.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                             d.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
-                            w.setScale(2, RoundingMode.HALF_EVEN).doubleValue()
+                            w.setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                            result.get(i).goal()
                     )
             );
         }
@@ -332,7 +376,7 @@ public class InvestingService {
         for (int i = 0; i < result.size(); i++) {
             ForecastEntry temp = result.get(i);
             decimal = decimal.add(BigDecimal.valueOf(temp.earnings()));
-            result.set(i, new ForecastEntry(temp.startDate(), temp.endDate(), temp.earnings(), decimal.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), temp.balance(), temp.deposits(), temp.withdrawals()));
+            result.set(i, new ForecastEntry(temp.startDate(), temp.endDate(), temp.earnings(), decimal.setScale(2, RoundingMode.HALF_EVEN).doubleValue(), temp.balance(), temp.deposits(), temp.withdrawals(), temp.goal()));
         }
 
         return result;
@@ -352,5 +396,14 @@ public class InvestingService {
         }
 
         return compare.plus(1L, computeUnit(interval));
+    }
+
+    private BigDecimal computePercentageProfit(final Double target, final Double result, final Double targetPercentage) {
+
+        if (result == 0.0) {
+            return BigDecimal.ZERO;
+        }
+
+        return BigDecimal.valueOf(1).subtract(BigDecimal.valueOf(target).divide(BigDecimal.valueOf(result), RoundingMode.HALF_EVEN)).add(BigDecimal.valueOf(targetPercentage));
     }
 }

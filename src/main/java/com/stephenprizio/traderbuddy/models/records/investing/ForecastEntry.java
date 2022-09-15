@@ -14,7 +14,7 @@ import java.time.LocalDate;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record ForecastEntry(LocalDate startDate, LocalDate endDate, Double earnings, Double netEarnings, Double balance, Double deposits, Double withdrawals) {
+public record ForecastEntry(LocalDate startDate, LocalDate endDate, Double earnings, Double netEarnings, Double balance, Double deposits, Double withdrawals, Double goal) {
 
     /**
      * Returns true if the current date is between the start and end date

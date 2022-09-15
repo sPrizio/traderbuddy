@@ -74,4 +74,45 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                 .setScale(2, RoundingMode.HALF_EVEN)
                 .doubleValue();
     }
+
+    /**
+     * Obtains the average of profitPercentage
+     *
+     * @return {@link Double}
+     */
+    public Double getAverageProfitPercentage() {
+
+        OptionalDouble average =
+                this.records.
+                        stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .filter(TradingRecord::isCompletedSession)
+                        .mapToDouble(TradingRecord::percentageProfit)
+                        .average();
+
+        return
+                BigDecimal
+                        .valueOf(average.orElse(0.0))
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
+
+    /**
+     * Obtains the sum of surplus
+     *
+     * @return {@link Double}
+     */
+    public Double getSurplus() {
+        return
+                BigDecimal.valueOf(
+                                this.records
+                                        .stream()
+                                        .filter(Objects::nonNull)
+                                        .filter(TradingRecord::isCompletedSession)
+                                        .mapToDouble(TradingRecord::surplus)
+                                        .sum()
+                        ).setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
 }
