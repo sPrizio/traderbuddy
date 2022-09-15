@@ -398,6 +398,14 @@ public class InvestingService {
         return compare.plus(1L, computeUnit(interval));
     }
 
+    /**
+     * Computes the percentage profit
+     *
+     * @param target {@link Double} target
+     * @param result {@link Double} result
+     * @param targetPercentage {@link Double} percentage
+     * @return {@link BigDecimal}
+     */
     private BigDecimal computePercentageProfit(final Double target, final Double result, final Double targetPercentage) {
 
         if (result == 0.0) {
