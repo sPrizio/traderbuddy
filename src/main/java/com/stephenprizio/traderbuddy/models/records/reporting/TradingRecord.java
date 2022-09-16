@@ -26,6 +26,7 @@ public record TradingRecord(LocalDateTime start, LocalDateTime end, Double targe
      * @return true if weekend or no trades taken
      */
     public Boolean isEmpty() {
+
         if (Boolean.TRUE.equals(this.show)) {
             return false;
         }
@@ -39,6 +40,7 @@ public record TradingRecord(LocalDateTime start, LocalDateTime end, Double targe
      * @return true if weekend entry
      */
     public Boolean isWeekend() {
+
         if (Boolean.TRUE.equals(this.show)) {
             return false;
         }

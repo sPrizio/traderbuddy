@@ -49,6 +49,7 @@ public class InvestingService {
      *
      * @param tradingPlan {@link TradingPlan}
      * @param interval {@link AggregateInterval}
+     * @param begin start date for aggregation
      * @param limit end date for aggregation
      * @return {@link List} of {@link ForecastEntry}
      */
@@ -114,6 +115,14 @@ public class InvestingService {
         return aggregate(entries, (begin.isBefore(tradingPlan.getStartDate()) ? tradingPlan.getStartDate() : begin),  (limit.isAfter(tradingPlan.getEndDate()) ? tradingPlan.getEndDate() : limit), tradingPlan.getCompoundFrequency(), interval);
     }
 
+    /**
+     * Generates a {@link TradingSummary} for the given {@link TradingPlan} and time span
+     * @param tradingPlan {@link TradingPlan}
+     * @param interval {@link AggregateInterval}
+     * @param begin start date for aggregation
+     * @param limit end date for aggregation
+     * @return {@link TradingSummary}
+     */
     public TradingSummary obtainTradingPerformanceForForecast(final TradingPlan tradingPlan, final AggregateInterval interval, final LocalDate begin, final LocalDate limit) {
 
         List<ForecastEntry> entries = forecast(tradingPlan, interval, begin, limit);
@@ -127,7 +136,6 @@ public class InvestingService {
             ForecastEntry tempEntry = entryMap.get(tradingRecord.start().toLocalDate());
 
             if (tempEntry != null) {
-                LocalDate now = LocalDate.now();
                 BigDecimal percentageProfit = computePercentageProfit(tempEntry.earnings(), tradingRecord.netProfit(), tradingPlan.getProfitTarget());
                 BigDecimal surplus = BigDecimal.valueOf(tradingRecord.netProfit()).subtract(BigDecimal.valueOf(tempEntry.earnings())).setScale(2, RoundingMode.HALF_EVEN);
 
@@ -139,10 +147,10 @@ public class InvestingService {
                                 tradingRecord.numberOfTrades(),
                                 tradingRecord.winPercentage(),
                                 tradingRecord.netProfit(),
-                                tradingRecord.end().toLocalDate().isBefore(now) ? percentageProfit.doubleValue() : 0.0,
-                                tradingRecord.end().toLocalDate().isBefore(now) ? surplus.doubleValue() : 0.0,
+                                Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.doubleValue() : 0.0,
+                                Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? surplus.doubleValue() : 0.0,
                                 tradingRecord.show(),
-                                tradingRecord.end().toLocalDate().isBefore(now) ? percentageProfit.doubleValue() >= tradingPlan.getProfitTarget() : null
+                                Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.doubleValue() >= tradingPlan.getProfitTarget() : null
                         )
                 );
             }
@@ -255,7 +263,7 @@ public class InvestingService {
      * @param compare {@link LocalDate}
      * @return true if the given date is the first monday of the month
      */
-    private boolean isFirstBusinessDayOfMonth(final LocalDate compare) {
+    private Boolean isFirstBusinessDayOfMonth(final LocalDate compare) {
         LocalDate firstBusinessDayOfMonth = compare.with(TemporalAdjusters.firstDayOfMonth());
         while (firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SATURDAY) || firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
             firstBusinessDayOfMonth = firstBusinessDayOfMonth.plusDays(1);
@@ -348,7 +356,7 @@ public class InvestingService {
      * @param interval {@link AggregateInterval}
      * @return true if they're equivalent
      */
-    private boolean areIntervalsEqual(final CompoundFrequency frequency, final AggregateInterval interval) {
+    private Boolean areIntervalsEqual(final CompoundFrequency frequency, final AggregateInterval interval) {
         return switch (frequency) {
             case DAILY, DAILY_NO_WEEKENDS -> interval.equals(AggregateInterval.DAILY);
             case WEEKLY -> interval.equals(AggregateInterval.WEEKLY);
@@ -413,5 +421,16 @@ public class InvestingService {
         }
 
         return BigDecimal.valueOf(1).subtract(BigDecimal.valueOf(target).divide(BigDecimal.valueOf(result), RoundingMode.HALF_EVEN)).add(BigDecimal.valueOf(targetPercentage));
+    }
+
+    /**
+     * Returns true if the current day is not referenced in the {@link TradingRecord}
+     *
+     * @param tradingRecord {@link TradingRecord}
+     * @return true if today != trading record period
+     */
+    public Boolean isCompletedSession(final TradingRecord tradingRecord) {
+        LocalDate now = LocalDate.now();
+        return tradingRecord.start().isBefore(now.atStartOfDay()) && (tradingRecord.end().isBefore(now.atStartOfDay()) || tradingRecord.end().isEqual(now.atStartOfDay()));
     }
 }

@@ -6,17 +6,25 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
+import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link InvestingService}
@@ -33,6 +41,9 @@ public class InvestingServiceTest extends AbstractGenericTest {
     @Resource(name = "investingService")
     private InvestingService investingService;
 
+    @MockBean
+    private TradingSummaryService tradingSummaryService;
+
     @Before
     public void setUp() {
         TEST_PLAN.setActive(true);
@@ -41,6 +52,8 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setStartingBalance(1000.0);
         TEST_PLAN.setDepositPlan(null);
         TEST_PLAN.setWithdrawalPlan(null);
+
+        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(new TradingSummary(List.of(new TradingRecord(LocalDate.of(2022, 8, 1).atStartOfDay(), LocalDateTime.MAX, 0.0, 0, 0, 0.0, 0.0, 0.0, true, true)), null));
     }
 
 
@@ -175,5 +188,21 @@ public class InvestingServiceTest extends AbstractGenericTest {
                 .element(7)
                 .extracting("earnings", "balance")
                 .containsExactly(4249.78, 17099.89);
+    }
+
+
+    //  ----------------- obtainTradingPerformanceForForecast -----------------
+
+    @Test
+    public void test_obtainTradingPerformanceForForecast_success() {
+        TEST_PLAN.setStartDate(LocalDate.of(2022, 8, 1));
+        TEST_PLAN.setEndDate(LocalDate.of(2023, 8, 1));
+        TEST_PLAN.setProfitTarget(1.25);
+        TEST_PLAN.setCompoundFrequency(CompoundFrequency.DAILY_NO_WEEKENDS);
+        TEST_PLAN.setDepositPlan(generateDepositPlan());
+        TEST_PLAN.setWithdrawalPlan(null);
+
+        assertThat(this.investingService.obtainTradingPerformanceForForecast(TEST_PLAN, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
+                .isNotNull();
     }
 }

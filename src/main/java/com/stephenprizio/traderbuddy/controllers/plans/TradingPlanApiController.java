@@ -89,20 +89,15 @@ public class TradingPlanApiController {
     /**
      * Obtains the forecast for the currently active {@link TradingPlan}
      *
+     * @param interval {@link AggregateInterval}
+     * @param begin start of period look back
+     * @param limit end of period look back
      * @return {@link StandardJsonResponse}
      */
     @ResponseBody
     @GetMapping("/forecast")
     public StandardJsonResponse getForecast(final @RequestParam("interval") String interval, final @RequestParam("begin") String begin, final @RequestParam("limit") String limit) {
-
-        validateLocalDateFormat(begin, DATE_FORMAT, "The start date %s was not of the expected format %s", begin, DATE_FORMAT);
-        validateLocalDateFormat(limit, DATE_FORMAT, "The end date %s was not of the expected format %s", limit, DATE_FORMAT);
-
-        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
-            return new StandardJsonResponse(false, null, String.format("%s is not a valid interval", interval));
-        }
-
-        Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+        Optional<TradingPlan> tradingPlan = obtainTradingPlan(interval, begin, limit);
         return
                 tradingPlan
                         .map(plan -> {
@@ -115,28 +110,28 @@ public class TradingPlanApiController {
                                     );
                             return new StandardJsonResponse(true, new ForecastSummary(entries, new ForecastStatistics(plan.getStartingBalance(), entries)), StringUtils.EMPTY);
                         }).orElseGet(() ->
-                                new StandardJsonResponse(false, null, "No active trading plan was found")
+                                new StandardJsonResponse(false, null, String.format("No active trading plan was found for interval %s, start %s, end %s", interval, begin, limit))
                         );
     }
 
+    /**
+     * Obtains the performance based on a forecast
+     *
+     * @param interval {@link AggregateInterval}
+     * @param begin start of period look back
+     * @param limit end of period look back
+     * @return {@link StandardJsonResponse}
+     */
     @ResponseBody
     @GetMapping("/performance")
     public StandardJsonResponse getPerformanceForForecast(final @RequestParam("interval") String interval, final @RequestParam("begin") String begin, final @RequestParam("limit") String limit) {
-
-        validateLocalDateFormat(begin, DATE_FORMAT, "The start date %s was not of the expected format %s", begin, DATE_FORMAT);
-        validateLocalDateFormat(limit, DATE_FORMAT, "The end date %s was not of the expected format %s", limit, DATE_FORMAT);
-
-        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
-            return new StandardJsonResponse(false, null, String.format("%s is not a valid interval", interval));
-        }
-
-        Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+        Optional<TradingPlan> tradingPlan = obtainTradingPlan(interval, begin, limit);
         return
                 tradingPlan
                         .map(plan ->
                                 new StandardJsonResponse(true, this.investingService.obtainTradingPerformanceForForecast(plan, AggregateInterval.valueOf(interval.toUpperCase()), LocalDate.parse(begin, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(limit, DateTimeFormatter.ofPattern(DATE_FORMAT))), StringUtils.EMPTY))
                         .orElseGet(() ->
-                                new StandardJsonResponse(false, null, "No active trading plan was found")
+                                new StandardJsonResponse(false, null, String.format("No active trading plan was found for interval %s, start %s, end %s", interval, begin, limit))
                         );
     }
 
@@ -197,5 +192,25 @@ public class TradingPlanApiController {
         if (requestBody.containsKey("withdrawalPlan")) {
             validateJsonIntegrity((Map<String, Object>) requestBody.get("withdrawalPlan"), List.of("amount", "frequency"), "json did contain the required keys: [amount, frequency]");
         }
+    }
+
+    /**
+     * Obtains a trading plan
+     *
+     * @param interval {@link AggregateInterval}
+     * @param begin start of period look back
+     * @param limit end of period look back
+     * @return {@link Optional} {@link TradingPlan}
+     */
+    private Optional<TradingPlan> obtainTradingPlan(final String interval, final String begin, final String limit) {
+
+        validateLocalDateFormat(begin, DATE_FORMAT, "The start date %s was not of the expected format %s", begin, DATE_FORMAT);
+        validateLocalDateFormat(limit, DATE_FORMAT, "The end date %s was not of the expected format %s", limit, DATE_FORMAT);
+
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return Optional.empty();
+        }
+
+        return this.tradingPlanService.findCurrentlyActiveTradingPlan();
     }
 }
