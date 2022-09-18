@@ -9,6 +9,8 @@ import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
+import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
+import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
 import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
@@ -177,5 +179,35 @@ public abstract class AbstractGenericTest {
         return List.of(
                 new ForecastEntry(LocalDate.MIN, LocalDate.MAX, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
         );
+    }
+
+    public List<RetrospectiveEntry> generateEntries() {
+
+        RetrospectiveEntry entry1 = new RetrospectiveEntry();
+        RetrospectiveEntry entry2 = new RetrospectiveEntry();
+
+        entry1.setKeyPoint(true);
+        entry1.setEntryText("Test 1");
+        entry1.setLineNumber(1);
+
+        entry2.setKeyPoint(true);
+        entry2.setEntryText("Test 2");
+        entry2.setLineNumber(1);
+
+        return List.of(entry1, entry2);
+    }
+
+    public List<Retrospective> generateRetrospectives() {
+
+        Retrospective retrospective1 = new Retrospective();
+        Retrospective retrospective2 = new Retrospective();
+
+        retrospective1.setStartDate(LocalDate.of(2022, 9, 5));
+        retrospective1.setEndDate(LocalDate.of(2022, 9, 11));
+
+        retrospective2.setStartDate(LocalDate.of(2022, 9, 12));
+        retrospective2.setEndDate(LocalDate.of(2022, 9, 18));
+
+        return List.of(retrospective1, retrospective2);
     }
 }
