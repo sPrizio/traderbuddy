@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.repositories.retrospectives;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -26,4 +27,14 @@ public interface RetrospectiveRepository extends CrudRepository<Retrospective, L
      */
     @Query("SELECT r FROM Retrospective r WHERE r.startDate >= ?1 AND r.endDate < ?2 ORDER BY r.endDate DESC")
     List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end);
+
+    /**
+     * Returns a {@link Retrospective} for the given start, end dates and interval
+     *
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
+     * @param intervalFrequency {@link AggregateInterval}
+     * @return {@link Retrospective}
+     */
+    Retrospective findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(final LocalDate start, final LocalDate end, final AggregateInterval intervalFrequency);
 }

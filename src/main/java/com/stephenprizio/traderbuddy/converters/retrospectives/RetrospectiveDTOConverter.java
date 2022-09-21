@@ -35,6 +35,7 @@ public class RetrospectiveDTOConverter implements GenericDTOConverter<Retrospect
 
         retrospectiveDTO.setStartDate(entity.getStartDate());
         retrospectiveDTO.setEndDate(entity.getEndDate());
+        retrospectiveDTO.setIntervalFrequency(entity.getIntervalFrequency());
 
         if (CollectionUtils.isNotEmpty(entity.getPoints())) {
             retrospectiveDTO.setPoints(this.retrospectiveEntryDTOConverter.convertAll(entity.getPoints()));

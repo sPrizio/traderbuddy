@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.models.dto.retrospectives;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
 import lombok.Getter;
@@ -23,6 +24,10 @@ public class RetrospectiveDTO implements GenericDTO {
     @Getter
     @Setter
     private LocalDate endDate;
+
+    @Getter
+    @Setter
+    private AggregateInterval intervalFrequency;
 
     @Getter
     @Setter

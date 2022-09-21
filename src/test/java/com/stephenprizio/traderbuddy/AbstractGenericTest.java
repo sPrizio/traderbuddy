@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
@@ -204,9 +205,11 @@ public abstract class AbstractGenericTest {
 
         retrospective1.setStartDate(LocalDate.of(2022, 9, 5));
         retrospective1.setEndDate(LocalDate.of(2022, 9, 11));
+        retrospective1.setIntervalFrequency(AggregateInterval.MONTHLY);
 
         retrospective2.setStartDate(LocalDate.of(2022, 9, 12));
         retrospective2.setEndDate(LocalDate.of(2022, 9, 18));
+        retrospective2.setIntervalFrequency(AggregateInterval.WEEKLY);
 
         return List.of(retrospective1, retrospective2);
     }

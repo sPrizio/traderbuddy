@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.models.entities.retrospectives;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
-@Table(name = "retrospectives")
+@Table(name = "retrospectives", uniqueConstraints = @UniqueConstraint(name = "UniqueIntervalAndStartDateAndEndDate", columnNames = {"interval_frequency", "start_date", "end_date"}))
 public class Retrospective {
 
     @Id
@@ -24,13 +25,18 @@ public class Retrospective {
 
     @Getter
     @Setter
-    @Column
+    @Column(name = "start_date")
     private LocalDate startDate;
 
     @Getter
     @Setter
-    @Column
+    @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Getter
+    @Setter
+    @Column(name = "interval_frequency")
+    private AggregateInterval intervalFrequency;
 
     @Getter
     @Setter

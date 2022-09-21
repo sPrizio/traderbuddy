@@ -67,7 +67,7 @@ public class TradingPlanService {
      * @param status {@link TradingPlanStatus}
      * @return {@link List} of {@link TradingPlan}s
      */
-    public List<TradingPlan> findTradingPlansForStatus(TradingPlanStatus status) {
+    public List<TradingPlan> findTradingPlansForStatus(final TradingPlanStatus status) {
         validateParameterIsNotNull(status, "tradingPlan status cannot be null");
         return this.tradingPlanRepository.findAllByStatus(status);
     }
@@ -80,7 +80,7 @@ public class TradingPlanService {
      * @param endDate {@link LocalDate} end date
      * @return {@link Optional} {@link TradingPlan}
      */
-    public Optional<TradingPlan> findTradingPlanForNameAndStartDateAndEndDate(String name, LocalDate startDate, LocalDate endDate) {
+    public Optional<TradingPlan> findTradingPlanForNameAndStartDateAndEndDate(final String name, final LocalDate startDate, final LocalDate endDate) {
 
         validateParameterIsNotNull(name, "name cannot be null");
         validateParameterIsNotNull(startDate, "startDate cannot be null");
@@ -96,7 +96,7 @@ public class TradingPlanService {
      * @param data {@link Map}
      * @return newly created {@link TradingPlan}
      */
-    public TradingPlan createTradingPlan(Map<String, Object> data) {
+    public TradingPlan createTradingPlan(final Map<String, Object> data) {
 
         if (MapUtils.isEmpty(data)) {
             throw new MissingRequiredDataException("The required data for creating a TradingPlan was null or empty");
@@ -119,10 +119,18 @@ public class TradingPlanService {
     /**
      * Updates an existing {@link TradingPlan} with the given {@link Map} of data. Update methods are designed to be idempotent.
      *
+     * @param name name
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
      * @param data {@link Map}
      * @return modified {@link TradingPlan}
      */
-    public TradingPlan updateTradingPlan(String name, LocalDate start, LocalDate end, Map<String, Object> data) {
+    public TradingPlan updateTradingPlan(final String name, final LocalDate start, final LocalDate end, final Map<String, Object> data) {
+
+        validateParameterIsNotNull(name, "name cannot be null");
+        validateParameterIsNotNull(start, "start date cannot be null");
+        validateParameterIsNotNull(end, "end date cannot be null");
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), "startDate was after endDate or vice versa");
 
         if (MapUtils.isEmpty(data)) {
             throw new MissingRequiredDataException("The required data for updating the TradingPlan was null or empty");
@@ -149,7 +157,7 @@ public class TradingPlanService {
      * @param data {@link Map} of data
      * @return {@link TradingPlan}
      */
-    private TradingPlan applyChanges(final TradingPlan tradingPlan, Map<String, Object> data) {
+    private TradingPlan applyChanges(final TradingPlan tradingPlan, final Map<String, Object> data) {
 
         Map<String, Object> plan = (Map<String, Object>) data.get("plan");
 

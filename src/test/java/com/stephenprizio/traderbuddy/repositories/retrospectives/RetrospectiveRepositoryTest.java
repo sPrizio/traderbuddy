@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.repositories.retrospectives;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,5 +45,14 @@ public class RetrospectiveRepositoryTest extends AbstractGenericTest {
     public void test_findAllRetrospectivesWithinDate_success() {
         assertThat(this.retrospectiveRepository.findAllRetrospectivesWithinDate(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 1)))
                 .hasSize(2);
+    }
+
+
+    //  ----------------- findRetrospectiveByStartDateAndEndDateAndIntervalFrequency -----------------
+
+    @Test
+    public void test_findRetrospectiveByStartDateAndEndDateAndIntervalFrequency_success() {
+        assertThat(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 11), AggregateInterval.MONTHLY))
+                .isNotNull();
     }
 }
