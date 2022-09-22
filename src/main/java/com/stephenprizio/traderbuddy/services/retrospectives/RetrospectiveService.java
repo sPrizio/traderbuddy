@@ -145,11 +145,11 @@ public class RetrospectiveService {
             List<RetrospectiveEntry> entries = new ArrayList<>();
             List<Map<String, Object>> points = (List<Map<String, Object>>) retro.get("points");
 
-            for (int i = 0; i < points.size(); i++) {
+            for (Map<String, Object> point : points) {
                 RetrospectiveEntry entry = new RetrospectiveEntry();
-                entry.setEntryText(points.get(i).get("entryText").toString());
-                entry.setKeyPoint(Boolean.parseBoolean(points.get(i).get("keyPoint").toString()));
-                entry.setLineNumber(i + 1);
+                entry.setEntryText(point.get("entryText").toString());
+                entry.setKeyPoint(Boolean.parseBoolean(point.get("keyPoint").toString()));
+                entry.setLineNumber(Integer.parseInt(point.get("lineNumber").toString()));
                 entries.add(entry);
             }
 
