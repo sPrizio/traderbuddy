@@ -7,17 +7,16 @@ import com.stephenprizio.traderbuddy.exceptions.validation.MissingRequiredDataEx
 import com.stephenprizio.traderbuddy.exceptions.validation.NoResultFoundException;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
+import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveEntryRepository;
 import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveRepository;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
@@ -31,7 +30,11 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.validate
 @Component("retrospectiveService")
 public class RetrospectiveService {
 
+    private static final String NULL_INTERVAL = "interval cannot be null";
     private static final String MUTUALLY_EXCLUSIVE_DATES = "startDate was after endDate or vice versa";
+
+    @Resource(name = "retrospectiveEntryRepository")
+    private RetrospectiveEntryRepository retrospectiveEntryRepository;
 
     @Resource(name = "retrospectiveRepository")
     private RetrospectiveRepository retrospectiveRepository;
@@ -46,13 +49,14 @@ public class RetrospectiveService {
      * @param end {@link LocalDate} exclusive
      * @return {@link List} of {@link Retrospective}s
      */
-    public List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end) {
+    public List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
 
         validateParameterIsNotNull(start, "startDate cannot be null");
         validateParameterIsNotNull(end, "endDate cannot be null");
+        validateParameterIsNotNull(interval, NULL_INTERVAL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
 
-        return this.retrospectiveRepository.findAllRetrospectivesWithinDate(start, end);
+        return this.retrospectiveRepository.findAllRetrospectivesWithinDate(start, end, interval);
     }
 
     /**
@@ -67,7 +71,7 @@ public class RetrospectiveService {
 
         validateParameterIsNotNull(start, "start date cannot be null");
         validateParameterIsNotNull(end, "end date cannot be null");
-        validateParameterIsNotNull(interval, "interval cannot be null");
+        validateParameterIsNotNull(interval, NULL_INTERVAL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
 
         return Optional.ofNullable(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(start, end, interval));
@@ -105,7 +109,7 @@ public class RetrospectiveService {
 
         validateParameterIsNotNull(start, "start date cannot be null");
         validateParameterIsNotNull(end, "end date cannot be null");
-        validateParameterIsNotNull(interval, "interval cannot be null");
+        validateParameterIsNotNull(interval, NULL_INTERVAL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
 
         if (MapUtils.isEmpty(data)) {
@@ -133,15 +137,25 @@ public class RetrospectiveService {
      * @param data {@link Map}
      * @return updated {@link Retrospective}
      */
-    private Retrospective applyChanges(final Retrospective retrospective, final Map<String, Object> data) {
+    private Retrospective applyChanges(Retrospective retrospective, final Map<String, Object> data) {
 
         Map<String, Object> retro = (Map<String, Object>) data.get("retrospective");
 
         retrospective.setStartDate(LocalDate.parse(retro.get("startDate").toString(), DateTimeFormatter.ISO_DATE));
         retrospective.setEndDate(LocalDate.parse(retro.get("endDate").toString(), DateTimeFormatter.ISO_DATE));
-        retrospective.setIntervalFrequency(AggregateInterval.valueOf(retro.get("interval").toString()));
+        retrospective.setIntervalFrequency(AggregateInterval.valueOf(retro.get("intervalFrequency").toString()));
+
+        retrospective = this.retrospectiveRepository.save(retrospective);
 
         if (retro.containsKey("points")) {
+            List<RetrospectiveEntry> oldEntries = retrospective.getPoints() != null ? new ArrayList<>(retrospective.getPoints()) : new ArrayList<>();
+            for (RetrospectiveEntry e : oldEntries) {
+                retrospective.removePoint(e);
+                this.retrospectiveEntryRepository.delete(e);
+            }
+
+            retrospective = this.retrospectiveRepository.save(retrospective);
+
             List<RetrospectiveEntry> entries = new ArrayList<>();
             List<Map<String, Object>> points = (List<Map<String, Object>>) retro.get("points");
 
@@ -150,10 +164,11 @@ public class RetrospectiveService {
                 entry.setEntryText(point.get("entryText").toString());
                 entry.setKeyPoint(Boolean.parseBoolean(point.get("keyPoint").toString()));
                 entry.setLineNumber(Integer.parseInt(point.get("lineNumber").toString()));
+
+                entry = this.retrospectiveEntryRepository.save(entry);
+                retrospective.addPoint(entry);
                 entries.add(entry);
             }
-
-            retrospective.setPoints(entries);
         }
 
         return this.retrospectiveRepository.save(retrospective);

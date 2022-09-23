@@ -49,7 +49,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.retrospectiveService.findAllRetrospectivesWithinDate(any(), any())).thenReturn(generateRetrospectives());
+        Mockito.when(this.retrospectiveService.findAllRetrospectivesWithinDate(any(), any(), any())).thenReturn(generateRetrospectives());
         Mockito.when(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 6), AggregateInterval.MONTHLY)).thenReturn(Optional.empty());
         Mockito.when(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 10), LocalDate.of(2022, 9, 15), AggregateInterval.MONTHLY)).thenReturn(Optional.of(generateRetrospectives().get(1)));
         Mockito.when(this.retrospectiveService.createRetrospective(any())).thenReturn(generateRetrospectives().get(0));
@@ -65,6 +65,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("asdasdasdasd"));
         map.put("end", List.of("2022-09-18"));
+        map.put("interval", List.of("MONTHLY"));
 
         this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
                 .andExpect(status().isOk())
@@ -77,10 +78,24 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2022-09-12"));
         map.put("end", List.of("adfafdsfdsfsd"));
+        map.put("interval", List.of("MONTHLY"));
 
         this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("The end date adfafdsfdsfsd was not of the expected format yyyy-MM-dd")));
+    }
+
+    @Test
+    public void test_getRetrospectivesForTimespan_badRequest_interval() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-09-12"));
+        map.put("end", List.of("2022-09-18"));
+        map.put("interval", List.of("BAD"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
     }
 
     @Test
@@ -89,6 +104,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2022-09-12"));
         map.put("end", List.of("2022-09-18"));
+        map.put("interval", List.of("MONTHLY"));
 
         this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
                 .andExpect(status().isOk())

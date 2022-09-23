@@ -22,7 +22,7 @@ public class RetrospectiveEntry {
 
     @Getter
     @Setter
-    @Column(unique = true)
+    @Column
     private Integer lineNumber;
 
     @Getter

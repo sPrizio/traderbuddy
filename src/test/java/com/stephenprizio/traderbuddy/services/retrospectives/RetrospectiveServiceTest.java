@@ -42,7 +42,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.retrospectiveRepository.findAllRetrospectivesWithinDate(any(), any())).thenReturn(generateRetrospectives());
+        Mockito.when(this.retrospectiveRepository.findAllRetrospectivesWithinDate(any(), any(), any())).thenReturn(List.of(generateRetrospectives().get(0)));
         Mockito.when(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(any(), any(), any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.retrospectiveRepository.save(any())).thenReturn(generateRetrospectives().get(0));
     }
@@ -53,24 +53,28 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
     @Test
     public void test_findAllRetrospectivesWithinDate_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(null, LocalDate.MAX))
+                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(null, LocalDate.MAX, AggregateInterval.MONTHLY))
                 .withMessage("startDate cannot be null");
 
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MIN, null))
+                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MIN, null, AggregateInterval.MONTHLY))
                 .withMessage("endDate cannot be null");
 
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MIN, LocalDate.MAX, null))
+                .withMessage("interval cannot be null");
+
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MAX, LocalDate.MIN))
+                .isThrownBy(() -> this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MAX, LocalDate.MIN, AggregateInterval.MONTHLY))
                 .withMessage("startDate was after endDate or vice versa");
     }
 
     @Test
     public void test_findAllRetrospectivesWithinDate_success() {
-        assertThat(this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MIN, LocalDate.MAX))
-                .hasSize(2)
+        assertThat(this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.MIN, LocalDate.MAX, AggregateInterval.MONTHLY))
+                .hasSize(1)
                 .extracting("startDate")
-                .containsExactly(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 12));
+                .containsExactly(LocalDate.of(2022, 9, 5));
     }
 
 
@@ -128,7 +132,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
                         Map.of(
                                 "startDate", "2022-09-05",
                                 "endDate", "2022-09-11",
-                                "interval", "MONTHLY",
+                                "intervalFrequency", "MONTHLY",
                                 "points", List.of(
                                         Map.of(
                                                 "lineNumber", 1,
@@ -176,7 +180,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
                         Map.of(
                                 "startDate", "2022-09-05",
                                 "endDate", "2022-09-11",
-                                "interval", "MONTHLY",
+                                "intervalFrequency", "MONTHLY",
                                 "points", List.of(
                                         Map.of(
                                                 "lineNumber", 1,

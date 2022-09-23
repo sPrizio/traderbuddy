@@ -25,8 +25,8 @@ public interface RetrospectiveRepository extends CrudRepository<Retrospective, L
      * @param end {@link LocalDate} end of interval (exclusive)
      * @return {@link List} of {@link Retrospective}s
      */
-    @Query("SELECT r FROM Retrospective r WHERE r.startDate >= ?1 AND r.endDate < ?2 ORDER BY r.endDate DESC")
-    List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end);
+    @Query("SELECT r FROM Retrospective r WHERE r.startDate >= ?1 AND r.endDate < ?2 AND r.intervalFrequency = ?3 ORDER BY r.endDate DESC")
+    List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end, final AggregateInterval interval);
 
     /**
      * Returns a {@link Retrospective} for the given start, end dates and interval

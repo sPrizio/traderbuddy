@@ -43,8 +43,8 @@ public class RetrospectiveRepositoryTest extends AbstractGenericTest {
 
     @Test
     public void test_findAllRetrospectivesWithinDate_success() {
-        assertThat(this.retrospectiveRepository.findAllRetrospectivesWithinDate(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 1)))
-                .hasSize(2);
+        assertThat(this.retrospectiveRepository.findAllRetrospectivesWithinDate(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 1), AggregateInterval.MONTHLY))
+                .hasSize(1);
     }
 
 

@@ -31,6 +31,7 @@ public class RetrospectiveAPIController {
     private static final String START_DATE_INVALID_FORMAT = "The start date %s was not of the expected format %s";
     private static final String END_DATE_INVALID_FORMAT = "The end date %s was not of the expected format %s";
     private static final List<String> REQUIRED_JSON_VALUES = List.of("retrospective");
+    private static final String INVALID_INTERVAL = "%s was not a valid interval";
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -55,13 +56,17 @@ public class RetrospectiveAPIController {
      */
     @ResponseBody
     @GetMapping("/timespan")
-    public StandardJsonResponse getRetrospectivesForTimespan(final @RequestParam("start") String start, final @RequestParam("end") String end) {
+    public StandardJsonResponse getRetrospectivesForTimespan(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
 
         validateLocalDateFormat(start, DATE_FORMAT, START_DATE_INVALID_FORMAT, start, DATE_FORMAT);
         validateLocalDateFormat(end, DATE_FORMAT, END_DATE_INVALID_FORMAT, end, DATE_FORMAT);
 
-        List<Retrospective> retrospectives = this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.parse(start, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(DATE_FORMAT)));
-        validateIfAnyResult(retrospectives, "No retrospectives were found within interval: [%s, %s]", start, end);
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format(INVALID_INTERVAL, interval));
+        }
+
+        List<Retrospective> retrospectives = this.retrospectiveService.findAllRetrospectivesWithinDate(LocalDate.parse(start, DateTimeFormatter.ofPattern(DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(DATE_FORMAT)), AggregateInterval.valueOf(interval));
+        validateIfAnyResult(retrospectives, "No retrospectives were found within interval: [%s, %s] for interval %s", start, end, interval);
 
         return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convertAll(retrospectives), StringUtils.EMPTY);
     }
@@ -82,7 +87,7 @@ public class RetrospectiveAPIController {
         validateLocalDateFormat(end, DATE_FORMAT, END_DATE_INVALID_FORMAT, end, DATE_FORMAT);
 
         if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
-            return new StandardJsonResponse(false, null, String.format("%s was not a valid interval", interval));
+            return new StandardJsonResponse(false, null, String.format(INVALID_INTERVAL, interval));
         }
 
         Optional<Retrospective> retrospective = this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), AggregateInterval.valueOf(interval));
@@ -90,7 +95,7 @@ public class RetrospectiveAPIController {
             return new StandardJsonResponse(false, null, String.format("No retrospective was found for start date %s, end date %s and interval %s", start, end, interval));
         }
 
-        return new StandardJsonResponse(true, retrospective.get(), StringUtils.EMPTY);
+        return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
     }
 
 
@@ -130,7 +135,7 @@ public class RetrospectiveAPIController {
         validateLocalDateFormat(end, DATE_FORMAT, END_DATE_INVALID_FORMAT, end, DATE_FORMAT);
 
         if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
-            return new StandardJsonResponse(false, null, String.format("%s was not a valid interval", interval));
+            return new StandardJsonResponse(false, null, String.format(INVALID_INTERVAL, interval));
         }
 
         return new StandardJsonResponse(

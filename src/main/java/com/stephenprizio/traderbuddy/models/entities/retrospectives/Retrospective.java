@@ -3,9 +3,11 @@ package com.stephenprizio.traderbuddy.models.entities.retrospectives;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +55,12 @@ public class Retrospective {
      * @param entry {@link RetrospectiveEntry}
      */
     public void addPoint(RetrospectiveEntry entry) {
-        this.points.add(entry);
+
+        if (getPoints() == null) {
+            this.points = new ArrayList<>();
+        }
+
+        getPoints().add(entry);
         entry.setRetrospective(this);
     }
 
@@ -63,7 +70,9 @@ public class Retrospective {
      * @param entry {@link RetrospectiveEntry}
      */
     public void removePoint(RetrospectiveEntry entry) {
-        this.points.remove(entry);
-        entry.setRetrospective(null);
+        if (getPoints() != null) {
+            getPoints().remove(entry);
+            entry.setRetrospective(null);
+        }
     }
 }
