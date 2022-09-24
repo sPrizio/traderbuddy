@@ -7,9 +7,11 @@ import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.services.investing.InvestingService;
 import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,6 +56,9 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
     @MockBean
     private InvestingService investingService;
 
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
     @Before
     public void setUp() {
         Mockito.when(this.tradingPlanService.findCurrentlyActiveTradingPlan()).thenReturn(Optional.of(TEST_TRADING_PLAN_ACTIVE));
@@ -62,6 +67,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.tradingPlanService.updateTradingPlan(any(), any(), any(), any())).thenReturn(TEST_TRADING_PLAN_ACTIVE);
         Mockito.when(this.investingService.forecast(any(), any(), any(), any())).thenReturn(generateForecast());
         Mockito.when(this.investingService.obtainTradingPerformanceForForecast(any(), any(), any(), any())).thenReturn(generateTradingSummary());
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
 
 

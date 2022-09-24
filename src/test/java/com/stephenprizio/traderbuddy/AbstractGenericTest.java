@@ -14,8 +14,8 @@ import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospectiv
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;

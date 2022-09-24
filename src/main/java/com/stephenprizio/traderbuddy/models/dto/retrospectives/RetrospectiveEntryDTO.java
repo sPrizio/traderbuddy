@@ -16,6 +16,10 @@ public class RetrospectiveEntryDTO implements GenericDTO {
 
     @Getter
     @Setter
+    public String uid;
+
+    @Getter
+    @Setter
     private Integer lineNumber;
 
     @Getter
@@ -31,6 +35,6 @@ public class RetrospectiveEntryDTO implements GenericDTO {
 
     @Override
     public Boolean isEmpty() {
-        return this.lineNumber == null && StringUtils.isEmpty(this.entryText) && this.keyPoint == null;
+        return StringUtils.isEmpty(this.uid);
     }
 }

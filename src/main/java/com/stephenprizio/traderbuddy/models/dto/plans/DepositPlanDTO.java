@@ -5,6 +5,7 @@ import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A DTO representation of a {@link DepositPlan}
@@ -13,6 +14,10 @@ import lombok.Setter;
  * @version 1.0
  */
 public class DepositPlanDTO implements GenericDTO {
+
+    @Getter
+    @Setter
+    public String uid;
 
     @Getter
     @Setter
@@ -27,6 +32,6 @@ public class DepositPlanDTO implements GenericDTO {
 
     @Override
     public Boolean isEmpty() {
-        return this.amount == null && this.frequency == null;
+        return StringUtils.isEmpty(this.uid);
     }
 }

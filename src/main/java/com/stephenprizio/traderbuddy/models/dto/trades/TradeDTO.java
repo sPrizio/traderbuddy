@@ -20,6 +20,10 @@ public class TradeDTO implements GenericDTO {
 
     @Getter
     @Setter
+    public String uid;
+
+    @Getter
+    @Setter
     private String tradeId;
 
     @Getter
@@ -75,6 +79,6 @@ public class TradeDTO implements GenericDTO {
 
     @Override
     public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.tradeId);
+        return StringUtils.isEmpty(this.uid);
     }
 }

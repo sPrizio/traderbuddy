@@ -2,8 +2,8 @@ package com.stephenprizio.traderbuddy.controllers.summary;
 
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;

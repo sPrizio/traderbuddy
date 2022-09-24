@@ -1,5 +1,7 @@
 package com.stephenprizio.traderbuddy.models.records.reporting;
 
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecordStatistics;
 import org.junit.Test;
 
 import java.time.LocalDateTime;

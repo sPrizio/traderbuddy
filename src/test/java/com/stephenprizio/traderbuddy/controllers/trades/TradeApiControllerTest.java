@@ -6,6 +6,7 @@ import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.services.importing.impl.GenericImportService;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import com.stephenprizio.traderbuddy.services.trades.TradeService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -67,6 +68,9 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
     @Before
     public void setUp() {
         Mockito.when(this.genericImportService.importTrades(any(), anyChar(), any())).thenReturn(StringUtils.EMPTY);
@@ -76,6 +80,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.tradeService.findTradeByTradeId("testId1")).thenReturn(Optional.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.disregardTrade("testId1")).thenReturn(true);
         Mockito.when(this.tradeService.disregardTrade("badId")).thenReturn(false);
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
 
 

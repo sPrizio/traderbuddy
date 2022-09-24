@@ -1,7 +1,7 @@
 package com.stephenprizio.traderbuddy.controllers.summary;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingSummary;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.junit.Before;
 import org.junit.Test;

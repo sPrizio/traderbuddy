@@ -9,14 +9,16 @@ import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospectiv
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
 import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveEntryRepository;
 import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveRepository;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
@@ -125,6 +127,36 @@ public class RetrospectiveService {
         } catch (Exception e) {
             throw new EntityModificationException(String.format("An error occurred while modifying the Retrospective : %s", e.getMessage()));
         }
+    }
+
+    /**
+     * Deletes the {@link Retrospective} for the given start date, end date and interval
+     *
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
+     * @param interval {@link AggregateInterval}
+     * @return {@link Optional} {@link Retrospective}
+     */
+    public Boolean deleteRetrospective(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
+
+        validateParameterIsNotNull(start, "start date cannot be null");
+        validateParameterIsNotNull(end, "end date cannot be null");
+        validateParameterIsNotNull(interval, NULL_INTERVAL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
+
+        Optional<Retrospective> retrospective = findRetrospectiveForStartDateAndEndDateAndInterval(start, end, interval);
+        if (retrospective.isPresent()) {
+            List<RetrospectiveEntry> oldEntries = retrospective.get().getPoints() != null ? new ArrayList<>(retrospective.get().getPoints()) : new ArrayList<>();
+            for (RetrospectiveEntry e : oldEntries) {
+                retrospective.get().removePoint(e);
+                this.retrospectiveEntryRepository.delete(e);
+            }
+
+            this.retrospectiveRepository.delete(retrospective.get());
+            return true;
+        }
+
+        return false;
     }
 
 

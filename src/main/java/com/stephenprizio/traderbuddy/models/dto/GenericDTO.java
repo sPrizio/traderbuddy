@@ -14,4 +14,11 @@ public interface GenericDTO {
      * @return true if it is empty
      */
     Boolean isEmpty();
+
+    /**
+     * Obtains the unique identifier for this DTO
+     *
+     * @return {@link String}
+     */
+    String getUid();
 }

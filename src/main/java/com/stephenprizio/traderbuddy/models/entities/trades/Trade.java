@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.models.entities.trades;
 
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.models.entities.GenericEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "trades")
-public class Trade {
+public class Trade implements GenericEntity {
 
     @Id
     @Getter

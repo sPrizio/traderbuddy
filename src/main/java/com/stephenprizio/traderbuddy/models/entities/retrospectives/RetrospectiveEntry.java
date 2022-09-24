@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.models.entities.retrospectives;
 
+import com.stephenprizio.traderbuddy.models.entities.GenericEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "retrospective_entries")
-public class RetrospectiveEntry {
+public class RetrospectiveEntry implements GenericEntity {
 
     @Id
     @Getter
@@ -27,6 +28,7 @@ public class RetrospectiveEntry {
 
     @Getter
     @Setter
+    @Lob
     @Column
     private String entryText;
 

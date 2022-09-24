@@ -4,6 +4,7 @@ import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,15 +34,20 @@ public class TradingPlanDTOConverterTest extends AbstractGenericTest {
     private DepositPlanDTOConverter depositPlanDTOConverter;
 
     @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
+    @MockBean
     private WithdrawalPlanDTOConverter withdrawalPlanDTOConverter;
 
     @Autowired
-    private final TradingPlanDTOConverter tradingPlanDTOConverter = new TradingPlanDTOConverter();
+    private TradingPlanDTOConverter tradingPlanDTOConverter;
+
 
     @Before
     public void setUp() {
         Mockito.when(this.depositPlanDTOConverter.convert(any())).thenReturn(generateDepositPlanDTO());
         Mockito.when(this.withdrawalPlanDTOConverter.convert(any())).thenReturn(generateWithdrawalPlanDTO());
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
 
     @Test

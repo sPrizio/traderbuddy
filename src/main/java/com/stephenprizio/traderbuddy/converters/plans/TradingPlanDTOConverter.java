@@ -3,6 +3,7 @@ package com.stephenprizio.traderbuddy.converters.plans;
 import com.stephenprizio.traderbuddy.converters.GenericDTOConverter;
 import com.stephenprizio.traderbuddy.models.dto.plans.TradingPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,6 +21,9 @@ public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan,
     @Resource(name = "depositPlanDTOConverter")
     private DepositPlanDTOConverter depositPlanDTOConverter;
 
+    @Resource(name = "uniqueIdentifierService")
+    private UniqueIdentifierService uniqueIdentifierService;
+
     @Resource(name = "withdrawalPlanDTOConverter")
     private WithdrawalPlanDTOConverter withdrawalPlanDTOConverter;
 
@@ -35,6 +39,7 @@ public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan,
 
         TradingPlanDTO tradingPlanDTO = new TradingPlanDTO();
 
+        tradingPlanDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         tradingPlanDTO.setActive(entity.getActive());
         tradingPlanDTO.setName(entity.getName());
         tradingPlanDTO.setStartDate(entity.getStartDate());

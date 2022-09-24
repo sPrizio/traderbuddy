@@ -2,11 +2,20 @@ package com.stephenprizio.traderbuddy.converters.plans;
 
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link WithdrawalPlanDTOConverter}
@@ -14,9 +23,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Stephen Prizio
  * @version 1.0
  */
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class WithdrawalPlanDTOConverterTest extends AbstractGenericTest {
 
-    private final WithdrawalPlanDTOConverter withdrawalPlanDTOConverter = new WithdrawalPlanDTOConverter();
+    @Autowired
+    private WithdrawalPlanDTOConverter withdrawalPlanDTOConverter;
+
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
+    @Before
+    public void setUp() {
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+    }
+
 
     @Test
     public void test_convert_success_emptyResult() {

@@ -43,7 +43,8 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
     @Before
     public void setUp() {
         Mockito.when(this.retrospectiveRepository.findAllRetrospectivesWithinDate(any(), any(), any())).thenReturn(List.of(generateRetrospectives().get(0)));
-        Mockito.when(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(any(), any(), any())).thenReturn(generateRetrospectives().get(0));
+        Mockito.when(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(LocalDate.of(2022, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.MONTHLY)).thenReturn(generateRetrospectives().get(0));
+        Mockito.when(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(LocalDate.of(2021, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.WEEKLY)).thenReturn(null);
         Mockito.when(this.retrospectiveRepository.save(any())).thenReturn(generateRetrospectives().get(0));
     }
 
@@ -101,7 +102,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_findRetrospectiveForStartDateAndEndDateAndInterval_success() {
-        assertThat(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.MIN, LocalDate.MAX, AggregateInterval.MONTHLY))
+        assertThat(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.MONTHLY))
                 .isNotEmpty();
     }
 
@@ -167,7 +168,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
     public void test_updateRetrospective_erroneousModification() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityModificationException.class)
-                .isThrownBy(() -> this.retrospectiveService.updateRetrospective(LocalDate.MIN, LocalDate.MAX, AggregateInterval.MONTHLY, map))
+                .isThrownBy(() -> this.retrospectiveService.updateRetrospective(LocalDate.of(2022, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.MONTHLY, map))
                 .withMessage("An error occurred while modifying the Retrospective : Cannot invoke \"java.util.Map.get(Object)\" because \"retro\" is null");
     }
 
@@ -196,9 +197,43 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
                         )
                 );
 
-        assertThat(this.retrospectiveService.updateRetrospective(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 11), AggregateInterval.MONTHLY, data))
+        assertThat(this.retrospectiveService.updateRetrospective(LocalDate.of(2022, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.MONTHLY, data))
                 .isNotNull()
                 .extracting("startDate", "endDate", "intervalFrequency")
                 .containsExactly(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 11), AggregateInterval.MONTHLY);
+    }
+
+
+    //  ----------------- deleteRetrospective -----------------
+
+    @Test
+    public void test_deleteRetrospective_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.retrospectiveService.deleteRetrospective(null, LocalDate.MAX, AggregateInterval.MONTHLY))
+                .withMessage("start date cannot be null");
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.retrospectiveService.deleteRetrospective(LocalDate.MIN, null, AggregateInterval.MONTHLY))
+                .withMessage("end date cannot be null");
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.retrospectiveService.deleteRetrospective(LocalDate.MIN, LocalDate.MAX, null))
+                .withMessage("interval cannot be null");
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.retrospectiveService.deleteRetrospective(LocalDate.MAX, LocalDate.MIN, AggregateInterval.MONTHLY))
+                .withMessage("startDate was after endDate or vice versa");
+    }
+
+    @Test
+    public void test_deleteRetrospective_success() {
+        assertThat(this.retrospectiveService.deleteRetrospective(LocalDate.of(2022, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.MONTHLY))
+                .isTrue();
+    }
+
+    @Test
+    public void test_deleteRetrospective_success_noDelete() {
+        assertThat(this.retrospectiveService.deleteRetrospective(LocalDate.of(2021, 9, 23), LocalDate.of(2021, 9, 24), AggregateInterval.WEEKLY))
+                .isFalse();
     }
 }

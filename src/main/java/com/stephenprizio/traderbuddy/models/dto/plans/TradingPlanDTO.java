@@ -6,6 +6,7 @@ import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,10 @@ import java.time.LocalDate;
  * @version 1.0
  */
 public class TradingPlanDTO implements GenericDTO {
+
+    @Getter
+    @Setter
+    public String uid;
 
     @Getter
     @Setter
@@ -62,6 +67,6 @@ public class TradingPlanDTO implements GenericDTO {
 
     @Override
     public Boolean isEmpty() {
-        return this.startDate == null && this.endDate == null;
+        return StringUtils.isEmpty(this.uid);
     }
 }

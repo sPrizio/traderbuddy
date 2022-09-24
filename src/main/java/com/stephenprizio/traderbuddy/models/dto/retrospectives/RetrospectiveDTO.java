@@ -3,8 +3,10 @@ package com.stephenprizio.traderbuddy.models.dto.retrospectives;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.models.dto.GenericDTO;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
+import com.stephenprizio.traderbuddy.models.records.reporting.retrospectives.RetrospectiveStatistics;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +18,10 @@ import java.util.List;
  * @version 1.0
  */
 public class RetrospectiveDTO implements GenericDTO {
+
+    @Getter
+    @Setter
+    private String uid;
 
     @Getter
     @Setter
@@ -33,11 +39,15 @@ public class RetrospectiveDTO implements GenericDTO {
     @Setter
     private List<RetrospectiveEntryDTO> points;
 
+    @Getter
+    @Setter
+    private RetrospectiveStatistics retrospectiveStatistics;
+
 
     //  METHODS
 
     @Override
     public Boolean isEmpty() {
-        return this.startDate == null && this.endDate == null;
+        return StringUtils.isEmpty(this.uid);
     }
 }

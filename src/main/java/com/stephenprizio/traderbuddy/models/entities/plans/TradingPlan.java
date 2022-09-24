@@ -2,8 +2,9 @@ package com.stephenprizio.traderbuddy.models.entities.plans;
 
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
+import com.stephenprizio.traderbuddy.models.entities.GenericEntity;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
-import com.stephenprizio.traderbuddy.models.records.reporting.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,7 @@ import java.time.LocalDate;
  */
 @Entity
 @Table(name = "trading_plans", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndStartDateAndEndDate", columnNames = {"name", "start_date", "end_date"}))
-public class TradingPlan {
+public class TradingPlan implements GenericEntity {
 
     @Id
     @Getter

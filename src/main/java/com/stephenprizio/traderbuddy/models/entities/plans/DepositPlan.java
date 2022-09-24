@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.models.entities.plans;
 
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
+import com.stephenprizio.traderbuddy.models.entities.GenericEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "deposit_plans")
-public class DepositPlan {
+public class DepositPlan implements GenericEntity {
 
     @Id
     @Getter
