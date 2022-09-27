@@ -77,7 +77,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
     public void test_getCurrentlyActiveTradingPlan_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/trading-plans/current"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.profitTarget", is(528491.0)));
+                .andExpect(jsonPath("$.data.profitTarget", is(1.25)));
     }
 
 
@@ -102,7 +102,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/for-status").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].profitTarget", is(528491.0)));
+                .andExpect(jsonPath("$.data[0].profitTarget", is(1.25)));
     }
 
 
@@ -244,7 +244,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(post("/api/v1/trading-plans/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.profitTarget", is(528491.0)))
+                .andExpect(jsonPath("$.data.profitTarget", is(1.25)))
                 .andExpect(jsonPath("$.data.name", is("Test Trading Plan Active")));
     }
 
@@ -336,7 +336,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/trading-plans/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.profitTarget", is(528491.0)))
+                .andExpect(jsonPath("$.data.profitTarget", is(1.25)))
                 .andExpect(jsonPath("$.data.name", is("Test Trading Plan Active")));
     }
 }

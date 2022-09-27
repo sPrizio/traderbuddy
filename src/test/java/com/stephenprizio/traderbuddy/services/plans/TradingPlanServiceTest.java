@@ -40,7 +40,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
     private static final String TEST_NAME = "Test Trading Plan Active";
     private static final LocalDate TEST_START = LocalDate.of(2022, 1, 1);
     private static final LocalDate TEST_END = LocalDate.of(2025, 1, 1);
-    private static final Double TEST_PROFIT = 528491.0;
+    private static final Double TEST_PROFIT = 1.25;
     private static final CompoundFrequency TEST_FREQUENCY = CompoundFrequency.DAILY;
 
     private final TradingPlan TEST_TRADING_PLAN_ACTIVE = generateTestTradingPlan();

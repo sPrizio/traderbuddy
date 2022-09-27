@@ -66,7 +66,7 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
         assertThat(this.tradingPlanRepository.findTradingPlanByActiveIsTrue())
                 .hasSize(1)
                 .extracting("profitTarget", "name", "depositPlan.amount")
-                .containsExactly(Tuple.tuple(528491.0, "Test Trading Plan Active", generateDepositPlan().getAmount()));
+                .containsExactly(Tuple.tuple(1.25, "Test Trading Plan Active", generateDepositPlan().getAmount()));
     }
 
 
@@ -77,7 +77,7 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
         assertThat(this.tradingPlanRepository.findAllByStatus(TradingPlanStatus.IN_PROGRESS))
                 .hasSize(1)
                 .extracting("profitTarget", "name")
-                .containsExactly(Tuple.tuple(528491.0, "Test Trading Plan Active"));
+                .containsExactly(Tuple.tuple(1.25, "Test Trading Plan Active"));
     }
 
 
@@ -88,7 +88,7 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
         assertThat(this.tradingPlanRepository.findTradingPlanByNameAndStartDateAndEndDate("Test Trading Plan Active", LocalDate.of(2022, 1, 1), LocalDate.of(2025, 1, 1)))
                 .isNotNull()
                 .extracting("profitTarget", "name")
-                .containsExactly(528491.0, "Test Trading Plan Active");
+                .containsExactly(1.25, "Test Trading Plan Active");
     }
 
 
@@ -97,7 +97,6 @@ public class TradingPlanRepositoryTest extends AbstractGenericTest {
     @Test
     public void test_resetTradingPlans_success() {
         assertThat(this.tradingPlanRepository.resetTradingPlans())
-                .isNotNull()
                 .isEqualTo(1);
     }
 }

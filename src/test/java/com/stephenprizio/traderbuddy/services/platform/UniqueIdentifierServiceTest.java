@@ -67,4 +67,20 @@ public class UniqueIdentifierServiceTest extends AbstractGenericTest {
         assertThat(this.uniqueIdentifierService.retrieveId(depositPlanDTO))
                 .isEqualTo(118L);
     }
+
+
+    //  ----------------- retrieveIdForUid -----------------
+
+    @Test
+    public void test_retrieveIdForUid_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.uniqueIdentifierService.retrieveIdForUid(null))
+                .withMessage("uid cannot be null");
+    }
+
+    @Test
+    public void test_retrieveIdForUid_success() {
+        assertThat(this.uniqueIdentifierService.retrieveIdForUid("MTE4"))
+                .isEqualTo(118L);
+    }
 }

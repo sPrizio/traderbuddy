@@ -21,11 +21,23 @@ public class UniqueIdentifierService {
 
     //  METHODS
 
-    public String generateUid(GenericEntity entity) {
+    /**
+     * Generates the uid from the given {@link GenericEntity}
+     *
+     * @param entity {@link GenericEntity}
+     * @return uid
+     */
+    public String generateUid(final GenericEntity entity) {
         validateParameterIsNotNull(entity, "entity cannot be null");
         return Base64.encodeBase64String(entity.getId().toString().getBytes());
     }
 
+    /**
+     * Retrieves the id for an entity from the given {@link GenericDTO}
+     *
+     * @param dto {@link GenericDTO}
+     * @return id
+     */
     public Long retrieveId(GenericDTO dto) {
         validateParameterIsNotNull(dto, "dto cannot be null");
 
@@ -34,5 +46,16 @@ public class UniqueIdentifierService {
         }
 
         return Long.parseLong(new String(Base64.decodeBase64(dto.getUid()), StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Retrieves the id for an entity from the given uid
+     *
+     * @param uid uid
+     * @return id
+     */
+    public Long retrieveIdForUid(final String uid) {
+        validateParameterIsNotNull(uid, "uid cannot be null");
+        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8));
     }
 }

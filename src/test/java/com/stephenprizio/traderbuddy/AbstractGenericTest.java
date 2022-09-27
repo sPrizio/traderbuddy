@@ -151,7 +151,7 @@ public abstract class AbstractGenericTest {
         tradingPlan.setName("Test Trading Plan Active");
         tradingPlan.setStartDate(LocalDate.of(2022, 1, 1));
         tradingPlan.setEndDate(LocalDate.of(2025, 1, 1));
-        tradingPlan.setProfitTarget(528491.0);
+        tradingPlan.setProfitTarget(1.25);
         tradingPlan.setStatus(TradingPlanStatus.IN_PROGRESS);
         tradingPlan.setCompoundFrequency(CompoundFrequency.DAILY);
         tradingPlan.setStartingBalance(1000.0);

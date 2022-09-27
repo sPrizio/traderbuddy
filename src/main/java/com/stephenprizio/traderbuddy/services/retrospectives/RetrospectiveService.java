@@ -9,6 +9,7 @@ import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospectiv
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
 import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveEntryRepository;
 import com.stephenprizio.traderbuddy.repositories.retrospectives.RetrospectiveRepository;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,10 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.validate
 @Component("retrospectiveService")
 public class RetrospectiveService {
 
+    private static final String START_DATE_NOT_NULL = "start date cannot be null";
+    private static final String END_DATE_NOT_NULL = "end date cannot be null";
     private static final String NULL_INTERVAL = "interval cannot be null";
+    private static final String UID_NOT_NULL = "uid cannot be null";
     private static final String MUTUALLY_EXCLUSIVE_DATES = "startDate was after endDate or vice versa";
 
     @Resource(name = "retrospectiveEntryRepository")
@@ -40,6 +44,9 @@ public class RetrospectiveService {
 
     @Resource(name = "retrospectiveRepository")
     private RetrospectiveRepository retrospectiveRepository;
+
+    @Resource(name = "uniqueIdentifierService")
+    private UniqueIdentifierService uniqueIdentifierService;
 
 
     //  METHODS
@@ -71,12 +78,22 @@ public class RetrospectiveService {
      */
     public Optional<Retrospective> findRetrospectiveForStartDateAndEndDateAndInterval(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
 
-        validateParameterIsNotNull(start, "start date cannot be null");
-        validateParameterIsNotNull(end, "end date cannot be null");
+        validateParameterIsNotNull(start, START_DATE_NOT_NULL);
+        validateParameterIsNotNull(end, END_DATE_NOT_NULL);
         validateParameterIsNotNull(interval, NULL_INTERVAL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
 
         return Optional.ofNullable(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(start, end, interval));
+    }
+
+    /**
+     * Returns a {@link Retrospective} for the given uid
+     * @param uid uid
+     * @return {@link Optional} {@link Retrospective}
+     */
+    public Optional<Retrospective> findRetrospectiveForUid(final String uid) {
+        validateParameterIsNotNull(uid, UID_NOT_NULL);
+        return this.retrospectiveRepository.findById(this.uniqueIdentifierService.retrieveIdForUid(uid));
     }
 
     /**
@@ -101,18 +118,13 @@ public class RetrospectiveService {
     /**
      * Updates an existing {@link Retrospective} with the given {@link Map} of data. Update methods are designed to be idempotent.
      *
-     * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
-     * @param interval {@link AggregateInterval}
+     * @param uid uid
      * @param data {@link Map}
      * @return modified {@link Retrospective}
      */
-    public Retrospective updateRetrospective(final LocalDate start, final LocalDate end, final AggregateInterval interval, final Map<String, Object> data) {
+    public Retrospective updateRetrospective(final String uid, final Map<String, Object> data) {
 
-        validateParameterIsNotNull(start, "start date cannot be null");
-        validateParameterIsNotNull(end, "end date cannot be null");
-        validateParameterIsNotNull(interval, NULL_INTERVAL);
-        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(uid, UID_NOT_NULL);
 
         if (MapUtils.isEmpty(data)) {
             throw new MissingRequiredDataException("The required data for updating a Retrospective was null or empty");
@@ -120,8 +132,8 @@ public class RetrospectiveService {
 
         try {
             Retrospective retrospective =
-                    findRetrospectiveForStartDateAndEndDateAndInterval(start, end, interval)
-                            .orElseThrow(() -> new NoResultFoundException(String.format("No Retrospective found for start date %s, end date %s and interval %s", start.format(DateTimeFormatter.ISO_DATE), end.format(DateTimeFormatter.ISO_DATE), interval.name())));
+                    findRetrospectiveForUid(uid)
+                            .orElseThrow(() -> new NoResultFoundException(String.format("No Retrospective found for uid %s", uid)));
 
             return applyChanges(retrospective, data);
         } catch (Exception e) {
@@ -132,19 +144,14 @@ public class RetrospectiveService {
     /**
      * Deletes the {@link Retrospective} for the given start date, end date and interval
      *
-     * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
-     * @param interval {@link AggregateInterval}
+     * @param uid uid
      * @return {@link Optional} {@link Retrospective}
      */
-    public Boolean deleteRetrospective(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
+    public Boolean deleteRetrospective(final String uid) {
 
-        validateParameterIsNotNull(start, "start date cannot be null");
-        validateParameterIsNotNull(end, "end date cannot be null");
-        validateParameterIsNotNull(interval, NULL_INTERVAL);
-        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(uid, UID_NOT_NULL);
 
-        Optional<Retrospective> retrospective = findRetrospectiveForStartDateAndEndDateAndInterval(start, end, interval);
+        Optional<Retrospective> retrospective = findRetrospectiveForUid(uid);
         if (retrospective.isPresent()) {
             List<RetrospectiveEntry> oldEntries = retrospective.get().getPoints() != null ? new ArrayList<>(retrospective.get().getPoints()) : new ArrayList<>();
             for (RetrospectiveEntry e : oldEntries) {

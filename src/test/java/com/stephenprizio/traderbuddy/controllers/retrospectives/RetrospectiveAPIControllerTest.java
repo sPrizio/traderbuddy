@@ -3,6 +3,8 @@ package com.stephenprizio.traderbuddy.controllers.retrospectives;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
+import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import com.stephenprizio.traderbuddy.services.retrospectives.RetrospectiveService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testing class for {@link RetrospectiveAPIController}
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @SpringBootTest
@@ -47,13 +49,24 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
     @MockBean
     private RetrospectiveService retrospectiveService;
 
+    @MockBean
+    private TradingPlanService tradingPlanService;
+
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
     @Before
     public void setUp() {
         Mockito.when(this.retrospectiveService.findAllRetrospectivesWithinDate(any(), any(), any())).thenReturn(generateRetrospectives());
         Mockito.when(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 6), AggregateInterval.MONTHLY)).thenReturn(Optional.empty());
         Mockito.when(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 10), LocalDate.of(2022, 9, 15), AggregateInterval.MONTHLY)).thenReturn(Optional.of(generateRetrospectives().get(1)));
+        Mockito.when(this.retrospectiveService.findRetrospectiveForUid("test")).thenReturn(Optional.of(generateRetrospectives().get(1)));
+        Mockito.when(this.retrospectiveService.findRetrospectiveForUid("BAD")).thenReturn(Optional.empty());
         Mockito.when(this.retrospectiveService.createRetrospective(any())).thenReturn(generateRetrospectives().get(0));
-        Mockito.when(this.retrospectiveService.updateRetrospective(any(), any(), any(), any())).thenReturn(generateRetrospectives().get(1));
+        Mockito.when(this.retrospectiveService.updateRetrospective(any(), any())).thenReturn(generateRetrospectives().get(1));
+        Mockito.when(this.retrospectiveService.deleteRetrospective(any())).thenReturn(true);
+        Mockito.when(this.tradingPlanService.findCurrentlyActiveTradingPlan()).thenReturn(Optional.of(generateTestTradingPlan()));
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
 
 
@@ -180,6 +193,31 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- getRetrospectiveForUid -----------------
+
+    @Test
+    public void test_getRetrospectiveForUid_noResult() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("uid", List.of("BAD"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/uid").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("No retrospective was found for uid BAD")));
+    }
+
+    @Test
+    public void test_getRetrospectiveForUid_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("uid", List.of("test"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/uid").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.startDate", is("2022-09-12")));
+    }
+
+
     //  ----------------- postCreateRetrospective -----------------
 
     @Test
@@ -223,51 +261,10 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
     //  ----------------- putUpdateRetrospective -----------------
 
     @Test
-    public void test_putUpdateRetrospective_badRequest_start() throws Exception {
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("asdasdasdasd"));
-        map.put("end", List.of("2022-09-18"));
-        map.put("interval", List.of("MONTHLY"));
-
-        this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("retrospective", "world"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date asdasdasdasd was not of the expected format yyyy-MM-dd")));
-    }
-
-    @Test
-    public void test_putUpdateRetrospective_badRequest_end() throws Exception {
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-09-12"));
-        map.put("end", List.of("adfafdsfdsfsd"));
-        map.put("interval", List.of("MONTHLY"));
-
-        this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("retrospective", "world"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date adfafdsfdsfsd was not of the expected format yyyy-MM-dd")));
-    }
-
-    @Test
-    public void test_putUpdateRetrospective_badRequest_interval() throws Exception {
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-09-05"));
-        map.put("end", List.of("2022-09-18"));
-        map.put("interval", List.of("BAD"));
-
-        this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("retrospective", "world"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
-    }
-
-    @Test
     public void test_putUpdateRetrospective_badJsonIntegrity() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-09-10"));
-        map.put("end", List.of("2022-09-15"));
-        map.put("interval", List.of("MONTHLY"));
+        map.put("uid", List.of("test"));
 
         this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
@@ -278,9 +275,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
     public void test_putUpdateRetrospective_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-09-10"));
-        map.put("end", List.of("2022-09-15"));
-        map.put("interval", List.of("MONTHLY"));
+        map.put("uid", List.of("test"));
 
         Map<String, Object> data =
                 Map.of(
@@ -307,5 +302,19 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.startDate", is("2022-09-12")));
+    }
+
+
+    //  ----------------- deleteRetrospective -----------------
+
+    @Test
+    public void test_deleteRetrospective_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("uid", List.of("test"));
+
+        this.mockMvc.perform(delete("/api/v1/retrospectives/delete").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", is(true)));
     }
 }

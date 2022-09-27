@@ -3,6 +3,8 @@ package com.stephenprizio.traderbuddy.converters.retrospectives;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.models.dto.retrospectives.RetrospectiveDTO;
 import com.stephenprizio.traderbuddy.models.dto.retrospectives.RetrospectiveEntryDTO;
+import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
+import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +37,12 @@ public class RetrospectiveDTOConverterTest extends AbstractGenericTest {
     @MockBean
     private RetrospectiveEntryDTOConverter retrospectiveEntryDTOConverter;
 
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
+    @MockBean
+    private TradingPlanService tradingPlanService;
+
 
     //  METHODS
 
@@ -41,6 +50,8 @@ public class RetrospectiveDTOConverterTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.retrospectiveEntryDTOConverter.convert(any())).thenReturn(new RetrospectiveEntryDTO());
         Mockito.when(this.retrospectiveEntryDTOConverter.convertAll(any())).thenReturn(List.of());
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+        Mockito.when(this.tradingPlanService.findCurrentlyActiveTradingPlan()).thenReturn(Optional.of(generateTestTradingPlan()));
     }
 
     @Test

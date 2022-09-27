@@ -420,7 +420,7 @@ public class InvestingService {
             return BigDecimal.ZERO;
         }
 
-        return BigDecimal.valueOf(1).subtract(BigDecimal.valueOf(target).divide(BigDecimal.valueOf(result), RoundingMode.HALF_EVEN)).add(BigDecimal.valueOf(targetPercentage));
+        return BigDecimal.valueOf(result).multiply(BigDecimal.valueOf(targetPercentage)).divide(BigDecimal.valueOf(target), 10, RoundingMode.HALF_EVEN);
     }
 
     /**

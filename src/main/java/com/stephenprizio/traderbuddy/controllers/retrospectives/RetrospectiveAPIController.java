@@ -21,7 +21,7 @@ import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 /**
  * API Controller for {@link Retrospective}s
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @RestController
@@ -98,6 +98,24 @@ public class RetrospectiveAPIController {
         return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
     }
 
+    /**
+     * Obtains a retrospective for the given uid
+     *
+     * @param uid uid
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/uid")
+    public StandardJsonResponse getRetrospectiveForUid(final @RequestParam("uid") String uid) {
+
+        Optional<Retrospective> retrospective = this.retrospectiveService.findRetrospectiveForUid(uid);
+        if (retrospective.isEmpty()) {
+            return new StandardJsonResponse(false, null, String.format("No retrospective was found for uid %s", uid));
+        }
+
+        return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
+    }
+
 
     //  ----------------- POST REQUESTS -----------------
 
@@ -120,28 +138,35 @@ public class RetrospectiveAPIController {
     /**
      * Updates an existing {@link Retrospective}
      *
-     * @param start start date
-     * @param end end date
-     * @param interval {@link AggregateInterval}
+     * @param uid uid
      * @param requestBody json request
      * @return {@link StandardJsonResponse}
      */
     @ResponseBody
     @PutMapping("/update")
-    public StandardJsonResponse putUpdateRetrospective(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval, final @RequestBody Map<String, Object> requestBody) {
+    public StandardJsonResponse putUpdateRetrospective(final @RequestParam("uid") String uid, final @RequestBody Map<String, Object> requestBody) {
 
         validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
-        validateLocalDateFormat(start, DATE_FORMAT, START_DATE_INVALID_FORMAT, start, DATE_FORMAT);
-        validateLocalDateFormat(end, DATE_FORMAT, END_DATE_INVALID_FORMAT, end, DATE_FORMAT);
-
-        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
-            return new StandardJsonResponse(false, null, String.format(INVALID_INTERVAL, interval));
-        }
 
         return new StandardJsonResponse(
                 true,
-                this.retrospectiveDTOConverter.convert(this.retrospectiveService.updateRetrospective(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), AggregateInterval.valueOf(interval), requestBody)),
+                this.retrospectiveDTOConverter.convert(this.retrospectiveService.updateRetrospective(uid, requestBody)),
                 StringUtils.EMPTY
         );
+    }
+
+
+    //  ----------------- DELETE REQUESTS -----------------
+
+    /**
+     * Deletes an existing {@link Retrospective}
+     *
+     * @param uid uid
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @DeleteMapping("/delete")
+    public StandardJsonResponse deleteRetrospective(final @RequestParam("uid") String uid) {
+        return new StandardJsonResponse(true, this.retrospectiveService.deleteRetrospective(uid), StringUtils.EMPTY);
     }
 }
