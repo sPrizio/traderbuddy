@@ -147,7 +147,7 @@ public class InvestingService {
                                 tradingRecord.numberOfTrades(),
                                 tradingRecord.winPercentage(),
                                 tradingRecord.netProfit(),
-                                Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.doubleValue() : 0.0,
+                                Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.setScale(2, RoundingMode.HALF_EVEN).doubleValue() : 0.0,
                                 Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? surplus.doubleValue() : 0.0,
                                 tradingRecord.show(),
                                 Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.doubleValue() >= tradingPlan.getProfitTarget() : null
