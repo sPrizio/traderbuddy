@@ -32,7 +32,6 @@ public class RetrospectiveAPIController {
     private static final String END_DATE_INVALID_FORMAT = "The end date %s was not of the expected format %s";
     private static final List<String> REQUIRED_JSON_VALUES = List.of("retrospective");
     private static final String INVALID_INTERVAL = "%s was not a valid interval";
-
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Resource(name = "retrospectiveDTOConverter")
