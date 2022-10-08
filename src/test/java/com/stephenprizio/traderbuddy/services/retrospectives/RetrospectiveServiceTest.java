@@ -52,6 +52,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(LocalDate.of(2021, 9, 23), LocalDate.of(2022, 9, 24), AggregateInterval.WEEKLY)).thenReturn(null);
         Mockito.when(this.retrospectiveRepository.save(any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.retrospectiveRepository.findById(any())).thenReturn(Optional.of(generateRetrospectives().get(0)));
+        Mockito.when(this.retrospectiveRepository.findAll()).thenReturn(generateRetrospectives());
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid(any())).thenReturn(1L);
     }
 
@@ -130,6 +131,17 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- findActiveRetrospectiveMonths -----------------
+
+    @Test
+    public void test_findActiveRetrospectiveMonths_success() {
+        assertThat(this.retrospectiveService.findActiveRetrospectiveMonths())
+                .hasSize(1)
+                .first()
+                .isEqualTo(LocalDate.of(2022, 9, 1));
+    }
+
+
     //  ----------------- createRetrospective -----------------
 
     @Test
@@ -177,6 +189,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
                 .extracting("startDate", "endDate", "intervalFrequency")
                 .containsExactly(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 11), AggregateInterval.MONTHLY);
     }
+
 
     //  ----------------- updateRetrospective -----------------
 

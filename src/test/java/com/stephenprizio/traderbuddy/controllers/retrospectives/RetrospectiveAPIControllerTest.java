@@ -62,6 +62,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.of(2022, 9, 10), LocalDate.of(2022, 9, 15), AggregateInterval.MONTHLY)).thenReturn(Optional.of(generateRetrospectives().get(1)));
         Mockito.when(this.retrospectiveService.findRetrospectiveForUid("test")).thenReturn(Optional.of(generateRetrospectives().get(1)));
         Mockito.when(this.retrospectiveService.findRetrospectiveForUid("BAD")).thenReturn(Optional.empty());
+        Mockito.when(this.retrospectiveService.findActiveRetrospectiveMonths()).thenReturn(List.of(LocalDate.of(2022, 9, 1)));
         Mockito.when(this.retrospectiveService.createRetrospective(any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.retrospectiveService.updateRetrospective(any(), any())).thenReturn(generateRetrospectives().get(1));
         Mockito.when(this.retrospectiveService.deleteRetrospective(any())).thenReturn(true);
@@ -215,6 +216,16 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/retrospectives/uid").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.startDate", is("2022-09-12")));
+    }
+
+
+    //  ----------------- getActiveRetrospectiveMonths -----------------
+
+    @Test
+    public void test_getActiveRetrospectiveMonths_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/retrospectives/active-months"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("2022-09-01")));
     }
 
 

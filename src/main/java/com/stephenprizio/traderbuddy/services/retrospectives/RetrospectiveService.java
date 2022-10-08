@@ -16,10 +16,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
@@ -94,6 +92,19 @@ public class RetrospectiveService {
     public Optional<Retrospective> findRetrospectiveForUid(final String uid) {
         validateParameterIsNotNull(uid, UID_NOT_NULL);
         return this.retrospectiveRepository.findById(this.uniqueIdentifierService.retrieveIdForUid(uid));
+    }
+
+    /**
+     * Returns a {@link List} of {@link LocalDate}s that represent the first day of a month that a user has a retrospective
+     *
+     * @return {@link List} of {@link LocalDate}
+     */
+    public List<LocalDate> findActiveRetrospectiveMonths() {
+        Map<String, LocalDate> map = new TreeMap<>(String::compareTo);
+        Iterable<Retrospective> retrospectives = this.retrospectiveRepository.findAll();
+        retrospectives.forEach(retro -> map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("MMMM yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfMonth())));
+
+        return new ArrayList<>(map.values());
     }
 
     /**

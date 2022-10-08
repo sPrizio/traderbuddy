@@ -115,6 +115,17 @@ public class RetrospectiveAPIController {
         return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
     }
 
+    /**
+     * Obtains a {@link List} of {@link LocalDate}s representing the first of the month for a list of months that a user has a retrospective
+     *
+     * @return {@link Retrospective}
+     */
+    @ResponseBody
+    @GetMapping("/active-months")
+    public StandardJsonResponse getActiveRetrospectiveMonths() {
+        return new StandardJsonResponse(true, this.retrospectiveService.findActiveRetrospectiveMonths(), StringUtils.EMPTY);
+    }
+
 
     //  ----------------- POST REQUESTS -----------------
 
