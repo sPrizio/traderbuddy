@@ -100,7 +100,7 @@ public class RetrospectiveService {
      * @return {@link List} of {@link LocalDate}
      */
     public List<LocalDate> findActiveRetrospectiveMonths() {
-        Map<String, LocalDate> map = new TreeMap<>(String::compareTo);
+        Map<String, LocalDate> map = new TreeMap<>(Comparator.reverseOrder());
         Iterable<Retrospective> retrospectives = this.retrospectiveRepository.findAll();
         retrospectives.forEach(retro -> map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("MMMM yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfMonth())));
 
