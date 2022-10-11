@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,12 +120,20 @@ public class RetrospectiveAPIController {
     /**
      * Obtains a {@link List} of {@link LocalDate}s representing the first of the month for a list of months that a user has a retrospective
      *
+     * @param includeStarterMonth if true, adds the current month to the return set
      * @return {@link Retrospective}
      */
     @ResponseBody
     @GetMapping("/active-months")
-    public StandardJsonResponse getActiveRetrospectiveMonths() {
-        return new StandardJsonResponse(true, this.retrospectiveService.findActiveRetrospectiveMonths(), StringUtils.EMPTY);
+    public StandardJsonResponse getActiveRetrospectiveMonths(final @RequestParam(value = "includeStarterMonth", defaultValue = "false") Boolean includeStarterMonth) {
+
+        List<LocalDate> dates = this.retrospectiveService.findActiveRetrospectiveMonths();
+        if (Boolean.TRUE.equals(includeStarterMonth) && !dates.contains(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()))) {
+            dates = new ArrayList<>(dates);
+            dates.add(0, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
+        }
+
+        return new StandardJsonResponse(true, dates, StringUtils.EMPTY);
     }
 
 
