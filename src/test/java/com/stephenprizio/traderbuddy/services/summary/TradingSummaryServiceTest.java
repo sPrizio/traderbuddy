@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,5 +78,28 @@ public class TradingSummaryServiceTest extends AbstractGenericTest {
                 .isNotNull()
                 .extracting("numberOfTrades", "winPercentage", "netProfit")
                 .containsExactly(2, 50, 10.35);
+    }
+
+
+    //  ----------------- getStatisticsForMonthAndYear -----------------
+
+    @Test
+    public void test_getStatisticsForMonthAndYear_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradingSummaryService.getStatisticsForMonthAndYear(null, 2022))
+                .withMessage("month cannot be null");
+    }
+
+    @Test
+    public void test_getStatisticsForMonthAndYear_invalidYear() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> this.tradingSummaryService.getStatisticsForMonthAndYear(Month.OCTOBER, 1000000000))
+                .withMessage("The given year 1000000000 was higher than the maximum allowable 999999999");
+    }
+
+    @Test
+    public void test_getStatisticsForMonthAndYear_success() {
+        assertThat(this.tradingSummaryService.getStatisticsForMonthAndYear(Month.OCTOBER, 2022))
+                .isNotNull();
     }
 }

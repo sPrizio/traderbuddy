@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.services.trades;
 
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
@@ -104,7 +105,7 @@ public class TradeService {
                         .filter(TradingRecord::isNotEmpty)
                         .sorted(Comparator.comparing(TradingRecord::start).reversed());
 
-        if (count == -1) {
+        if (count == TraderBuddyConstants.MAX_RESULT_SIZE) {
             return summary.toList();
         }
 

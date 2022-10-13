@@ -32,6 +32,26 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .sum();
     }
 
+    public Integer getTotalNumberOfWinningTrades() {
+        return
+                this.records
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .mapToInt(TradingRecord::numberOfWinningTrades)
+                        .sum();
+    }
+
+    public Integer getTotalNumberOfLosingTrades() {
+        return
+                this.records
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(r -> !r.isEmpty())
+                        .mapToInt(TradingRecord::numberOfLosingTrades)
+                        .sum();
+    }
+
     /**
      * Obtains the average of winPercentage (rounded to the nearest whole number)
      *

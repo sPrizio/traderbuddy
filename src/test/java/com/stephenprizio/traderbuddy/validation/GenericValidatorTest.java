@@ -193,4 +193,15 @@ public class GenericValidatorTest {
                 .isThrownBy(() -> GenericValidator.validateNonZeroValue(integer, "Called validateNonZeroValue() with an unsupported numerical type. Supported types are: [Integer, Long, Float, Double]"))
                 .withMessageContaining("[Integer, Long, Float, Double]");
     }
+
+
+    //  ----------------- validateAcceptableYear -----------------
+
+
+    @Test
+    public void test_validateAcceptableYear_success() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> GenericValidator.validateAcceptableYear(1000000000, ""))
+                .withMessage("The given year 1000000000 was higher than the maximum allowable 999999999");
+    }
 }

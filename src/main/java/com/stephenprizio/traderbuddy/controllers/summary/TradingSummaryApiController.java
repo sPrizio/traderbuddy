@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateLocalDateTimeFormat;
@@ -53,6 +54,7 @@ public class TradingSummaryApiController {
 
     /**
      * Returns a {@link StandardJsonResponse} containing a {@link TradingSummary} for the given time span
+     *
      * @param start start of time span
      * @param end end of time span
      * @param interval time interval : daily, weekly, monthly, yearly
@@ -76,5 +78,19 @@ public class TradingSummaryApiController {
                         AggregateInterval.valueOf(interval.toUpperCase())
                 );
         return new StandardJsonResponse(true, summary, StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a container for monthly trading statistics
+     *
+     * @param month string value of a {@link Month}
+     * @param year year
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/monthly-stats")
+    public StandardJsonResponse getStatisticsForMonthAndYear(final @RequestParam("month") String month, final @RequestParam("year") int year) {
+        //  TODO: write test
+        return new StandardJsonResponse(true, this.tradingSummaryService.getStatisticsForMonthAndYear(Month.valueOf(month.toUpperCase()), year), StringUtils.EMPTY);
     }
 }

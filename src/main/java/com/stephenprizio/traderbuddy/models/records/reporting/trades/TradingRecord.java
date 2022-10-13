@@ -7,18 +7,35 @@ import java.time.temporal.ChronoField;
 /**
  * Represents a summary of trades for a particular time span
  *
- * @param start            start {@link LocalDateTime} of period
- * @param end              end {@link LocalDateTime} of period
- * @param target           target goal for profit
- * @param numberOfTrades   number of trades taken
- * @param winPercentage    number of trades won expressed as a percentage between 0 & 100
- * @param netProfit        net profit of trades (can be negative)
- * @param percentageProfit profit as a percentage of target
- * @param surplus          net difference between target and profit
+ * @param start                 start {@link LocalDateTime} of period
+ * @param end                   end {@link LocalDateTime} of period
+ * @param target                target goal for profit
+ * @param numberOfTrades        number of trades taken
+ * @param numberOfWinningTrades number of trades taken where net profit was >= 0
+ * @param numberOfLosingTrades  number of trades taken where net profit was < 0
+ * @param winPercentage         number of trades won expressed as a percentage between 0 & 100
+ * @param netProfit             net profit of trades (can be negative)
+ * @param percentageProfit      profit as a percentage of target
+ * @param surplus               net difference between target and profit
+ * @param show                  should show this record
+ * @param targetHit             was the target (from a forecast) hit?
  * @author Stephen Prizio
  * @version 1.0
  */
-public record TradingRecord(LocalDateTime start, LocalDateTime end, Double target, Integer numberOfTrades, Integer winPercentage, Double netProfit, Double percentageProfit, Double surplus, Boolean show, Boolean targetHit) {
+public record TradingRecord(
+        LocalDateTime start,
+        LocalDateTime end,
+        Double target,
+        Integer numberOfTrades,
+        Integer numberOfWinningTrades,
+        Integer numberOfLosingTrades,
+        Integer winPercentage,
+        Double netProfit,
+        Double percentageProfit,
+        Double surplus,
+        Boolean show,
+        Boolean targetHit
+) {
 
     /**
      * Determines whether this record is empty

@@ -7,20 +7,22 @@ import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingReco
 import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
-import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
+import static com.stephenprizio.traderbuddy.validation.GenericValidator.*;
 
 /**
  * Service for proving summaries and reports of trades for time spans and intervals
@@ -66,7 +68,19 @@ public class TradingSummaryService {
                             .multiply(BigDecimal.valueOf(100.0));
         }
 
-        return new TradingRecord(start, end, 0.0, trades.size(), winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(), netProfit.doubleValue(), 0.0, 0.0, ChronoUnit.DAYS.between(start, end) > 1, null);
+        return new TradingRecord(
+                start,
+                end,
+                0.0,
+                trades.size(),
+                (int) trades.stream().mapToDouble(Trade::getNetProfit).filter(val -> val >= 0).count(),
+                (int) trades.stream().mapToDouble(Trade::getNetProfit).filter(val -> val < 0).count(),
+                winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(),
+                netProfit.doubleValue(),
+                0.0,
+                0.0,
+                ChronoUnit.DAYS.between(start, end) > 1,
+                null);
     }
 
     /**
@@ -104,6 +118,23 @@ public class TradingSummaryService {
         } while (interval == AggregateInterval.MONTHLY ? rightBound.isBefore(mostRecentTradeTime.plusMonths(1)) : (rightBound.isBefore(mostRecentTradeTime) || rightBound.isEqual(mostRecentTradeTime)));
 
         return new TradingSummary(records, new TradingRecordStatistics(records));
+    }
+
+    /**
+     * Returns {@link TradingRecordStatistics} for the given {@link Month} & year
+     *
+     * @param month {@link Month}
+     * @param year calendar year
+     * @return {@link TradingRecordStatistics}
+     */
+    public TradingRecordStatistics getStatisticsForMonthAndYear(final Month month, final int year) {
+
+        validateParameterIsNotNull(month, "month cannot be null");
+        validateAcceptableYear(year, StringUtils.EMPTY);
+
+        LocalDate start = LocalDate.of(year, month, 1);
+        TradingSummary summary = getReportOfSummariesForTimeSpan(start.atStartOfDay(), start.plusMonths(1).atStartOfDay(), AggregateInterval.DAILY);
+        return summary.statistics();
     }
 
 

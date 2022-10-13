@@ -145,6 +145,8 @@ public class InvestingService {
                                 tradingRecord.end(),
                                 tempEntry.earnings(),
                                 tradingRecord.numberOfTrades(),
+                                tradingRecord.numberOfWinningTrades(),
+                                tradingRecord.numberOfLosingTrades(),
                                 tradingRecord.winPercentage(),
                                 tradingRecord.netProfit(),
                                 Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.setScale(2, RoundingMode.HALF_EVEN).doubleValue() : 0.0,

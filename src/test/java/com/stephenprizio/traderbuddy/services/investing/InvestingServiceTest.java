@@ -53,7 +53,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setDepositPlan(null);
         TEST_PLAN.setWithdrawalPlan(null);
 
-        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(new TradingSummary(List.of(new TradingRecord(LocalDate.of(2022, 8, 1).atStartOfDay(), LocalDateTime.MAX, 0.0, 0, 0, 0.0, 0.0, 0.0, true, true)), null));
+        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(new TradingSummary(List.of(new TradingRecord(LocalDate.of(2022, 8, 1).atStartOfDay(), LocalDateTime.MAX, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0, true, true)), null));
     }
 
 

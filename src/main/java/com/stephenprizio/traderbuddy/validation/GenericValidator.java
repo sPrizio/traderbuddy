@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.validation;
 
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedNegativeValueException;
 import com.stephenprizio.traderbuddy.exceptions.calculator.UnexpectedZeroValueException;
 import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
@@ -27,7 +28,7 @@ import java.util.*;
 public class GenericValidator {
 
     private GenericValidator() {
-        throw new UnsupportedOperationException("Static classes should not be instantiated");
+        throw new UnsupportedOperationException(String.format(TraderBuddyConstants.NO_INSTANTIATION, getClass().getName()));
     }
 
 
@@ -240,6 +241,24 @@ public class GenericValidator {
 
         if (number instanceof Double num && num == 0.0) {
             throw new UnexpectedZeroValueException(String.format(message, values));
+        }
+    }
+
+    /**
+     * Validates that the given {@link Integer} is not greater than the maximum allowable within the app
+     *
+     * @param year year value
+     * @param message error message
+     * @param values error message values
+     */
+    public static void validateAcceptableYear(final Integer year, final String message, final Object... values) {
+
+        validateSupportedNumericalType(year);
+        validateNonNegativeValue(year, message, values);
+        validateNonZeroValue(year, message, values);
+
+        if (year > TraderBuddyConstants.MAX_CALENDAR_YEAR) {
+            throw new IllegalArgumentException(String.format("The given year %s was higher than the maximum allowable %d", year, TraderBuddyConstants.MAX_CALENDAR_YEAR));
         }
     }
 

@@ -105,7 +105,7 @@ public abstract class AbstractGenericTest {
     }
 
     public TradingSummary generateTradingSummary() {
-        return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MIN, LocalDateTime.MAX, 47.52, 15, 67, 58.63, 1.25, 11.11, true, null)), null);
+        return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MIN, LocalDateTime.MAX, 47.52, 15, 10, 5, 67, 58.63, 1.25, 11.11, true, null)), null);
     }
 
     public DepositPlan generateDepositPlan() {
