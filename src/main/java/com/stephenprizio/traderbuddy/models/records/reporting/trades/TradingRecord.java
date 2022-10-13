@@ -35,6 +35,15 @@ public record TradingRecord(LocalDateTime start, LocalDateTime end, Double targe
     }
 
     /**
+     * Determines whether this record is not empty
+     *
+     * @return true if not a weekend and trades were taken
+     */
+    public Boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    /**
      * Determines whether this record is a weekend entry
      *
      * @return true if weekend entry

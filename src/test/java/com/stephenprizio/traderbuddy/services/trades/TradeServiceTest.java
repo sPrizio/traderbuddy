@@ -5,6 +5,7 @@ import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
+import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link TradeService}
@@ -41,6 +43,9 @@ public class TradeServiceTest extends AbstractGenericTest {
     @MockBean
     private TradeRepository tradeRepository;
 
+    @MockBean
+    private TradingSummaryService tradingSummaryService;
+
     @Autowired
     private TradeService tradeService;
 
@@ -49,6 +54,7 @@ public class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(TradeType.BUY)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findTradeByTradeId("testId1")).thenReturn(TEST_TRADE_1);
+        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(generateTradingSummary());
     }
 
 
@@ -131,6 +137,27 @@ public class TradeServiceTest extends AbstractGenericTest {
         assertThat(this.tradeService.findTradeByTradeId("testId1"))
                 .map(Trade::getTradeId)
                 .hasValue("testId1");
+    }
+
+
+    //  ----------------- findRecentTrades -----------------
+
+    @Test
+    public void test_findRecentTrades_success_all_results() {
+        assertThat(this.tradeService.findRecentTrades(-1))
+                .hasSize(1)
+                .first()
+                .extracting("numberOfTrades", "netProfit")
+                .containsExactly(15, 58.63);
+    }
+
+    @Test
+    public void test_findRecentTrades_success_limited_results() {
+        assertThat(this.tradeService.findRecentTrades(1))
+                .hasSize(1)
+                .first()
+                .extracting("numberOfTrades", "netProfit")
+                .containsExactly(15, 58.63);
     }
 
 

@@ -1,14 +1,21 @@
 package com.stephenprizio.traderbuddy.services.trades;
 
+import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import com.stephenprizio.traderbuddy.repositories.trades.TradeRepository;
+import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.stephenprizio.traderbuddy.validation.GenericValidator.validateParameterIsNotNull;
@@ -24,6 +31,9 @@ public class TradeService {
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
+
+    @Resource(name = "tradingSummaryService")
+    private TradingSummaryService tradingSummaryService;
 
 
     //  METHODS
@@ -77,6 +87,28 @@ public class TradeService {
         validateParameterIsNotNull(tradeId, "tradeId cannot be null");
 
         return Optional.ofNullable(this.tradeRepository.findTradeByTradeId(tradeId));
+    }
+
+    /**
+     * Returns a {@link List} of the most recent N {@link TradingRecord}s
+     *
+     * @param count limit size
+     * @return {@link List} of {@link TradingRecord}s
+     */
+    public List<TradingRecord> findRecentTrades(int count) {
+
+        Stream<TradingRecord> summary =
+                this.tradingSummaryService.getReportOfSummariesForTimeSpan(LocalDateTime.now().minusMonths(3).with(TemporalAdjusters.firstDayOfMonth()), LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay(), AggregateInterval.DAILY)
+                        .records()
+                        .stream()
+                        .filter(TradingRecord::isNotEmpty)
+                        .sorted(Comparator.comparing(TradingRecord::start).reversed());
+
+        if (count == -1) {
+            return summary.toList();
+        }
+
+        return summary.limit(count).toList();
     }
 
     /**

@@ -41,6 +41,16 @@ public class TradingRecordTest {
     }
 
 
+    //  ----------------- isEmpty -----------------
+
+    @Test
+    public void test_isNotEmpty_success_empty() {
+        TradingRecord tradingRecord = new TradingRecord(LocalDate.of(2022, 9, 14).atStartOfDay(), LocalDate.of(2022, 9, 15).atStartOfDay(), 0.0, 1, 0, 0.0, 0.0, 0.0, false,true);
+        assertThat(tradingRecord.isNotEmpty())
+                .isTrue();
+    }
+
+
     //  ----------------- isWeekend -----------------
 
     @Test

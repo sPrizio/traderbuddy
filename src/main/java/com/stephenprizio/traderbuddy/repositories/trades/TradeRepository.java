@@ -3,7 +3,7 @@ package com.stephenprizio.traderbuddy.repositories.trades;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.List;
  * @version 1.0
  */
 @Repository
-public interface TradeRepository extends CrudRepository<Trade, Long> {
+public interface TradeRepository extends PagingAndSortingRepository<Trade, Long> {
 
     /**
      * Returns a {@link List} of {@link Trade}s for the given {@link TradeType}

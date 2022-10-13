@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -107,6 +108,18 @@ public class TradeApiController {
         return trade.map(value -> new StandardJsonResponse(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(true, new TradeDTO(), StringUtils.EMPTY));
     }
 
+    /**
+     * Returns a {@link StandardJsonResponse} containing the N most recent {@link Trade}s
+     *
+     * @param count limit size
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/recent")
+    public StandardJsonResponse getRecentTrades(final @RequestParam(value = "count", defaultValue = "5") int count) {
+        return new StandardJsonResponse(true, this.tradeService.findRecentTrades(count), StringUtils.EMPTY);
+    }
+
 
     //  ----------------- POST REQUESTS -----------------
 
@@ -119,7 +132,7 @@ public class TradeApiController {
      */
     @ResponseBody
     @PostMapping("/import-trades")
-    public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file, final @RequestParam("delimiter") Character delimiter, final @RequestParam("tradePlatform") String platform) throws Exception {
+    public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file, final @RequestParam("delimiter") Character delimiter, final @RequestParam("tradePlatform") String platform) throws IOException {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradingPlatform.class, platform)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid trading platform or is not currently supported", platform));
