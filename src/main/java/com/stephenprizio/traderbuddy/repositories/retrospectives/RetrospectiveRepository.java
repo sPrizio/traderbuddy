@@ -37,4 +37,12 @@ public interface RetrospectiveRepository extends CrudRepository<Retrospective, L
      * @return {@link Retrospective}
      */
     Retrospective findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(final LocalDate start, final LocalDate end, final AggregateInterval intervalFrequency);
+
+    /**
+     * Returns the most recent {@link Retrospective} for the given {@link AggregateInterval}
+     *
+     * @param intervalFrequency {@link AggregateInterval}
+     * @return {@link Retrospective}
+     */
+    Retrospective findTopByIntervalFrequencyOrderByStartDateDesc(final AggregateInterval intervalFrequency);
 }

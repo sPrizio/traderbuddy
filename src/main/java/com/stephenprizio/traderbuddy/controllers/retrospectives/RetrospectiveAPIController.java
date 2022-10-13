@@ -136,6 +136,27 @@ public class RetrospectiveAPIController {
         return new StandardJsonResponse(true, dates, StringUtils.EMPTY);
     }
 
+    /**
+     * Obtains the most recent {@link Retrospective} for the given interval
+     *
+     * @param interval string value of {@link AggregateInterval}
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/most-recent")
+    public StandardJsonResponse getMostRecentRetrospectiveForInterval(final @RequestParam("interval") String interval) {
+
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format(INVALID_INTERVAL, interval));
+        }
+
+        Optional<Retrospective> retrospective = this.retrospectiveService.findMostRecentRetrospectiveForInterval(AggregateInterval.valueOf(interval.toUpperCase()));
+        return
+                retrospective
+                        .map(value -> new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(value), StringUtils.EMPTY))
+                        .orElseGet(() -> new StandardJsonResponse(false, null, String.format("No recent retrospectives were found for interval : %s", interval)));
+    }
+
 
     //  ----------------- POST REQUESTS -----------------
 

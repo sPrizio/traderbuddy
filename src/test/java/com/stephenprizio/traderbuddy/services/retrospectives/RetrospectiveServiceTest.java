@@ -53,6 +53,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveRepository.save(any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.retrospectiveRepository.findById(any())).thenReturn(Optional.of(generateRetrospectives().get(0)));
         Mockito.when(this.retrospectiveRepository.findAll()).thenReturn(generateRetrospectives());
+        Mockito.when(this.retrospectiveRepository.findTopByIntervalFrequencyOrderByStartDateDesc(any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid(any())).thenReturn(1L);
     }
 
@@ -139,6 +140,22 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
                 .hasSize(1)
                 .first()
                 .isEqualTo(LocalDate.of(2022, 9, 1));
+    }
+
+
+    //  ----------------- findMostRecentRetrospectiveForInterval -----------------
+
+    @Test
+    public void test_findMostRecentRetrospectiveForInterval_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.retrospectiveService.findMostRecentRetrospectiveForInterval(null))
+                .withMessage("interval cannot be null");
+    }
+
+    @Test
+    public void test_findMostRecentRetrospectiveForInterval_success() {
+        assertThat(this.retrospectiveService.findMostRecentRetrospectiveForInterval(AggregateInterval.MONTHLY))
+                .isNotEmpty();
     }
 
 

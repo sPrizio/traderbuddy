@@ -108,6 +108,17 @@ public class RetrospectiveService {
     }
 
     /**
+     * Returns the most recent {@link Retrospective} for the given interval
+     *
+     * @param interval {@link AggregateInterval}
+     * @return {@link Optional} {@link Retrospective}
+     */
+    public Optional<Retrospective> findMostRecentRetrospectiveForInterval(final AggregateInterval interval) {
+        validateParameterIsNotNull(interval, NULL_INTERVAL);
+        return Optional.ofNullable(this.retrospectiveRepository.findTopByIntervalFrequencyOrderByStartDateDesc(interval));
+    }
+
+    /**
      * Creates a new {@link Retrospective} from the given {@link Map} of data
      *
      * @param data {@link Map}

@@ -55,4 +55,13 @@ public class RetrospectiveRepositoryTest extends AbstractGenericTest {
         assertThat(this.retrospectiveRepository.findRetrospectiveByStartDateAndEndDateAndIntervalFrequency(LocalDate.of(2022, 9, 5), LocalDate.of(2022, 9, 11), AggregateInterval.MONTHLY))
                 .isNotNull();
     }
+
+
+    //  ----------------- findTopByIntervalFrequencyOrderByStartDateDesc -----------------
+
+    @Test
+    public void test_findTopByIntervalFrequencyOrderByStartDateDesc_success() {
+        assertThat(this.retrospectiveRepository.findTopByIntervalFrequencyOrderByStartDateDesc(AggregateInterval.MONTHLY))
+                .isNotNull();
+    }
 }

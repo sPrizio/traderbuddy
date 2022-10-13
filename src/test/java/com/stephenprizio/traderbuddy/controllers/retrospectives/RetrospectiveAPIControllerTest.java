@@ -63,6 +63,8 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveService.findRetrospectiveForUid("test")).thenReturn(Optional.of(generateRetrospectives().get(1)));
         Mockito.when(this.retrospectiveService.findRetrospectiveForUid("BAD")).thenReturn(Optional.empty());
         Mockito.when(this.retrospectiveService.findActiveRetrospectiveMonths()).thenReturn(List.of(LocalDate.of(2022, 9, 1)));
+        Mockito.when(this.retrospectiveService.findMostRecentRetrospectiveForInterval(AggregateInterval.WEEKLY)).thenReturn(Optional.empty());
+        Mockito.when(this.retrospectiveService.findMostRecentRetrospectiveForInterval(AggregateInterval.MONTHLY)).thenReturn(Optional.of(generateRetrospectives().get(0)));
         Mockito.when(this.retrospectiveService.createRetrospective(any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.retrospectiveService.updateRetrospective(any(), any())).thenReturn(generateRetrospectives().get(1));
         Mockito.when(this.retrospectiveService.deleteRetrospective(any())).thenReturn(true);
@@ -226,6 +228,40 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/retrospectives/active-months"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0]", is("2022-09-01")));
+    }
+
+
+    //  ----------------- getMostRecentRetrospectiveForInterval -----------------
+
+    @Test
+    public void test_getMostRecentRetrospectiveForInterval_badRequest() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("BAD"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/most-recent").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
+    }
+
+    @Test
+    public void test_getMostRecentRetrospectiveForInterval_success_no_results() throws Exception {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("WEEKLY"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/most-recent").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("No recent retrospectives were found for interval : WEEKLY")));
+    }
+
+    @Test
+    public void test_getMostRecentRetrospectiveForInterval_success() throws Exception {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("interval", List.of("MONTHLY"));
+
+        this.mockMvc.perform(get("/api/v1/retrospectives/most-recent").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.startDate", is("2022-09-05")));
     }
 
 
