@@ -90,7 +90,11 @@ public class TradingSummaryApiController {
     @ResponseBody
     @GetMapping("/monthly-stats")
     public StandardJsonResponse getStatisticsForMonthAndYear(final @RequestParam("month") String month, final @RequestParam("year") int year) {
-        //  TODO: write test
+
+        if (!EnumUtils.isValidEnumIgnoreCase(Month.class, month)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid month", month));
+        }
+
         return new StandardJsonResponse(true, this.tradingSummaryService.getStatisticsForMonthAndYear(Month.valueOf(month.toUpperCase()), year), StringUtils.EMPTY);
     }
 }

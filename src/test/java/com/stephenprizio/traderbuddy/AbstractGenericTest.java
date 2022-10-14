@@ -15,6 +15,7 @@ import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospectiv
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.investing.ForecastEntry;
 import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
+import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecordStatistics;
 import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import org.apache.commons.lang3.StringUtils;
 
@@ -105,7 +106,8 @@ public abstract class AbstractGenericTest {
     }
 
     public TradingSummary generateTradingSummary() {
-        return new TradingSummary(List.of(new TradingRecord(LocalDateTime.MIN, LocalDateTime.MAX, 47.52, 15, 10, 5, 67, 58.63, 1.25, 11.11, true, null)), null);
+        TradingRecord record = new TradingRecord(LocalDateTime.MIN, LocalDateTime.MAX, 47.52, 15, 10, 5, 67, 58.63, 1.25, 11.11, true, null);
+        return new TradingSummary(List.of(record), new TradingRecordStatistics(List.of(record)));
     }
 
     public DepositPlan generateDepositPlan() {

@@ -50,6 +50,15 @@ public class TradingRecordStatisticsTest {
     }
 
 
+    //  ----------------- getTradingRate -----------------
+
+    @Test
+    public void test_getTradingRate_success() {
+        assertThat(new TradingRecordStatistics(ENTRIES).getTradingRate())
+                .isEqualTo(8.5);
+    }
+
+
     //  ----------------- getAverageWinPercentage -----------------
 
     @Test

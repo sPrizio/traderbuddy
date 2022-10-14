@@ -32,6 +32,11 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .sum();
     }
 
+    /**
+     * Obtains the sum of winningTrades
+     *
+     * @return {@link Integer}
+     */
     public Integer getTotalNumberOfWinningTrades() {
         return
                 this.records
@@ -42,6 +47,11 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .sum();
     }
 
+    /**
+     * Obtains the sum of losingTrades
+     *
+     * @return {@link Integer}
+     */
     public Integer getTotalNumberOfLosingTrades() {
         return
                 this.records
@@ -50,6 +60,20 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .filter(r -> !r.isEmpty())
                         .mapToInt(TradingRecord::numberOfLosingTrades)
                         .sum();
+    }
+
+    /**
+     * Obtains the number of trades per record unit
+     *
+     * @return {@link Double}
+     */
+    public Double getTradingRate() {
+        return
+                BigDecimal.valueOf(getTotalNumberOfTrades())
+                        .divide(BigDecimal.valueOf(this.records.stream().filter(Objects::nonNull).filter(r -> !r.isEmpty()).count()), 10, RoundingMode.HALF_EVEN)
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+
     }
 
     /**

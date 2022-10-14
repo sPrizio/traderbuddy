@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.Month;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -48,6 +49,7 @@ public class TradingSummaryApiControllerTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.tradingSummaryService.getSummaryForTimeSpan(any(), any())).thenReturn(TRADING_SUMMARY.records().get(0));
         Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(TRADING_SUMMARY);
+        Mockito.when(this.tradingSummaryService.getStatisticsForMonthAndYear(Month.OCTOBER, 2022)).thenReturn(TRADING_SUMMARY.statistics());
     }
 
 
@@ -146,5 +148,32 @@ public class TradingSummaryApiControllerTest extends AbstractGenericTest {
                 .andExpect(jsonPath("$.data.records[0].target", is(47.52)))
                 .andExpect(jsonPath("$.data.records[0].numberOfTrades", is(15)))
                 .andExpect(jsonPath("$.data.records[0].netProfit", is(58.63)));
+    }
+
+
+    //  ----------------- getStatisticsForMonthAndYear -----------------
+
+    @Test
+    public void test_getStatisticsForMonthAndYear_badRequest() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("month", List.of("BAD"));
+        map.put("year", List.of("2022"));
+
+        this.mockMvc.perform(get("/api/v1/trade-summary/monthly-stats").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("BAD is not a valid month")));
+    }
+
+    @Test
+    public void test_getStatisticsForMonthAndYear_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("month", List.of("October"));
+        map.put("year", List.of("2022"));
+
+        this.mockMvc.perform(get("/api/v1/trade-summary/monthly-stats").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.netProfit", is(58.63)));
     }
 }
