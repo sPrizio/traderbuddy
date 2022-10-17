@@ -6,8 +6,6 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
-import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
-import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingSummary;
 import com.stephenprizio.traderbuddy.services.summary.TradingSummaryService;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -53,7 +49,7 @@ public class InvestingServiceTest extends AbstractGenericTest {
         TEST_PLAN.setDepositPlan(null);
         TEST_PLAN.setWithdrawalPlan(null);
 
-        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(new TradingSummary(List.of(new TradingRecord(LocalDate.of(2022, 8, 1).atStartOfDay(), LocalDateTime.MAX, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0, true, true)), null));
+        Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(generateTradingSummary());
     }
 
 

@@ -1,5 +1,8 @@
 package com.stephenprizio.traderbuddy.models.records.reporting.trades;
 
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -28,7 +31,7 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .stream()
                         .filter(Objects::nonNull)
                         .filter(r -> !r.isEmpty())
-                        .mapToInt(TradingRecord::numberOfTrades)
+                        .mapToInt(TradingRecord::getTotalNumberOfTrades)
                         .sum();
     }
 
@@ -43,7 +46,7 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .stream()
                         .filter(Objects::nonNull)
                         .filter(r -> !r.isEmpty())
-                        .mapToInt(TradingRecord::numberOfWinningTrades)
+                        .mapToInt(TradingRecord::getTotalNumberOfWinningTrades)
                         .sum();
     }
 
@@ -58,7 +61,7 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .stream()
                         .filter(Objects::nonNull)
                         .filter(r -> !r.isEmpty())
-                        .mapToInt(TradingRecord::numberOfLosingTrades)
+                        .mapToInt(TradingRecord::getTotalNumberOfLosingTrades)
                         .sum();
     }
 
@@ -88,7 +91,7 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         stream()
                         .filter(Objects::nonNull)
                         .filter(r -> !r.isEmpty())
-                        .mapToInt(TradingRecord::winPercentage)
+                        .mapToInt(TradingRecord::getWinPercentage)
                         .average();
 
         return
@@ -110,7 +113,7 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                         .stream()
                         .filter(Objects::nonNull)
                         .filter(r -> !r.isEmpty())
-                        .mapToDouble(TradingRecord::netProfit)
+                        .mapToDouble(TradingRecord::getNetProfit)
                         .sum();
 
         return BigDecimal
@@ -158,5 +161,121 @@ public record TradingRecordStatistics(List<TradingRecord> records) {
                                         .sum()
                         ).setScale(2, RoundingMode.HALF_EVEN)
                         .doubleValue();
+    }
+
+    /**
+     *
+     *
+     * @return {@link Double}
+     */
+    public Double getAverageWinSize() {
+
+        List<Trade> trades = getTrades();
+        if (CollectionUtils.isEmpty(trades)) {
+            return 0.0;
+        }
+
+        return
+                BigDecimal
+                        .valueOf(
+                                trades
+                                        .stream()
+                                        .filter(trade -> trade.getNetProfit() >= 0.0)
+                                        .mapToDouble(Trade::getLotSize)
+                                        .average()
+                                        .orElse(0.0)
+                        )
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
+
+    /**
+     *
+     *
+     * @return {@link Double}
+     */
+    public Double getLargestWinSize() {
+
+        List<Trade> trades = getTrades();
+        if (CollectionUtils.isEmpty(trades)) {
+            return 0.0;
+        }
+
+        return
+                BigDecimal
+                        .valueOf(
+                                trades
+                                        .stream()
+                                        .filter(trade -> trade.getNetProfit() >= 0.0)
+                                        .mapToDouble(Trade::getLotSize)
+                                        .max()
+                                        .orElse(0.0)
+                        )
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
+
+    /**
+     *
+     *
+     * @return {@link Double}
+     */
+    public Double getAverageLossSize() {
+
+        List<Trade> trades = getTrades();
+        if (CollectionUtils.isEmpty(trades)) {
+            return 0.0;
+        }
+
+        return
+                BigDecimal
+                        .valueOf(
+                                trades
+                                        .stream()
+                                        .filter(trade -> trade.getNetProfit() < 0.0)
+                                        .mapToDouble(Trade::getLotSize)
+                                        .average()
+                                        .orElse(0.0)
+                        )
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
+
+    /**
+     *
+     *
+     * @return {@link Double}
+     */
+    public Double getLargestLossSize() {
+
+        List<Trade> trades = getTrades();
+        if (CollectionUtils.isEmpty(trades)) {
+            return 0.0;
+        }
+
+        return
+                BigDecimal
+                        .valueOf(
+                                trades
+                                        .stream()
+                                        .filter(trade -> trade.getNetProfit() < 0.0)
+                                        .mapToDouble(Trade::getLotSize)
+                                        .max()
+                                        .orElse(0.0)
+                        )
+                        .setScale(2, RoundingMode.HALF_EVEN)
+                        .doubleValue();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Obtains a {@link List} of {@link Trade}s
+     *
+     * @return {@link List} of {@link Trade}s
+     */
+    private List<Trade> getTrades() {
+        return this.records.stream().map(TradingRecord::trades).flatMap(List::stream).toList();
     }
 }

@@ -1,36 +1,34 @@
 package com.stephenprizio.traderbuddy.models.records.reporting.trades;
 
+import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
+import java.util.List;
 
 /**
  * Represents a summary of trades for a particular time span
  *
- * @param start                 start {@link LocalDateTime} of period
- * @param end                   end {@link LocalDateTime} of period
- * @param target                target goal for profit
- * @param numberOfTrades        number of trades taken
- * @param numberOfWinningTrades number of trades taken where net profit was >= 0
- * @param numberOfLosingTrades  number of trades taken where net profit was < 0
- * @param winPercentage         number of trades won expressed as a percentage between 0 & 100
- * @param netProfit             net profit of trades (can be negative)
- * @param percentageProfit      profit as a percentage of target
- * @param surplus               net difference between target and profit
- * @param show                  should show this record
- * @param targetHit             was the target (from a forecast) hit?
+ * @param trades           {@link List} of {@link Trade}s
+ * @param start            start {@link LocalDateTime} of period
+ * @param end              end {@link LocalDateTime} of period
+ * @param target           target goal for profit
+ * @param percentageProfit profit as a percentage of target
+ * @param surplus          net difference between target and profit
+ * @param show             should show this record
+ * @param targetHit        was the target (from a forecast) hit?
  * @author Stephen Prizio
  * @version 1.0
  */
 public record TradingRecord(
+        List<Trade> trades,
         LocalDateTime start,
         LocalDateTime end,
         Double target,
-        Integer numberOfTrades,
-        Integer numberOfWinningTrades,
-        Integer numberOfLosingTrades,
-        Integer winPercentage,
-        Double netProfit,
         Double percentageProfit,
         Double surplus,
         Boolean show,
@@ -48,7 +46,7 @@ public record TradingRecord(
             return false;
         }
 
-        return isWeekend() || this.numberOfTrades == 0;
+        return isWeekend() || CollectionUtils.isEmpty(this.trades);
     }
 
     /**
@@ -92,5 +90,80 @@ public record TradingRecord(
     public Boolean isCompletedSession() {
         LocalDate now = LocalDate.now();
         return !getActive() && this.end.toLocalDate().isBefore(now);
+    }
+
+    /**
+     * Obtains a count of all trades
+     *
+     * @return {@link Integer}
+     */
+    public Integer getTotalNumberOfTrades() {
+
+        if (CollectionUtils.isNotEmpty(this.trades)) {
+            return this.trades.size();
+        }
+
+        return 0;
+    }
+
+    /**
+     * Obtains a count of all trades whose net profit is >= 0
+     *
+     * @return {@link Integer}
+     */
+    public Integer getTotalNumberOfWinningTrades() {
+
+        if (CollectionUtils.isNotEmpty(this.trades)) {
+            return (int) this.trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d >= 0).count();
+        }
+
+        return 0;
+    }
+
+    /**
+     * Obtains a count of all trades whose net profit is < 0
+     *
+     * @return {@link Integer}
+     */
+    public Integer getTotalNumberOfLosingTrades() {
+
+        if (CollectionUtils.isNotEmpty(this.trades)) {
+            return (int) this.trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).count();
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the winning percentage rounded to the nearest integer
+     *
+     * @return {@link Integer}
+     */
+    public Integer getWinPercentage() {
+
+        if (getTotalNumberOfTrades() == 0) {
+            return 0;
+        }
+
+        return
+                BigDecimal.valueOf(getTotalNumberOfWinningTrades())
+                        .divide(BigDecimal.valueOf(getTotalNumberOfTrades()), 10, RoundingMode.HALF_EVEN)
+                        .multiply(BigDecimal.valueOf(100.0))
+                        .setScale(0, RoundingMode.HALF_EVEN)
+                        .intValue();
+    }
+
+    /**
+     * Returns the sum of each trade's profit/loss
+     *
+     * @return {@link Double}
+     */
+    public Double getNetProfit() {
+
+        if (CollectionUtils.isNotEmpty(this.trades)) {
+            return BigDecimal.valueOf(this.trades.stream().mapToDouble(Trade::getNetProfit).sum()).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        }
+
+        return 0.0;
     }
 }

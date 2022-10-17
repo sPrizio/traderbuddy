@@ -136,19 +136,15 @@ public class InvestingService {
             ForecastEntry tempEntry = entryMap.get(tradingRecord.start().toLocalDate());
 
             if (tempEntry != null) {
-                BigDecimal percentageProfit = computePercentageProfit(tempEntry.earnings(), tradingRecord.netProfit(), tradingPlan.getProfitTarget());
-                BigDecimal surplus = BigDecimal.valueOf(tradingRecord.netProfit()).subtract(BigDecimal.valueOf(tempEntry.earnings())).setScale(2, RoundingMode.HALF_EVEN);
+                BigDecimal percentageProfit = computePercentageProfit(tempEntry.earnings(), tradingRecord.getNetProfit(), tradingPlan.getProfitTarget());
+                BigDecimal surplus = BigDecimal.valueOf(tradingRecord.getNetProfit()).subtract(BigDecimal.valueOf(tempEntry.earnings())).setScale(2, RoundingMode.HALF_EVEN);
 
                 result.add(
                         new TradingRecord(
+                                tradingRecord.trades(),
                                 tradingRecord.start(),
                                 tradingRecord.end(),
                                 tempEntry.earnings(),
-                                tradingRecord.numberOfTrades(),
-                                tradingRecord.numberOfWinningTrades(),
-                                tradingRecord.numberOfLosingTrades(),
-                                tradingRecord.winPercentage(),
-                                tradingRecord.netProfit(),
                                 Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? percentageProfit.setScale(2, RoundingMode.HALF_EVEN).doubleValue() : 0.0,
                                 Boolean.TRUE.equals(isCompletedSession(tradingRecord)) ? surplus.doubleValue() : 0.0,
                                 tradingRecord.show(),

@@ -11,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,26 +55,11 @@ public class TradingSummaryService {
         validateDatesAreNotMutuallyExclusive(start, end, "startDate was after endDate or vice versa");
 
         List<Trade> trades = this.tradeRepository.findAllTradesWithinDate(start, end).stream().filter(Trade::getRelevant).toList();
-        BigDecimal netProfit = BigDecimal.valueOf(trades.stream().mapToDouble(Trade::getNetProfit).sum()).setScale(2, RoundingMode.HALF_EVEN);
-        double winningTrades = trades.stream().filter(t -> t.getNetProfit() > 0.0).toList().size();
-
-        BigDecimal winPercentage = BigDecimal.ZERO;
-        if (CollectionUtils.isNotEmpty(trades)) {
-            winPercentage =
-                    BigDecimal.valueOf(winningTrades).setScale(2, RoundingMode.HALF_EVEN)
-                            .divide(BigDecimal.valueOf(trades.size()), RoundingMode.HALF_EVEN)
-                            .multiply(BigDecimal.valueOf(100.0));
-        }
-
         return new TradingRecord(
+                trades,
                 start,
                 end,
                 0.0,
-                trades.size(),
-                (int) trades.stream().mapToDouble(Trade::getNetProfit).filter(val -> val >= 0).count(),
-                (int) trades.stream().mapToDouble(Trade::getNetProfit).filter(val -> val < 0).count(),
-                winPercentage.setScale(0, RoundingMode.HALF_EVEN).intValue(),
-                netProfit.doubleValue(),
                 0.0,
                 0.0,
                 ChronoUnit.DAYS.between(start, end) > 1,

@@ -89,8 +89,8 @@ public class TradingSummaryApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trade-summary/time-span").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.target", is(47.52)))
-                .andExpect(jsonPath("$.data.numberOfTrades", is(15)))
-                .andExpect(jsonPath("$.data.netProfit", is(58.63)));
+                .andExpect(jsonPath("$.data.totalNumberOfTrades", is(2)))
+                .andExpect(jsonPath("$.data.netProfit", is(10.35)));
     }
 
 
@@ -146,8 +146,8 @@ public class TradingSummaryApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trade-summary/report").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.records[0].target", is(47.52)))
-                .andExpect(jsonPath("$.data.records[0].numberOfTrades", is(15)))
-                .andExpect(jsonPath("$.data.records[0].netProfit", is(58.63)));
+                .andExpect(jsonPath("$.data.records[0].totalNumberOfTrades", is(2)))
+                .andExpect(jsonPath("$.data.records[0].netProfit", is(10.35)));
     }
 
 
@@ -174,6 +174,6 @@ public class TradingSummaryApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trade-summary/monthly-stats").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.netProfit", is(58.63)));
+                .andExpect(jsonPath("$.data.netProfit", is(10.35)));
     }
 }

@@ -106,7 +106,7 @@ public abstract class AbstractGenericTest {
     }
 
     public TradingSummary generateTradingSummary() {
-        TradingRecord record = new TradingRecord(LocalDateTime.MIN, LocalDateTime.MAX, 47.52, 15, 10, 5, 67, 58.63, 1.25, 11.11, true, null);
+        TradingRecord record = new TradingRecord(List.of(generateTestBuyTrade(), generateTestSellTrade()), LocalDateTime.MIN, LocalDateTime.now().minusDays(1), 47.52, 1.25, 11.11, true, null);
         return new TradingSummary(List.of(record), new TradingRecordStatistics(List.of(record)));
     }
 

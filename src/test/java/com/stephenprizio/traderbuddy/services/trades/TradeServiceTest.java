@@ -144,20 +144,14 @@ public class TradeServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_findRecentTrades_success_all_results() {
-        assertThat(this.tradeService.findRecentTrades(-1))
-                .hasSize(1)
-                .first()
-                .extracting("numberOfTrades", "netProfit")
-                .containsExactly(15, 58.63);
+        assertThat(this.tradeService.findRecentTrades(-1).get(0).getNetProfit())
+                .isEqualTo(10.35);
     }
 
     @Test
     public void test_findRecentTrades_success_limited_results() {
-        assertThat(this.tradeService.findRecentTrades(1))
-                .hasSize(1)
-                .first()
-                .extracting("numberOfTrades", "netProfit")
-                .containsExactly(15, 58.63);
+        assertThat(this.tradeService.findRecentTrades(1).get(0).getNetProfit())
+                .isEqualTo(10.35);
     }
 
 

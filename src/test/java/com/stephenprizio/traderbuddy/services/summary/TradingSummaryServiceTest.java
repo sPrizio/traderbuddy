@@ -74,10 +74,8 @@ public class TradingSummaryServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getSummaryForTimeSpan_success() {
-        assertThat(this.tradingSummaryService.getSummaryForTimeSpan(TEST_DAY1, TEST_DAY2))
-                .isNotNull()
-                .extracting("numberOfTrades", "winPercentage", "netProfit")
-                .containsExactly(2, 50, 10.35);
+        assertThat(this.tradingSummaryService.getSummaryForTimeSpan(TEST_DAY1, TEST_DAY2).getNetProfit())
+                .isEqualTo(10.35);
     }
 
 

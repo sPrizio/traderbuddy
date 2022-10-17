@@ -85,11 +85,8 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
 
     @Test
     public void test_getReportOfSummariesForTimeSpan_success_daily() {
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.DAILY).records())
-                .isNotEmpty()
-                .element(23)
-                .extracting("netProfit", "numberOfTrades")
-                .contains(TRADES.get(0).getNetProfit(), 1);
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.DAILY).records().get(23).getNetProfit())
+                .isEqualTo(TRADES.get(0).getNetProfit());
     }
 
     @Test
@@ -99,11 +96,8 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.WEEKLY).records())
-                .isNotEmpty()
-                .element(3)
-                .extracting("netProfit", "numberOfTrades")
-                .contains(compare.doubleValue(), 5);
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.WEEKLY).records().get(3).getNetProfit())
+                .isEqualTo(compare.doubleValue());
     }
 
     @Test
@@ -113,11 +107,8 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.MONTHLY).records())
-                .isNotEmpty()
-                .first()
-                .extracting("netProfit", "numberOfTrades")
-                .contains(compare.doubleValue(), 8);
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.MONTHLY).records().get(0).getNetProfit())
+                .isEqualTo(compare.doubleValue());
     }
 
     @Test
@@ -127,10 +118,7 @@ public class TradingSummaryServiceWithDataTest extends AbstractGenericTest {
             compare = compare.add(BigDecimal.valueOf(trade.getNetProfit()).setScale(2, RoundingMode.HALF_EVEN));
         }
 
-        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.YEARLY).records())
-                .isNotEmpty()
-                .first()
-                .extracting("netProfit", "numberOfTrades")
-                .contains(compare.doubleValue(), 20);
+        assertThat(this.tradingSummaryService.getReportOfSummariesForTimeSpan(TEST_DAY1, TEST_DAY2, AggregateInterval.YEARLY).records().get(0).getNetProfit())
+                .isEqualTo(compare.doubleValue());
     }
 }

@@ -214,7 +214,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/performance").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.records[0].netProfit", is(58.63)));
+                .andExpect(jsonPath("$.data.records[0].netProfit", is(10.35)));
     }
 
 

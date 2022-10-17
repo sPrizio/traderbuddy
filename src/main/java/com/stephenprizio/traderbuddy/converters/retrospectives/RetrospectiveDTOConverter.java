@@ -66,15 +66,15 @@ public class RetrospectiveDTOConverter implements GenericDTOConverter<Retrospect
         tradingPlan.ifPresent(plan -> {
             TradingSummary tradingSummary = this.investingService.obtainTradingPerformanceForForecast(tradingPlan.get(), AggregateInterval.DAILY, entity.getStartDate(), entity.getEndDate());
             if (tradingSummary != null && CollectionUtils.isNotEmpty(tradingSummary.records())) {
-                long daysCount = tradingSummary.records().stream().filter(tr -> tr.numberOfTrades() > 0).count();
-                double tradingRate = daysCount > 0 ? BigDecimal.valueOf(tradingSummary.records().stream().mapToInt(TradingRecord::numberOfTrades).sum()).divide(BigDecimal.valueOf(daysCount), 10, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN).doubleValue() : 0.0;
+                long daysCount = tradingSummary.records().stream().filter(tr -> tr.getTotalNumberOfTrades() > 0).count();
+                double tradingRate = daysCount > 0 ? BigDecimal.valueOf(tradingSummary.records().stream().mapToInt(TradingRecord::getTotalNumberOfTrades).sum()).divide(BigDecimal.valueOf(daysCount), 10, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN).doubleValue() : 0.0;
 
                 retrospectiveDTO.setRetrospectiveStatistics(
                         new RetrospectiveStatistics(
-                                tradingSummary.records().stream().mapToInt(TradingRecord::numberOfTrades).sum(),
+                                tradingSummary.records().stream().mapToInt(TradingRecord::getTotalNumberOfTrades).sum(),
                                 tradingRate,
-                                BigDecimal.valueOf(tradingSummary.records().stream().mapToInt(TradingRecord::winPercentage).filter(i -> i != 0).average().orElse(0.0)).setScale(0, RoundingMode.HALF_EVEN).intValue(),
-                                BigDecimal.valueOf(tradingSummary.records().stream().mapToDouble(TradingRecord::netProfit).sum()).setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
+                                BigDecimal.valueOf(tradingSummary.records().stream().mapToInt(TradingRecord::getWinPercentage).filter(i -> i != 0).average().orElse(0.0)).setScale(0, RoundingMode.HALF_EVEN).intValue(),
+                                BigDecimal.valueOf(tradingSummary.records().stream().mapToDouble(TradingRecord::getNetProfit).sum()).setScale(2, RoundingMode.HALF_EVEN).doubleValue(),
                                 BigDecimal.valueOf(tradingSummary.records().stream().mapToDouble(TradingRecord::percentageProfit).filter(i -> i != 0).average().orElse(0.0)).setScale(2, RoundingMode.HALF_EVEN).doubleValue()
                         )
                 );
