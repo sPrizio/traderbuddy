@@ -43,4 +43,12 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @return {@link Trade}
      */
     Trade findTradeByTradeId(final String tradeId);
+
+    /**
+     * Returns a {@link List} of {@link Trade}s that have not been processed
+     *
+     * @param processed processed flag
+     * @return {@link List} of {@link Trade}
+     */
+    List<Trade> findAllByProcessed(final Boolean processed);
 }

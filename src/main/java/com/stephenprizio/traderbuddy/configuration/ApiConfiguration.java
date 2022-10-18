@@ -1,6 +1,7 @@
 package com.stephenprizio.traderbuddy.configuration;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @version 1.0
  */
 @Configuration
+@EnableScheduling
 public class ApiConfiguration implements WebMvcConfigurer {
 
     @Override

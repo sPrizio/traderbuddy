@@ -94,4 +94,17 @@ public class TradeRepositoryTest extends AbstractGenericTest {
                 .extracting("openPrice", "closePrice", "netProfit")
                 .contains(13083.41, 13098.67, 14.85);
     }
+
+
+    //  ----------------- findAllByProcessed -----------------
+
+    @Test
+    public void test_findAllByProcessed_success() {
+        assertThat(this.tradeRepository.findAllByProcessed(true))
+                .isNotEmpty()
+                .hasSize(1)
+                .first()
+                .extracting("openPrice", "closePrice", "netProfit")
+                .contains(13083.41, 13098.67, 14.85);
+    }
 }

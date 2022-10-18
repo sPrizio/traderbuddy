@@ -10,6 +10,7 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,7 @@ public class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findAllByTradeTypeOrderByTradeOpenTimeAsc(TradeType.BUY)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findTradeByTradeId("testId1")).thenReturn(TEST_TRADE_1);
+        Mockito.when(this.tradeRepository.findAllByProcessed(false)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradingSummaryService.getReportOfSummariesForTimeSpan(any(), any(), any())).thenReturn(generateTradingSummary());
     }
 
@@ -152,6 +154,15 @@ public class TradeServiceTest extends AbstractGenericTest {
     public void test_findRecentTrades_success_limited_results() {
         assertThat(this.tradeService.findRecentTrades(1).get(0).getNetProfit())
                 .isEqualTo(10.35);
+    }
+
+
+    //  ----------------- findTradesByProcessed -----------------
+
+    @Test
+    public void test_findTradesByProcessed_success() {
+        assertThat(this.tradeService.findTradesByProcessed(false))
+                .hasSize(1);
     }
 
 

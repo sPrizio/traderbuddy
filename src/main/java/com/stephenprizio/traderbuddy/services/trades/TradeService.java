@@ -91,6 +91,17 @@ public class TradeService {
     }
 
     /**
+     * Returns a {@link List} of {@link Trade}s by their processed flag
+     *
+     * @param processed processed flag
+     * @return {@link List} of {@link Trade}
+     */
+    public List<Trade> findTradesByProcessed(final Boolean processed) {
+        validateParameterIsNotNull(processed, "processed cannot be null");
+        return this.tradeRepository.findAllByProcessed(processed);
+    }
+
+    /**
      * Returns a {@link List} of the most recent N {@link TradingRecord}s
      *
      * @param count limit size

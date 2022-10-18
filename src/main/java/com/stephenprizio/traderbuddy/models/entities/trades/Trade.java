@@ -88,4 +88,9 @@ public class Trade implements GenericEntity {
     @Setter
     @Column
     private Boolean relevant = true;
+
+    @Getter
+    @Setter
+    @Column
+    private Boolean processed = false;
 }

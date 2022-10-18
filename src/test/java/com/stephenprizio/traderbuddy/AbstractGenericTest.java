@@ -10,6 +10,7 @@ import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
 import com.stephenprizio.traderbuddy.models.entities.plans.WithdrawalPlan;
+import com.stephenprizio.traderbuddy.models.entities.records.TradeRecord;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.Retrospective;
 import com.stephenprizio.traderbuddy.models.entities.retrospectives.RetrospectiveEntry;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
@@ -51,6 +52,7 @@ public abstract class AbstractGenericTest {
         trade.setOpenPrice(13083.41);
         trade.setReasonForEntrance("I have my reasons");
         trade.setRelevant(true);
+        trade.setProcessed(true);
 
         return trade;
     }
@@ -71,6 +73,7 @@ public abstract class AbstractGenericTest {
         trade.setOpenPrice(13160.09);
         trade.setReasonForEntrance("I continue to have my reasons");
         trade.setRelevant(true);
+        trade.setProcessed(false);
 
         return trade;
     }
@@ -103,6 +106,21 @@ public abstract class AbstractGenericTest {
         }
 
         return trades;
+    }
+
+    public TradeRecord generateTestTradeRecord() {
+        final TradeRecord tradeRecord = new TradeRecord();
+
+        tradeRecord.setNumberOfTrades(15);
+        tradeRecord.setEndDate(LocalDate.of(2022, 10, 18));
+        tradeRecord.setAggregateInterval(AggregateInterval.DAILY);
+        tradeRecord.setNetProfit(624.23);
+        tradeRecord.setPercentageProfit(1.49);
+        tradeRecord.setStartDate(LocalDate.of(2022, 10, 17));
+        tradeRecord.setWinPercentage(61);
+        tradeRecord.setBalance(3896.23);
+
+        return tradeRecord;
     }
 
     public TradingSummary generateTradingSummary() {
