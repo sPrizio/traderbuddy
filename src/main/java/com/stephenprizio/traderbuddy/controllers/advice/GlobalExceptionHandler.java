@@ -6,8 +6,12 @@ import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationExcepti
 import com.stephenprizio.traderbuddy.exceptions.system.GenericSystemException;
 import com.stephenprizio.traderbuddy.exceptions.validation.*;
 import com.stephenprizio.traderbuddy.models.records.json.StandardJsonResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,29 +34,34 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
+            BadCredentialsException.class,
             DateTimeException.class,
+            DisabledException.class,
             FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             JsonMissingPropertyException.class,
             MissingRequiredDataException.class,
             NonUniqueItemFoundException.class,
             NoResultFoundException.class,
-            UnsupportedOperationException.class
+            UnsupportedOperationException.class,
+            UsernameNotFoundException.class
     })
-    public StandardJsonResponse handleClientError(Exception exception) {
+    public StandardJsonResponse handleClientError(final Exception exception) {
         LOGGER.error("Bad Request by the client. Please try again: ", exception);
-        return generateResponse("Bad Request by the client. Please try again: " + exception.getMessage());
+        return generateResponse("Looks like your request could not be processed. Check your inputs and try again!");
     }
 
     @ResponseBody
     @ExceptionHandler({
             EntityCreationException.class,
             EntityModificationException.class,
-            GenericSystemException.class
+            ExpiredJwtException.class,
+            GenericSystemException.class,
+            IllegalArgumentException.class
     })
-    public StandardJsonResponse handleServerError(Exception exception) {
-        LOGGER.error("An internal server error occurred. Please try again later: ", exception);
-        return generateResponse("An internal server error occurred. Please try again later: " + exception.getMessage());
+    public StandardJsonResponse handleServerError(final Exception exception) {
+        LOGGER.error("An internal server error occurred. ", exception);
+        return generateResponse("An error on our side occurred. Please try again.");
     }
 
 

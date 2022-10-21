@@ -96,6 +96,9 @@ public class TradeRecordService {
         return tradeRecord;
     }
 
+    /**
+     * Processes all unprocessed {@link Trade}s
+     */
     public void processTrades() {
 
         List<TradeRecord> records = new ArrayList<>();

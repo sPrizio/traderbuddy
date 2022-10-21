@@ -8,7 +8,7 @@ package com.stephenprizio.traderbuddy.exceptions.calculator;
  */
 public class UnexpectedNegativeValueException extends RuntimeException {
 
-    public UnexpectedNegativeValueException(String message) {
+    public UnexpectedNegativeValueException(final String message) {
         super(message);
     }
 }

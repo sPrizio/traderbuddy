@@ -8,7 +8,7 @@ package com.stephenprizio.traderbuddy.exceptions.importing;
  */
 public class TradeImportFailureException extends RuntimeException {
 
-    public TradeImportFailureException(String message) {
+    public TradeImportFailureException(final String message) {
         super(message);
     }
 }

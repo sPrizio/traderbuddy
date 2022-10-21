@@ -8,7 +8,7 @@ package com.stephenprizio.traderbuddy.exceptions.importing;
  */
 public class FileExtensionNotSupportedException extends RuntimeException {
 
-    public FileExtensionNotSupportedException(String message) {
+    public FileExtensionNotSupportedException(final String message) {
         super(message);
     }
 }

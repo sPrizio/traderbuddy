@@ -8,7 +8,7 @@ package com.stephenprizio.traderbuddy.exceptions.calculator;
  */
 public class UnexpectedZeroValueException extends RuntimeException {
 
-    public UnexpectedZeroValueException(String message) {
+    public UnexpectedZeroValueException(final String message) {
         super(message);
     }
 }
