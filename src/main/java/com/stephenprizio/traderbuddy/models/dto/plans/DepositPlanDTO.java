@@ -26,12 +26,4 @@ public class DepositPlanDTO implements GenericDTO {
     @Getter
     @Setter
     private CompoundFrequency frequency;
-
-
-    //  METHODS
-
-    @Override
-    public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.uid);
-    }
 }

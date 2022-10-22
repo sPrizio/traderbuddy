@@ -25,7 +25,7 @@ public class DepositPlanDTOConverter implements GenericDTOConverter<DepositPlan,
     //  METHODS
 
     @Override
-    public DepositPlanDTO convert(DepositPlan entity) {
+    public DepositPlanDTO convert(final DepositPlan entity) {
 
         DepositPlanDTO depositPlanDTO = new DepositPlanDTO();
 
@@ -36,10 +36,5 @@ public class DepositPlanDTOConverter implements GenericDTOConverter<DepositPlan,
         }
 
         return depositPlanDTO;
-    }
-
-    @Override
-    public List<DepositPlanDTO> convertAll(List<DepositPlan> entities) {
-        return entities.stream().map(this::convert).toList();
     }
 }

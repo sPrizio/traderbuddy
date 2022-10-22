@@ -61,12 +61,4 @@ public class TradingPlanDTO implements GenericDTO {
     @Getter
     @Setter
     private WithdrawalPlanDTO withdrawalPlan;
-
-
-    //  METHODS
-
-    @Override
-    public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.uid);
-    }
 }

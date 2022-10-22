@@ -45,7 +45,7 @@ public class RetrospectiveDTOConverter implements GenericDTOConverter<Retrospect
     //  METHODS
 
     @Override
-    public RetrospectiveDTO convert(Retrospective entity) {
+    public RetrospectiveDTO convert( final Retrospective entity) {
 
         if (entity == null) {
             return new RetrospectiveDTO();
@@ -82,10 +82,5 @@ public class RetrospectiveDTOConverter implements GenericDTOConverter<Retrospect
         });
 
         return retrospectiveDTO;
-    }
-
-    @Override
-    public List<RetrospectiveDTO> convertAll(List<Retrospective> entities) {
-        return entities.stream().map(this::convert).toList();
     }
 }

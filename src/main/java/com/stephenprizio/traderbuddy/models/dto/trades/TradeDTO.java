@@ -73,12 +73,4 @@ public class TradeDTO implements GenericDTO {
     @Getter
     @Setter
     private Boolean relevant;
-
-
-    //  METHODS
-
-    @Override
-    public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.uid);
-    }
 }

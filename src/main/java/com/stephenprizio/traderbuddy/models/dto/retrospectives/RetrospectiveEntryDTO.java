@@ -29,12 +29,4 @@ public class RetrospectiveEntryDTO implements GenericDTO {
     @Getter
     @Setter
     private Boolean keyPoint;
-
-
-    //  METHODS
-
-    @Override
-    public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.uid);
-    }
 }

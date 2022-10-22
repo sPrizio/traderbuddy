@@ -25,7 +25,7 @@ public class WithdrawalPlanDTOConverter implements GenericDTOConverter<Withdrawa
     //  METHODS
 
     @Override
-    public WithdrawalPlanDTO convert(WithdrawalPlan entity) {
+    public WithdrawalPlanDTO convert(final WithdrawalPlan entity) {
 
         WithdrawalPlanDTO withdrawalPlanDTO = new WithdrawalPlanDTO();
 
@@ -36,10 +36,5 @@ public class WithdrawalPlanDTOConverter implements GenericDTOConverter<Withdrawa
         }
 
         return withdrawalPlanDTO;
-    }
-
-    @Override
-    public List<WithdrawalPlanDTO> convertAll(List<WithdrawalPlan> entities) {
-        return entities.stream().map(this::convert).toList();
     }
 }

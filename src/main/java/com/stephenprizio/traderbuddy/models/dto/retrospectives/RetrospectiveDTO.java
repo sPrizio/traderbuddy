@@ -42,12 +42,4 @@ public class RetrospectiveDTO implements GenericDTO {
     @Getter
     @Setter
     private RetrospectiveStatistics retrospectiveStatistics;
-
-
-    //  METHODS
-
-    @Override
-    public Boolean isEmpty() {
-        return StringUtils.isEmpty(this.uid);
-    }
 }

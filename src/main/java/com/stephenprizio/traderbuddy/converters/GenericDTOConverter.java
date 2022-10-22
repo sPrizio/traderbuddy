@@ -26,5 +26,7 @@ public interface GenericDTOConverter<E, D extends GenericDTO> {
      * @param entities {@link List} of {@link E}
      * @return {@link List} of {@link D}
      */
-    List<D> convertAll(final List<E> entities);
+    default List<D> convertAll(final List<E> entities) {
+        return entities.stream().map(this::convert).toList();
+    }
 }

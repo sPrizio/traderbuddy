@@ -31,7 +31,7 @@ public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan,
     //  METHODS
 
     @Override
-    public TradingPlanDTO convert(TradingPlan entity) {
+    public TradingPlanDTO convert(final TradingPlan entity) {
 
         if (entity == null) {
             return new TradingPlanDTO();
@@ -52,10 +52,5 @@ public class TradingPlanDTOConverter implements GenericDTOConverter<TradingPlan,
         tradingPlanDTO.setWithdrawalPlan(this.withdrawalPlanDTOConverter.convert(entity.getWithdrawalPlan()));
 
         return tradingPlanDTO;
-    }
-
-    @Override
-    public List<TradingPlanDTO> convertAll(List<TradingPlan> entities) {
-        return entities.stream().map(this::convert).toList();
     }
 }

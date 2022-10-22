@@ -50,9 +50,4 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
 
         return tradeDTO;
     }
-
-    @Override
-    public List<TradeDTO> convertAll(final List<Trade> entities) {
-        return entities.stream().map(this::convert).toList();
-    }
 }
