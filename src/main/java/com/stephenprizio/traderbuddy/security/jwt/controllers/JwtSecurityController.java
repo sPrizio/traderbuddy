@@ -57,6 +57,8 @@ public class JwtSecurityController {
     @PostMapping("/login")
     public StandardJsonResponse createToken(final @RequestBody JwtRequestModel request) throws InterruptedException {
 
+        //  TODO: TEMP
+
         Thread.sleep(2000);
         /*this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 

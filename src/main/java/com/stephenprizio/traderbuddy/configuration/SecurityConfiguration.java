@@ -58,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                .cors().disable()
+                .cors().disable() //  TODO: TEMP
                 .authorizeRequests().antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
