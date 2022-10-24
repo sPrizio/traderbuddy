@@ -1,8 +1,10 @@
 package com.stephenprizio.traderbuddy.integrations.services.eod;
 
+import com.stephenprizio.traderbuddy.AbstractGenericTest;
 import com.stephenprizio.traderbuddy.exceptions.validation.IllegalParameterException;
 import com.stephenprizio.traderbuddy.integrations.client.eod.EODIntegrationClient;
 import com.stephenprizio.traderbuddy.integrations.exceptions.IntegrationException;
+import com.stephenprizio.traderbuddy.integrations.models.response.eod.IntradayHistoricalDataResponse;
 import com.stephenprizio.traderbuddy.integrations.translators.eod.IntradayHistoricalDataTranslator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link EODIntegrationService}
@@ -31,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class EODIntegrationServiceTest {
+public class EODIntegrationServiceTest extends AbstractGenericTest {
 
     private final MultiValueMap<String, String> goodMap = new LinkedMultiValueMap<>();
     private final MultiValueMap<String, String> badMap = new LinkedMultiValueMap<>();
@@ -73,6 +76,7 @@ public class EODIntegrationServiceTest {
         badMap.put("from", List.of("-31557014135596800"));
         badMap.put("to", List.of("31556889832780799"));
         Mockito.when(this.eodIntegrationClient.get("bad", this.badMap)).thenReturn(StringUtils.EMPTY);
+        Mockito.when(this.intradayHistoricalDataTranslator.translate(any())).thenReturn(generateIntradayDto());
     }
 
 
@@ -85,14 +89,14 @@ public class EODIntegrationServiceTest {
                 .withMessage("symbol cannot be null");
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.eodIntegrationService.getIntradayData("empty", null, LocalDateTime.MIN, LocalDateTime.MAX))
-                .withMessage("interval");
+                .withMessage("interval cannot be null");
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.eodIntegrationService.getIntradayData("empty", "5m", null, LocalDateTime.MAX))
                 .withMessage("from cannot be null");
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.eodIntegrationService.getIntradayData("empty", "5m", LocalDateTime.MIN, null))
                 .withMessage("to cannot be null");
-        assertThatExceptionOfType(IllegalParameterException.class)
+        assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.eodIntegrationService.getIntradayData("empty", "5m", LocalDateTime.MAX, LocalDateTime.MIN))
                 .withMessage("from was greater than to or vice versa");
     }

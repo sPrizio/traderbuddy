@@ -76,11 +76,7 @@ public class EODIntegrationService implements GenericIntegrationService {
 
         try {
             final IntradayHistoricalDataEntryResponse[] entries = this.objectMapper.readValue(response, IntradayHistoricalDataEntryResponse[].class);
-
-            IntradayHistoricalDataResponse test = new IntradayHistoricalDataResponse(Arrays.stream(entries).toList());
-
-            //  TODO: figure out why this isn't working, might need a MOCKITO.when().then()
-            return this.intradayHistoricalDataTranslator.translate(test);
+            return this.intradayHistoricalDataTranslator.translate(new IntradayHistoricalDataResponse(Arrays.stream(entries).toList()));
         } catch (Exception e) {
             throw new IntegrationException("The response came in an unexpected format", e);
         }

@@ -3,6 +3,7 @@ package com.stephenprizio.traderbuddy.integrations.models.dto.eod;
 import com.stephenprizio.traderbuddy.integrations.models.dto.GenericIntegrationDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -23,6 +24,6 @@ public class IntradayHistoricalDataDTO implements GenericIntegrationDTO {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return CollectionUtils.isEmpty(this.entries);
     }
 }

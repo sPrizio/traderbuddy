@@ -5,6 +5,10 @@ import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
+import com.stephenprizio.traderbuddy.integrations.models.dto.eod.IntradayHistoricalDataDTO;
+import com.stephenprizio.traderbuddy.integrations.models.dto.eod.IntradayHistoricalDataEntryDTO;
+import com.stephenprizio.traderbuddy.integrations.models.response.eod.IntradayHistoricalDataEntryResponse;
+import com.stephenprizio.traderbuddy.integrations.models.response.eod.IntradayHistoricalDataResponse;
 import com.stephenprizio.traderbuddy.models.dto.plans.DepositPlanDTO;
 import com.stephenprizio.traderbuddy.models.dto.plans.WithdrawalPlanDTO;
 import com.stephenprizio.traderbuddy.models.entities.plans.DepositPlan;
@@ -232,5 +236,25 @@ public abstract class AbstractGenericTest {
         retrospective2.setIntervalFrequency(AggregateInterval.WEEKLY);
 
         return List.of(retrospective1, retrospective2);
+    }
+
+    public IntradayHistoricalDataResponse generateIntradayResponse() {
+        return new IntradayHistoricalDataResponse(List.of(new IntradayHistoricalDataEntryResponse(1564752900, 0, "2019-08-02 13:35:00", 205.14, 205.37, 204.75, 204.7683, 231517)));
+    }
+
+    public IntradayHistoricalDataDTO generateIntradayDto() {
+
+        IntradayHistoricalDataEntryDTO entryDTO = new IntradayHistoricalDataEntryDTO();
+        entryDTO.setClose(204.7683);
+        entryDTO.setHigh(205.37);
+        entryDTO.setOpen(205.14);
+        entryDTO.setLow(204.75);
+        entryDTO.setDatetime(LocalDateTime.of(2019, 8, 2, 13, 35, 0));
+        entryDTO.setVolume(231517);
+
+
+        IntradayHistoricalDataDTO dto = new IntradayHistoricalDataDTO();
+        dto.setEntries(List.of(entryDTO));
+        return dto;
     }
 }
