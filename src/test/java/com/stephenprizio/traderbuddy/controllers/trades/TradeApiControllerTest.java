@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.controllers.trades;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.enums.trades.TradeType;
 import com.stephenprizio.traderbuddy.enums.trades.TradingPlatform;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
@@ -46,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 1.0
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 public class TradeApiControllerTest extends AbstractGenericTest {
 
@@ -126,7 +127,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date dasdfasdfaf was not of the expected format yyyy-MM-dd'T'HH:mm:ss")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -139,7 +140,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trades/for-interval").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date asdadasdasd was not of the expected format yyyy-MM-dd'T'HH:mm:ss")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -168,7 +169,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trades/for-trade-id").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("No trade was found with trade id: asdasdad")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -223,7 +224,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trades/import-trades").file(TEST_FILE2).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The given file hello.txt was not a csv file")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -259,14 +260,14 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     public void test_putDisregardTrade_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(put("/api/v1/trades/disregard").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [tradeId]")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
     public void test_putDisregardTrade_badId() throws Exception {
         this.mockMvc.perform(put("/api/v1/trades/disregard").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("tradeId", "badId"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("An error occurred while updating trade : badId. Please try again")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.SERVER_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test

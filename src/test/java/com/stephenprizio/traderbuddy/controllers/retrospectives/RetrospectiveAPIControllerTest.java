@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.controllers.retrospectives;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.enums.AggregateInterval;
 import com.stephenprizio.traderbuddy.services.plans.TradingPlanService;
 import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 1.0
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
@@ -85,7 +86,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date asdasdasdasd was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -98,7 +99,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/retrospectives/timespan").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date adfafdsfdsfsd was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -140,7 +141,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/retrospectives/unique").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date asdasdasdasd was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/retrospectives/unique").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date adfafdsfdsfsd was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -271,7 +272,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
     public void test_postCreateRetrospective_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/retrospectives/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [retrospective]")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -315,7 +316,7 @@ public class RetrospectiveAPIControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/retrospectives/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [retrospective]")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test

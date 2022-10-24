@@ -1,5 +1,6 @@
 package com.stephenprizio.traderbuddy.controllers.advice;
 
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.exceptions.importing.FileExtensionNotSupportedException;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityCreationException;
 import com.stephenprizio.traderbuddy.exceptions.system.EntityModificationException;
@@ -50,7 +51,7 @@ public class GlobalExceptionHandler {
     })
     public StandardJsonResponse handleClientError(final Exception exception) {
         LOGGER.error("Bad Request by the client. Please try again: ", exception);
-        return generateResponse("Looks like your request could not be processed. Check your inputs and try again!");
+        return generateResponse(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE, exception.getMessage());
     }
 
     @ResponseBody
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler {
     })
     public StandardJsonResponse handleServerError(final Exception exception) {
         LOGGER.error("An internal server error occurred. ", exception);
-        return generateResponse("An error on our side occurred. Please try again.");
+        return generateResponse(TraderBuddyConstants.SERVER_ERROR_DEFAULT_MESSAGE, exception.getMessage());
     }
 
 
@@ -72,7 +73,7 @@ public class GlobalExceptionHandler {
     /**
      * Generates a {@link StandardJsonResponse}
      */
-    private StandardJsonResponse generateResponse(String message) {
-        return new StandardJsonResponse(false, null, message);
+    private StandardJsonResponse generateResponse(final String message, final String internalMessage) {
+        return new StandardJsonResponse(false, null, message, internalMessage);
     }
 }

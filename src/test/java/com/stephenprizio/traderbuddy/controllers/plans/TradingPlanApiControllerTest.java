@@ -2,6 +2,7 @@ package com.stephenprizio.traderbuddy.controllers.plans;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stephenprizio.traderbuddy.AbstractGenericTest;
+import com.stephenprizio.traderbuddy.constants.TraderBuddyConstants;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.entities.plans.TradingPlan;
@@ -11,7 +12,6 @@ import com.stephenprizio.traderbuddy.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 1.0
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
@@ -132,7 +132,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date adfsffaf was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/forecast").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date adfsffaf was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/performance").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date adfsffaf was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -201,7 +201,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trading-plans/performance").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date adfsffaf was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
     public void test_postCreateTradingPlan_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/trading-plans/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget, compoundFrequency, startingBalance]")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -261,7 +261,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/trading-plans/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("json did not contain of the required keys : [status, active, name, startDate, endDate, profitTarget, compoundFrequency, startingBalance]")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -286,7 +286,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/trading-plans/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The start date dasdfasdfaf was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -311,7 +311,7 @@ public class TradingPlanApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(put("/api/v1/trading-plans/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("The end date asdadasdasd was not of the expected format yyyy-MM-dd")));
+                .andExpect(jsonPath("$.message", containsString(TraderBuddyConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test

@@ -29,4 +29,14 @@ public class TraderBuddyConstants {
      * Represents the maximum allowable calendar year value
      */
     public static final int MAX_CALENDAR_YEAR = Year.MAX_VALUE;
+
+    /**
+     * Generic error message for client errors
+     */
+    public static final String CLIENT_ERROR_DEFAULT_MESSAGE = "Looks like your request could not be processed. Check your inputs and try again!";
+
+    /**
+     * Generic error message for server errors
+     */
+    public static final String SERVER_ERROR_DEFAULT_MESSAGE = "An error on our side occurred. Please try again.";
 }

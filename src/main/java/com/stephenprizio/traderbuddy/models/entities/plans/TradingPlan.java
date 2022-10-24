@@ -3,7 +3,6 @@ package com.stephenprizio.traderbuddy.models.entities.plans;
 import com.stephenprizio.traderbuddy.enums.calculator.CompoundFrequency;
 import com.stephenprizio.traderbuddy.enums.plans.TradingPlanStatus;
 import com.stephenprizio.traderbuddy.models.entities.GenericEntity;
-import com.stephenprizio.traderbuddy.models.entities.account.Account;
 import com.stephenprizio.traderbuddy.models.entities.trades.Trade;
 import com.stephenprizio.traderbuddy.models.records.reporting.trades.TradingRecord;
 import lombok.Getter;
@@ -76,9 +75,4 @@ public class TradingPlan implements GenericEntity {
     @Setter
     @OneToOne
     private WithdrawalPlan withdrawalPlan;
-
-    @Getter
-    @Setter
-    @OneToOne(mappedBy = "tradingPlan")
-    private Account account;
 }
