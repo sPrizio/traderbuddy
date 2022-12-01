@@ -197,6 +197,7 @@ public abstract class AbstractGenericTest {
     public IntradayHistoricalDataDTO generateIntradayDto() {
 
         IntradayHistoricalDataEntryDTO entryDTO = new IntradayHistoricalDataEntryDTO();
+
         entryDTO.setClose(204.7683);
         entryDTO.setHigh(205.37);
         entryDTO.setOpen(205.14);
