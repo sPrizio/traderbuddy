@@ -24,6 +24,7 @@ public class Account implements GenericEntity {
 
     @Id
     @Getter
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

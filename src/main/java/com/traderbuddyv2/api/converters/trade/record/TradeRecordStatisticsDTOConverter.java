@@ -127,7 +127,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
      * @param entity {@link TradeRecordStatistics}
      */
     private void computePercentageGain(final TradeRecordStatisticsDTO tradeRecordStatisticsDTO, final TradeRecordStatistics entity) {
-        Optional<TradeRecord> previous = this.tradeRecordService.previousRecord(entity.getTradeRecord());
+        Optional<TradeRecord> previous = this.tradeRecordService.findPreviousTradeRecord(entity.getTradeRecord());
         previous.ifPresent(rec -> tradeRecordStatisticsDTO.setPercentageProfit(this.mathService.delta(entity.getNetProfit(), rec.getBalance())));
     }
 }

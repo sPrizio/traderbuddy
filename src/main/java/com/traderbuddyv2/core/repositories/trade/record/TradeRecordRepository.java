@@ -40,7 +40,7 @@ public interface TradeRecordRepository extends PagingAndSortingRepository<TradeR
      * @return {@link List} of {@link TradeRecord}
      */
     @Query(nativeQuery = true, value = "SELECT * FROM trader_buddy.trade_records AS r WHERE r.aggregate_interval = :aggregateInterval AND r.account_id = :accountId ORDER BY r.end_date DESC LIMIT :count")
-    List<TradeRecord> findRecentHistory(final @Param("count") int count, final @Param("aggregateInterval") Integer aggregateInterval, final @Param("accountId") Long accountId);
+    List<TradeRecord> findRecentHistory(final @Param("count") int count, final @Param("aggregateInterval") int aggregateInterval, final @Param("accountId") long accountId);
 
     /**
      * Obtains a {@link List} of {@link TradeRecord}s ordered by their start dates in ascending order that are within the given time span

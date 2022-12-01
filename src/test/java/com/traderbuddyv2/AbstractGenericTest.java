@@ -18,6 +18,7 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.nonentities.AccountOverview;
+import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataEntryResponse;
@@ -213,6 +214,7 @@ public abstract class AbstractGenericTest {
 
         Account account = new Account();
 
+        account.setId(-1L);
         account.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
         account.setBalance(1000.0);
         account.setActive(true);
@@ -332,5 +334,11 @@ public abstract class AbstractGenericTest {
         accountOverview.setBalance(1025.0);
 
         return accountOverview;
+    }
+
+    public List<ForecastEntry> generateForecast() {
+        return List.of(
+                new ForecastEntry(LocalDate.MIN, LocalDate.MAX, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+        );
     }
 }

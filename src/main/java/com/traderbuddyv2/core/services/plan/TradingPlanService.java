@@ -364,7 +364,7 @@ public class TradingPlanService {
      * @param compare {@link LocalDate}
      * @return true if the given date is the first monday of the month
      */
-    private Boolean isFirstBusinessDayOfMonth(final LocalDate compare) {
+    private boolean isFirstBusinessDayOfMonth(final LocalDate compare) {
         LocalDate firstBusinessDayOfMonth = compare.with(TemporalAdjusters.firstDayOfMonth());
         while (firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SATURDAY) || firstBusinessDayOfMonth.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
             firstBusinessDayOfMonth = firstBusinessDayOfMonth.plusDays(1);

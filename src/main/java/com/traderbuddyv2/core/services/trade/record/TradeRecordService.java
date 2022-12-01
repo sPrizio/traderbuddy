@@ -150,7 +150,14 @@ public class TradeRecordService {
         return findTradeRecordForStartDateAndEndDateAndInterval(computeStartDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval), computeEndDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval), aggregateInterval);
     }
 
-    public Optional<TradeRecord> previousRecord(final TradeRecord tradeRecord) {
+    /**
+     * Obtains the previous {@link TradeRecord} for the given one
+     * Note: The previous one refers to the next closest record in the past
+     *
+     * @param tradeRecord {@link TradeRecord}
+     * @return {@link Optional} {@link TradeRecord}
+     */
+    public Optional<TradeRecord> findPreviousTradeRecord(final TradeRecord tradeRecord) {
 
         validateParameterIsNotNull(tradeRecord, "trade record cannot be null");
 
@@ -343,7 +350,10 @@ public class TradeRecordService {
         TradeRecordStatistics tradeRecordStatistics = tradeRecord.getStatistics();
         tradeRecord.setStatistics(null);
         this.tradeRecordRepository.save(tradeRecord);
-        this.tradeRecordStatisticsRepository.delete(tradeRecordStatistics);
+
+        if (tradeRecordStatistics != null) {
+            this.tradeRecordStatisticsRepository.delete(tradeRecordStatistics);
+        }
 
         if (trades.isEmpty()) {
             this.tradeRecordRepository.delete(tradeRecord);

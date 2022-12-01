@@ -68,7 +68,7 @@ public class TradeApiController {
      */
     @ResponseBody
     @GetMapping("/for-type")
-    public StandardJsonResponse getTradesForTradeType(final @RequestParam("tradeType") String tradeType, final @RequestParam("includeNonRelevant") Boolean includeNonRelevant) {
+    public StandardJsonResponse getTradesForTradeType(final @RequestParam("tradeType") String tradeType, final @RequestParam("includeNonRelevant") boolean includeNonRelevant) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeType.class, tradeType)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid trade type", tradeType));
@@ -90,7 +90,7 @@ public class TradeApiController {
      */
     @ResponseBody
     @GetMapping("/for-interval")
-    public StandardJsonResponse getTradesWithinInterval(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("includeNonRelevant") Boolean includeNonRelevant) {
+    public StandardJsonResponse getTradesWithinInterval(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("includeNonRelevant") boolean includeNonRelevant) {
 
         validateLocalDateTimeFormat(start, CoreConstants.DATE_TIME_FORMAT, String.format(CoreConstants.Validation.START_DATE_INVALID_FORMAT, start, CoreConstants.DATE_TIME_FORMAT));
         validateLocalDateTimeFormat(end, CoreConstants.DATE_TIME_FORMAT, String.format(CoreConstants.Validation.START_DATE_INVALID_FORMAT, end, CoreConstants.DATE_TIME_FORMAT));
@@ -113,7 +113,7 @@ public class TradeApiController {
     public StandardJsonResponse getTradesWithinIntervalPaged(
             final @RequestParam("start") String start,
             final @RequestParam("end") String end,
-            final @RequestParam("includeNonRelevant") Boolean includeNonRelevant,
+            final @RequestParam("includeNonRelevant") boolean includeNonRelevant,
             final @RequestParam(value = "page", defaultValue = "0") int page,
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
     ) {

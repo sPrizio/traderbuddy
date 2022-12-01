@@ -2,6 +2,7 @@ package com.traderbuddyv2.core.models.records.plan;
 
 import lombok.Getter;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 /**
@@ -34,8 +35,17 @@ public record ForecastEntry(
      *
      * @return true if current date > start date and current date < end date
      */
-    public Boolean getActive() {
+    public boolean getActive() {
         LocalDate now = LocalDate.now();
         return (now.isAfter(this.startDate) || now.isEqual(this.startDate)) && (now.isBefore(this.endDate));
+    }
+
+    /**
+     * Returns true if the start date is on a weekend
+     *
+     * @return true if day of week is Saturday or Sunday
+     */
+    public boolean isWeekend() {
+        return this.startDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || this.startDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }

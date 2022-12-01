@@ -12,7 +12,6 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
-import com.traderbuddyv2.core.repositories.trade.record.TradeRecordStatisticsRepository;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -62,9 +61,6 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
     @MockBean
     private TradeService tradeService;
 
-    @MockBean
-    private TradeRecordStatisticsRepository tradeRecordStatisticsRepository;
-
     @Autowired
     private TradeRecordService tradeRecordService;
 
@@ -97,7 +93,7 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
             return temp;
         });
         Mockito.when(this.mathService.add(1000.0, 10.35)).thenReturn(1010.35);
-        Mockito.when(this.tradeRecordRepository.findRecentHistory(anyInt(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
+        Mockito.when(this.tradeRecordRepository.findRecentHistory(anyInt(), anyInt(), anyLong())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordRepository.findHistory(any(), any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeService.findTradeByTradeId(anyString())).thenReturn(Optional.of(trade));
     }
@@ -200,6 +196,22 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
     @Test
     public void test_findTradeRecordForTrade_success() {
         assertThat(this.tradeRecordService.findTradeRecordForTrade(trade, AggregateInterval.DAILY))
+                .isNotEmpty();
+    }
+
+
+    //  ----------------- findPreviousTradeRecord -----------------
+
+    @Test
+    public void test_findPreviousTradeRecord_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeRecordService.findPreviousTradeRecord(null))
+                .withMessage("trade record cannot be null");
+    }
+
+    @Test
+    public void test_findPreviousTradeRecord_success() {
+        assertThat(this.tradeRecordService.findPreviousTradeRecord(generateTestTradeRecord()))
                 .isNotEmpty();
     }
 

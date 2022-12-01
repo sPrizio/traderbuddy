@@ -113,10 +113,10 @@ public class RetrospectiveApiController extends AbstractApiController {
      */
     @ResponseBody
     @GetMapping("/active-months")
-    public StandardJsonResponse getActiveRetrospectiveMonths(final @RequestParam("year") int year,final @RequestParam(value = "includeStarterMonth", defaultValue = "false") Boolean includeStarterMonth) {
+    public StandardJsonResponse getActiveRetrospectiveMonths(final @RequestParam("year") int year,final @RequestParam(value = "includeStarterMonth", defaultValue = "false") boolean includeStarterMonth) {
 
         List<LocalDate> dates = this.retrospectiveService.findActiveRetrospectiveMonths(year);
-        if (Boolean.TRUE.equals(includeStarterMonth) && !dates.contains(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()))) {
+        if (includeStarterMonth && !dates.contains(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()))) {
             dates = new ArrayList<>(dates);
             dates.add(0, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
         }
