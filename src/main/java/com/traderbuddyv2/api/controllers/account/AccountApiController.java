@@ -36,7 +36,7 @@ public class AccountApiController extends AbstractApiController {
     //  ----------------- GET REQUESTS -----------------
 
     /**
-     * Returns a {@link StandardJsonResponse} containing an {@link AccountOverview} for the currently logged in user
+     * Returns a {@link StandardJsonResponse} containing an {@link AccountOverview} for the currently logged-in user
      *
      * @return {@link StandardJsonResponse}
      */

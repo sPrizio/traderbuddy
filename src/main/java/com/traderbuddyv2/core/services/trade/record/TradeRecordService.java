@@ -3,6 +3,8 @@ package com.traderbuddyv2.core.services.trade.record;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
+import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -11,6 +13,7 @@ import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordStatisticsRepository;
 import com.traderbuddyv2.core.services.math.MathService;
+import com.traderbuddyv2.core.services.plan.TradingPlanService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -60,6 +63,9 @@ public class TradeRecordService {
 
     @Resource(name = "traderBuddyUserDetailsService")
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
+    @Resource(name = "tradingPlanService")
+    private TradingPlanService tradingPlanService;
 
 
     //  METHODS
@@ -138,7 +144,7 @@ public class TradeRecordService {
     /**
      * Obtains a {@link TradeRecord} that contains the given {@link Trade} for the given {@link AggregateInterval}
      *
-     * @param trade {@link Trade}
+     * @param trade             {@link Trade}
      * @param aggregateInterval {@link AggregateInterval}
      * @return {@link Optional} {@link TradeRecord}
      */
@@ -307,20 +313,39 @@ public class TradeRecordService {
         buckets.forEach(bucket -> {
             TradeRecord tradeRecord = findTradeRecordForStartDateAndEndDateAndInterval(bucket.getLeft(), bucket.getRight(), aggregateInterval).orElse(new TradeRecord());
             List<Trade> filtered = filterTrades(bucket.getLeft(), bucket.getRight(), trades);
+            Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+
             double profit = filtered.stream().mapToDouble(Trade::getNetProfit).sum();
-            double balance = this.mathService.add(account.getBalance(), profit);
+            double balance = computeBalance(account, bucket.getLeft(), bucket.getRight());
 
             tradeRecord.setStartDate(bucket.getLeft());
             tradeRecord.setEndDate(bucket.getRight());
             tradeRecord.setAggregateInterval(aggregateInterval);
             tradeRecord.setBalance(balance);
             tradeRecord.setAccount(account);
+
+            if (tradingPlan.isPresent()) {
+                if (tradingPlan.get().isAbsolute()) {
+                    tradeRecord.setTarget(tradingPlan.get().getProfitTarget());
+                } else {
+                    tradeRecord.setTarget(this.mathService.computeIncrement(balance, tradingPlan.get().getProfitTarget(), false));
+                }
+            }
+
             tradeRecord = this.tradeRecordRepository.save(tradeRecord);
             tradeRecord.setStatistics(this.tradeRecordStatisticsService.generateStatistics(tradeRecord, filtered));
 
             this.tradeRecordRepository.save(tradeRecord);
             if (aggregateInterval.equals(AggregateInterval.DAILY)) {
-                updateCurrentAccountBalance(profit);
+                updateCurrentAccountBalance(
+                        this.mathService.add(profit,
+                                account.getBalanceModifications()
+                                        .stream()
+                                        .filter(mod -> bucket.getLeft().atStartOfDay().isBefore(mod.getDateTime()) || bucket.getLeft().atStartOfDay().isEqual(mod.getDateTime()))
+                                        .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
+                                        .mapToDouble(AccountBalanceModification::getAmount)
+                                        .sum())
+                );
             }
         });
     }
@@ -328,7 +353,7 @@ public class TradeRecordService {
     /**
      * Updates the given {@link TradeRecord} with all trades excluding the given trade
      *
-     * @param trade {@link Trade}
+     * @param trade       {@link Trade}
      * @param tradeRecord {@link TradeRecord}
      */
     private void updateTradeRecord(final Trade trade, final TradeRecord tradeRecord) {
@@ -412,7 +437,7 @@ public class TradeRecordService {
     /**
      * Generates a {@link MonthRecord} from a {@link TradeRecord} & {@link Month}
      *
-     * @param month {@link Month}
+     * @param month       {@link Month}
      * @param tradeRecord {@link TradeRecord}
      * @return {@link MonthRecord}
      */
@@ -428,6 +453,27 @@ public class TradeRecordService {
                 tradeRecord.getStatistics().getNumberOfTrades(),
                 this.mathService.getDouble(tradeRecord.getStatistics().getNetProfit())
         );
+    }
+
+    /**
+     * Computes the balance for the {@link TradeRecord}. The balance will not include the profit of that record
+     *
+     * @param account {@link Account}
+     * @param start   start of period
+     * @param end     end of period
+     * @return balance for start of period
+     */
+    private double computeBalance(final Account account, final LocalDate start, final LocalDate end) {
+        return
+                this.mathService.add(
+                        account.getBalance(),
+                        account.getBalanceModifications()
+                                .stream()
+                                .filter(mod -> start.atStartOfDay().isBefore(mod.getDateTime()) || start.atStartOfDay().isEqual(mod.getDateTime()))
+                                .filter(mod -> end.atStartOfDay().isAfter(mod.getDateTime()))
+                                .mapToDouble(AccountBalanceModification::getAmount)
+                                .sum()
+                );
     }
 }
 

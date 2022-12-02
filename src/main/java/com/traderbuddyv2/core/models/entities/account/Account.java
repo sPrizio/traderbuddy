@@ -58,6 +58,11 @@ public class Account implements GenericEntity {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TradingPlan> plans;
 
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AccountBalanceModification> balanceModifications;
+
 
     //  METHODS
 
@@ -148,6 +153,36 @@ public class Account implements GenericEntity {
             entries.remove(tradingPlan);
             this.plans = entries;
             tradingPlan.setAccount(null);
+        }
+    }
+
+    /**
+     * Database assistance method for adding a {@link AccountBalanceModification}
+     *
+     * @param accountBalanceModification {@link AccountBalanceModification}
+     */
+    public void addModification(final AccountBalanceModification accountBalanceModification) {
+
+        if (getBalanceModifications() == null) {
+            this.balanceModifications = new ArrayList<>();
+        }
+
+        getBalanceModifications().add(accountBalanceModification);
+        accountBalanceModification.setAccount(this);
+    }
+
+    /**
+     * Database assistance method for removing an {@link AccountBalanceModification}
+     *
+     * @param accountBalanceModification {@link AccountBalanceModification}
+     */
+    public void removeModification(final AccountBalanceModification accountBalanceModification) {
+
+        if (getBalanceModifications() != null) {
+            List<AccountBalanceModification> entries = new ArrayList<>(getBalanceModifications());
+            entries.remove(accountBalanceModification);
+            this.balanceModifications = entries;
+            accountBalanceModification.setAccount(null);
         }
     }
 }

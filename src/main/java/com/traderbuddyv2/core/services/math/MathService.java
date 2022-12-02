@@ -104,7 +104,7 @@ public class MathService {
      *
      * @param a {@link Double} starter value
      * @param b {@link Double} value to increment
-     * @param absolute if true, b is considered fix, else is treated like a percentage
+     * @param absolute if true, b is considered fixed, else is treated like a percentage
      * @return a + increment (b)
      */
     public double computeIncrement(final double a, final double b, final boolean absolute) {

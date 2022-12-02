@@ -46,6 +46,11 @@ public class TradeRecord implements GenericEntity {
 
     @Getter
     @Setter
+    @Column
+    private double target;
+
+    @Getter
+    @Setter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "statistics_id")
     private TradeRecordStatistics statistics;
