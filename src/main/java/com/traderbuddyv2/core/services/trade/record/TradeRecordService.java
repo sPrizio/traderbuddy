@@ -301,7 +301,7 @@ public class TradeRecordService {
      * @param trades            {@link List} of {@link Trade}
      * @param aggregateInterval {@link AggregateInterval}
      */
-    private void generateTradeRecord(final Account account, final List<Trade> trades, final AggregateInterval aggregateInterval) {
+    private void  generateTradeRecord(final Account account, final List<Trade> trades, final AggregateInterval aggregateInterval) {
 
         validateParameterIsNotNull(account, "account cannot be null");
         validateParameterIsNotNull(trades, "trades cannot be null");
@@ -315,15 +315,33 @@ public class TradeRecordService {
             List<Trade> filtered = filterTrades(bucket.getLeft(), bucket.getRight(), trades);
             Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
 
-            double profit = filtered.stream().mapToDouble(Trade::getNetProfit).sum();
-            double balance = computeBalance(account, bucket.getLeft(), bucket.getRight());
+            double previousBalance = 0.0;
+            double profit = this.mathService.getDouble(filtered.stream().mapToDouble(Trade::getNetProfit).sum());
+            double changes =
+                    this.mathService.getDouble(
+                            account.getBalanceModifications()
+                                    .stream()
+                                    .filter(mod -> bucket.getLeft().atStartOfDay().isBefore(mod.getDateTime()) || bucket.getLeft().atStartOfDay().isEqual(mod.getDateTime()))
+                                    .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
+                                    .mapToDouble(AccountBalanceModification::getAmount)
+                                    .sum()
+                    );
 
             tradeRecord.setStartDate(bucket.getLeft());
             tradeRecord.setEndDate(bucket.getRight());
             tradeRecord.setAggregateInterval(aggregateInterval);
-            tradeRecord.setBalance(balance);
             tradeRecord.setAccount(account);
 
+            tradeRecord = this.tradeRecordRepository.save(tradeRecord);
+
+            Optional<TradeRecord> previousRecord = findPreviousTradeRecord(tradeRecord);
+            if (previousRecord.isPresent()) {
+                previousBalance = previousRecord.get().getBalance();
+            } else if (tradingPlan.isPresent()) {
+                previousBalance = tradingPlan.get().getStartingBalance();
+            }
+
+            double balance = this.mathService.add(this.mathService.add(previousBalance, changes), profit);
             if (tradingPlan.isPresent()) {
                 if (tradingPlan.get().isAbsolute()) {
                     tradeRecord.setTarget(tradingPlan.get().getProfitTarget());
@@ -332,20 +350,13 @@ public class TradeRecordService {
                 }
             }
 
+            tradeRecord.setBalance(balance);
             tradeRecord = this.tradeRecordRepository.save(tradeRecord);
             tradeRecord.setStatistics(this.tradeRecordStatisticsService.generateStatistics(tradeRecord, filtered));
 
             this.tradeRecordRepository.save(tradeRecord);
             if (aggregateInterval.equals(AggregateInterval.DAILY)) {
-                updateCurrentAccountBalance(
-                        this.mathService.add(profit,
-                                account.getBalanceModifications()
-                                        .stream()
-                                        .filter(mod -> bucket.getLeft().atStartOfDay().isBefore(mod.getDateTime()) || bucket.getLeft().atStartOfDay().isEqual(mod.getDateTime()))
-                                        .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
-                                        .mapToDouble(AccountBalanceModification::getAmount)
-                                        .sum())
-                );
+                updateCurrentAccountBalance(this.mathService.add(profit, changes));
             }
         });
     }
@@ -453,27 +464,6 @@ public class TradeRecordService {
                 tradeRecord.getStatistics().getNumberOfTrades(),
                 this.mathService.getDouble(tradeRecord.getStatistics().getNetProfit())
         );
-    }
-
-    /**
-     * Computes the balance for the {@link TradeRecord}. The balance will not include the profit of that record
-     *
-     * @param account {@link Account}
-     * @param start   start of period
-     * @param end     end of period
-     * @return balance for start of period
-     */
-    private double computeBalance(final Account account, final LocalDate start, final LocalDate end) {
-        return
-                this.mathService.add(
-                        account.getBalance(),
-                        account.getBalanceModifications()
-                                .stream()
-                                .filter(mod -> start.atStartOfDay().isBefore(mod.getDateTime()) || start.atStartOfDay().isEqual(mod.getDateTime()))
-                                .filter(mod -> end.atStartOfDay().isAfter(mod.getDateTime()))
-                                .mapToDouble(AccountBalanceModification::getAmount)
-                                .sum()
-                );
     }
 }
 

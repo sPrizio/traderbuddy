@@ -9,9 +9,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -59,7 +63,9 @@ public class TradeRecordStatisticsService {
         statistics.setNumberOfLosingTrades(statistics.getNumberOfLosingTrades() + sortedLosingTrades.size());
         statistics.setWinPercentage(this.mathService.wholePercentage(statistics.getNumberOfWinningTrades(), statistics.getNumberOfTrades()));
         statistics.setPercentageProfit(this.mathService.delta(statistics.getNetProfit(), tradeRecord.getBalance()));
-        statistics.setTradingRate(this.mathService.divide(statistics.getNumberOfTrades(), Math.abs(ChronoUnit.DAYS.between(tradeRecord.getStartDate(), tradeRecord.getEndDate()))));
+
+        final Set<LocalDate> dates = trades.stream().map(Trade::getTradeCloseTime).map(LocalDateTime::toLocalDate).collect(Collectors.toSet());
+        statistics.setTradingRate(this.mathService.divide(statistics.getNumberOfTrades(), dates.size()));
 
         statistics.setAverageWinAmount(
                 this.mathService.weightedAverage(

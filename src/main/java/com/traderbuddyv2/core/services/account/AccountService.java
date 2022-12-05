@@ -70,7 +70,7 @@ public class AccountService {
         }
 
         if (CollectionUtils.isNotEmpty(dailyRecords) && ChronoUnit.DAYS.between(dailyRecords.get(0).getStartDate(), LocalDate.now()) < 2) {
-            accountOverview.setDailyEarnings(dailyRecords.get(0).getBalance());
+            accountOverview.setDailyEarnings(dailyRecords.get(0).getStatistics().getNetProfit());
         }
 
         plan.ifPresent(p -> accountOverview.setNextTarget(this.mathService.computeIncrement(account.getBalance(), p.getProfitTarget(), p.isAbsolute())));

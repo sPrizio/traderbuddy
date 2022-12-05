@@ -81,7 +81,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param account {@link Account
      * @return {@link List} of {@link Trade}
      */
-    List<Trade> findAllByProcessedAndAccountAndRelevantIsTrue(final boolean processed, final Account account);
+    List<Trade> findAllByProcessedAndAccountAndRelevantIsTrueOrderByTradeOpenTimeAsc(final boolean processed, final Account account);
 
     /**
      * Returns a {@link List} of {@link Trade} for the given account

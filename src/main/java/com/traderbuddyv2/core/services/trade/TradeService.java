@@ -117,7 +117,7 @@ public class TradeService {
      */
     public List<Trade> findTradesByProcessed(final boolean processed) {
         validateParameterIsNotNull(processed, "processed cannot be null");
-        return this.tradeRepository.findAllByProcessedAndAccountAndRelevantIsTrue(processed, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        return this.tradeRepository.findAllByProcessedAndAccountAndRelevantIsTrueOrderByTradeOpenTimeAsc(processed, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
     }
 
     /**
