@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.records.trade.MonthRecord;
+import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordStatisticsRepository;
@@ -42,6 +43,9 @@ import static com.traderbuddyv2.core.validation.GenericValidator.*;
 public class TradeRecordService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TradeRecordService.class);
+
+    @Resource(name = "accountBalanceModificationRepository")
+    private AccountBalanceModificationRepository accountBalanceModificationRepository;
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
@@ -311,21 +315,31 @@ public class TradeRecordService {
         trades.forEach(trade -> buckets.add(Pair.of(computeStartDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval), computeEndDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval))));
 
         buckets.forEach(bucket -> {
-            TradeRecord tradeRecord = findTradeRecordForStartDateAndEndDateAndInterval(bucket.getLeft(), bucket.getRight(), aggregateInterval).orElse(new TradeRecord());
+
+            boolean newRecord = false;
+            TradeRecord tradeRecord;
+            Optional<TradeRecord> optionalTradeRecord = findTradeRecordForStartDateAndEndDateAndInterval(bucket.getLeft(), bucket.getRight(), aggregateInterval);
+
+            if (optionalTradeRecord.isEmpty()) {
+                newRecord = true;
+                tradeRecord = new TradeRecord();
+            } else {
+                tradeRecord = optionalTradeRecord.get();
+            }
+
             List<Trade> filtered = filterTrades(bucket.getLeft(), bucket.getRight(), trades);
             Optional<TradingPlan> tradingPlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
+            List<AccountBalanceModification> modifications =
+                    account.getBalanceModifications()
+                            .stream()
+                            .filter(mod -> !mod.isProcessed())
+                            .filter(mod -> bucket.getLeft().atStartOfDay().isBefore(mod.getDateTime()) || bucket.getLeft().atStartOfDay().isEqual(mod.getDateTime()))
+                            .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
+                            .toList();
 
-            double previousBalance = 0.0;
+            double previousBalance;
             double profit = this.mathService.getDouble(filtered.stream().mapToDouble(Trade::getNetProfit).sum());
-            double changes =
-                    this.mathService.getDouble(
-                            account.getBalanceModifications()
-                                    .stream()
-                                    .filter(mod -> bucket.getLeft().atStartOfDay().isBefore(mod.getDateTime()) || bucket.getLeft().atStartOfDay().isEqual(mod.getDateTime()))
-                                    .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
-                                    .mapToDouble(AccountBalanceModification::getAmount)
-                                    .sum()
-                    );
+            double changes = this.mathService.getDouble(modifications.stream().mapToDouble(AccountBalanceModification::getAmount).sum());
 
             tradeRecord.setStartDate(bucket.getLeft());
             tradeRecord.setEndDate(bucket.getRight());
@@ -335,10 +349,10 @@ public class TradeRecordService {
             tradeRecord = this.tradeRecordRepository.save(tradeRecord);
 
             Optional<TradeRecord> previousRecord = findPreviousTradeRecord(tradeRecord);
-            if (previousRecord.isPresent()) {
+            if (newRecord && previousRecord.isPresent()) {
                 previousBalance = previousRecord.get().getBalance();
-            } else if (tradingPlan.isPresent()) {
-                previousBalance = tradingPlan.get().getStartingBalance();
+            } else {
+                previousBalance = account.getBalance();
             }
 
             double balance = this.mathService.add(this.mathService.add(previousBalance, changes), profit);
@@ -357,6 +371,10 @@ public class TradeRecordService {
             this.tradeRecordRepository.save(tradeRecord);
             if (aggregateInterval.equals(AggregateInterval.DAILY)) {
                 updateCurrentAccountBalance(this.mathService.add(profit, changes));
+                modifications.forEach(mod -> {
+                    mod.setProcessed(true);
+                    this.accountBalanceModificationRepository.save(mod);
+                });
             }
         });
     }

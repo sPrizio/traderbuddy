@@ -40,6 +40,11 @@ public class AccountBalanceModification implements GenericEntity {
 
     @Getter
     @Setter
+    @Column
+    private boolean processed;
+
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Account account;
 }

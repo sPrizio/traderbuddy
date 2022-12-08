@@ -93,27 +93,10 @@ public class AccountService {
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
         final List<TradeRecord> tradeRecords = this.tradeRecordService.findHistory(start, end, aggregateInterval);
-        final List<EquityCurveEntry> entries = new ArrayList<>();
-        Optional<TradingPlan> activePlan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
-
-        Map<Pair<LocalDate, LocalDate>, ForecastEntry> entryMap = new HashMap<>();
-        activePlan.ifPresent(tradingPlan -> this.tradingPlanService.forecast(tradingPlan, aggregateInterval, start, end).forEach(entry -> entryMap.put(Pair.of(entry.startDate(), entry.endDate()), entry)));
-
-        double count = 0.0;
-        for (TradeRecord tradeRecord : tradeRecords) {
-            if (activePlan.isPresent() && tradeRecord.getStartDate().isEqual(activePlan.get().getStartDate())) {
-                count = this.mathService.add(activePlan.get().getStartingBalance(), count);
-            }
-
-            if (entryMap.containsKey(Pair.of(tradeRecord.getStartDate(), tradeRecord.getEndDate()))) {
-                count = this.mathService.add(entryMap.get(Pair.of(tradeRecord.getStartDate(), tradeRecord.getEndDate())).deposits(), count);
-                count = this.mathService.subtract(count, entryMap.get(Pair.of(tradeRecord.getStartDate(), tradeRecord.getEndDate())).withdrawals());
-            }
-
-            entries.add(new EquityCurveEntry(tradeRecord.getStartDate(), this.mathService.add(count, tradeRecord.getBalance())));
-            count = this.mathService.add(count, tradeRecord.getBalance());
+        if (CollectionUtils.isNotEmpty(tradeRecords)) {
+            return tradeRecords.stream().map(rec -> new EquityCurveEntry(rec.getStartDate(), rec.getBalance())).toList();
         }
 
-        return entries;
+        return Collections.emptyList();
     }
 }
