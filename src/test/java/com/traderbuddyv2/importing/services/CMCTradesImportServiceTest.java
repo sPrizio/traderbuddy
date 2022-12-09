@@ -61,7 +61,6 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     public void setUp() {
         account = this.accountRepository.save(generateTestAccount());
         user = generateTestUser();
-        user = this.userRepository.save(user);
         user.setAccount(account);
         user = this.userRepository.save(user);
     }

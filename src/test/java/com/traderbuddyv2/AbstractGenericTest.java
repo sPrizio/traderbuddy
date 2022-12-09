@@ -3,11 +3,13 @@ package com.traderbuddyv2;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.api.models.dto.plans.DepositPlanDTO;
 import com.traderbuddyv2.api.models.dto.plans.WithdrawalPlanDTO;
+import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
 import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
+import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.plan.DepositPlan;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
@@ -220,8 +222,21 @@ public abstract class AbstractGenericTest {
         account.setBalance(1000.0);
         account.setActive(true);
         account.setRetrospectives(new ArrayList<>());
+        account.setBalanceModifications(List.of());
 
         return account;
+    }
+
+    public AccountBalanceModification generateTestAccountBalanceModification() {
+
+        AccountBalanceModification modification = new AccountBalanceModification();
+
+        modification.setModificationType(AccountBalanceModificationType.ONE_TIME_DEPOSIT);
+        modification.setAmount(350.0);
+        modification.setDateTime(LocalDateTime.of(2022, 9, 12, 1, 1, 1));
+        modification.setProcessed(true);
+
+        return modification;
     }
 
     public AccountDTO generateTestAccountDTO() {

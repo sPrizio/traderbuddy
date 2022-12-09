@@ -337,7 +337,6 @@ public class TradeRecordService {
                             .filter(mod -> bucket.getRight().atStartOfDay().isAfter(mod.getDateTime()))
                             .toList();
 
-            double previousBalance;
             double profit = this.mathService.getDouble(filtered.stream().mapToDouble(Trade::getNetProfit).sum());
             double changes = this.mathService.getDouble(modifications.stream().mapToDouble(AccountBalanceModification::getAmount).sum());
 
@@ -348,34 +347,16 @@ public class TradeRecordService {
 
             tradeRecord = this.tradeRecordRepository.save(tradeRecord);
 
-            Optional<TradeRecord> previousRecord = findPreviousTradeRecord(tradeRecord);
-            if (newRecord && previousRecord.isPresent()) {
-                previousBalance = previousRecord.get().getBalance();
-            } else {
-                previousBalance = account.getBalance();
-            }
-
+            double previousBalance = computePreviousBalance(tradeRecord, newRecord, account);
             double balance = this.mathService.add(this.mathService.add(previousBalance, changes), profit);
-            if (tradingPlan.isPresent()) {
-                if (tradingPlan.get().isAbsolute()) {
-                    tradeRecord.setTarget(tradingPlan.get().getProfitTarget());
-                } else {
-                    tradeRecord.setTarget(this.mathService.computeIncrement(balance, tradingPlan.get().getProfitTarget(), false));
-                }
-            }
+            computeTarget(tradingPlan, tradeRecord, balance);
 
             tradeRecord.setBalance(balance);
             tradeRecord = this.tradeRecordRepository.save(tradeRecord);
             tradeRecord.setStatistics(this.tradeRecordStatisticsService.generateStatistics(tradeRecord, filtered));
 
             this.tradeRecordRepository.save(tradeRecord);
-            if (aggregateInterval.equals(AggregateInterval.DAILY)) {
-                updateCurrentAccountBalance(this.mathService.add(profit, changes));
-                modifications.forEach(mod -> {
-                    mod.setProcessed(true);
-                    this.accountBalanceModificationRepository.save(mod);
-                });
-            }
+            updateAccount(aggregateInterval, profit, changes, modifications);
         });
     }
 
@@ -482,6 +463,58 @@ public class TradeRecordService {
                 tradeRecord.getStatistics().getNumberOfTrades(),
                 this.mathService.getDouble(tradeRecord.getStatistics().getNetProfit())
         );
+    }
+
+    /**
+     * Computes the previous account balance
+     *
+     * @param tradeRecord {@link TradeRecord}
+     * @param newRecord is new record being created
+     * @param account {@link Account}
+     * @return previous account balance value
+     */
+    private double computePreviousBalance(final TradeRecord tradeRecord, final boolean newRecord, final Account account) {
+        Optional<TradeRecord> previousRecord = findPreviousTradeRecord(tradeRecord);
+        if (newRecord && previousRecord.isPresent()) {
+            return previousRecord.get().getBalance();
+        } else {
+            return account.getBalance();
+        }
+    }
+
+    /**
+     * Computes the next profit target
+     *
+     * @param tradingPlan {@link Optional} {@link TradingPlan}
+     * @param tradeRecord {@link TradeRecord}
+     * @param balance account balance
+     */
+    private void computeTarget(final Optional<TradingPlan> tradingPlan, final TradeRecord tradeRecord, final double balance) {
+        if (tradingPlan.isPresent()) {
+            if (tradingPlan.get().isAbsolute()) {
+                tradeRecord.setTarget(tradingPlan.get().getProfitTarget());
+            } else {
+                tradeRecord.setTarget(this.mathService.computeIncrement(balance, tradingPlan.get().getProfitTarget(), false));
+            }
+        }
+    }
+
+    /**
+     * Updates the current account's balance
+     *
+     * @param aggregateInterval {@link AggregateInterval}
+     * @param profit profit
+     * @param changes balance modifications
+     * @param modifications {@link List} of {@link AccountBalanceModification}
+     */
+    private void updateAccount(final AggregateInterval aggregateInterval, final double profit, final double changes, final List<AccountBalanceModification> modifications) {
+        if (aggregateInterval.equals(AggregateInterval.DAILY)) {
+            updateCurrentAccountBalance(this.mathService.add(profit, changes));
+            modifications.forEach(mod -> {
+                mod.setProcessed(true);
+                this.accountBalanceModificationRepository.save(mod);
+            });
+        }
     }
 }
 

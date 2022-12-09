@@ -3,6 +3,7 @@ package com.traderbuddyv2.core.services.trade;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.repositories.trade.TradeRepository;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import org.springframework.data.domain.Page;
@@ -95,6 +96,17 @@ public class TradeService {
         }
 
         return this.tradeRepository.findAllTradesWithinDate(start, end, this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
+    }
+
+    /**
+     * Returns a {@link List} of {@link Trade}s that are within the {@link TradeRecord}
+     *
+     * @param tradeRecord {@link TradeRecord}
+     * @return {@link List} of {@link Trade}s
+     */
+    public List<Trade> findAllTradesForTradeRecord(final TradeRecord tradeRecord) {
+        validateParameterIsNotNull(tradeRecord, "trade record cannot be null");
+        return this.tradeRepository.findAllTradesForTradeRecord(tradeRecord.getStartDate().atStartOfDay(), tradeRecord.getEndDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
     }
 
     /**

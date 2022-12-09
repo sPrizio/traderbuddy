@@ -67,6 +67,7 @@ public class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(testUser);
         Mockito.when(this.tradeRepository.findAllRelevantTradesWithinDate(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
+        Mockito.when(this.tradeRepository.findAllTradesForTradeRecord(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
     }
 
 
@@ -164,6 +165,22 @@ public class TradeServiceTest extends AbstractGenericTest {
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+    }
+
+
+    //  ----------------- findAllTradesForTradeRecord -----------------
+
+    @Test
+    public void test_findAllTradesForTradeRecord_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForTradeRecord(null))
+                .withMessage("trade record cannot be null");
+    }
+
+    @Test
+    public void test_findAllTradesForTradeRecord_success() {
+        assertThat(this.tradeService.findAllTradesForTradeRecord(generateTestTradeRecord()))
+                .isNotEmpty();
     }
 
 

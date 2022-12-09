@@ -2,10 +2,13 @@ package com.traderbuddyv2.core.services.trade.record;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -24,12 +27,15 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @RunWith(SpringRunner.class)
 public class TradeRecordStatisticsServiceTest extends AbstractGenericTest {
 
+    @MockBean
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
     @Resource
     private TradeRecordStatisticsService tradeRecordStatisticsService;
 
     @Before
     public void setUp() {
-
+        Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
     }
 
     //  ----------------- generateStatistics -----------------

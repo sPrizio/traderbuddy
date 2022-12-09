@@ -5,17 +5,16 @@ import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordStatisticsRepository;
 import com.traderbuddyv2.core.services.math.MathService;
+import com.traderbuddyv2.core.services.trade.TradeService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -33,6 +32,9 @@ public class TradeRecordStatisticsService {
 
     @Resource(name = "tradeRecordStatisticsRepository")
     private TradeRecordStatisticsRepository tradeRecordStatisticsRepository;
+
+    @Resource(name = "tradeService")
+    private TradeService tradeService;
 
 
     //  METHODS
@@ -64,8 +66,11 @@ public class TradeRecordStatisticsService {
         statistics.setWinPercentage(this.mathService.wholePercentage(statistics.getNumberOfWinningTrades(), statistics.getNumberOfTrades()));
         statistics.setPercentageProfit(this.mathService.delta(statistics.getNetProfit(), tradeRecord.getBalance()));
 
-        final Set<LocalDate> dates = trades.stream().map(Trade::getTradeCloseTime).map(LocalDateTime::toLocalDate).collect(Collectors.toSet());
-        statistics.setTradingRate(this.mathService.divide(statistics.getNumberOfTrades(), dates.size()));
+        final List<Trade> recordTrades = this.tradeService.findAllTradesForTradeRecord(tradeRecord);
+        final Set<LocalDate> dates = new HashSet<>();
+        recordTrades.forEach(tr -> dates.add(tr.getTradeOpenTime().toLocalDate()));
+
+        statistics.setTradingRate(this.mathService.divide(recordTrades.size(), dates.size()));
 
         statistics.setAverageWinAmount(
                 this.mathService.weightedAverage(
