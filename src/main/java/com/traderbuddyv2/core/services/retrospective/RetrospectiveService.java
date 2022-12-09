@@ -63,6 +63,10 @@ public class RetrospectiveService {
         validateParameterIsNotNull(interval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
+        if (interval.equals(AggregateInterval.WEEKLY)) {
+            return this.retrospectiveRepository.findAllRetrospectivesWithinDate(start.minusWeeks(1), end.plusWeeks(1), interval, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        }
+
         return this.retrospectiveRepository.findAllRetrospectivesWithinDate(start, end, interval, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
     }
 
