@@ -69,7 +69,7 @@ public class AccountService {
             accountOverview.setDateTime(tradeRecord.getStartDate().atStartOfDay());
         }
 
-        if (CollectionUtils.isNotEmpty(dailyRecords) && ChronoUnit.DAYS.between(dailyRecords.get(0).getStartDate(), LocalDate.now()) < 2) {
+        if (CollectionUtils.isNotEmpty(dailyRecords)) {
             accountOverview.setDailyEarnings(dailyRecords.get(0).getStatistics().getNetProfit());
         }
 
