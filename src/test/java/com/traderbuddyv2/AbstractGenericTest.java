@@ -19,7 +19,7 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
-import com.traderbuddyv2.core.models.nonentities.AccountOverview;
+import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;

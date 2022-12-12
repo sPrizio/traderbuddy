@@ -4,7 +4,7 @@ import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.models.records.StandardJsonResponse;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
-import com.traderbuddyv2.core.models.nonentities.AccountOverview;
+import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.services.account.AccountService;
 import org.apache.commons.lang3.StringUtils;

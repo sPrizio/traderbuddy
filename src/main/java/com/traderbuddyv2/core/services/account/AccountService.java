@@ -5,20 +5,17 @@ import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
-import com.traderbuddyv2.core.models.nonentities.AccountOverview;
+import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
-import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.plan.TradingPlanService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;

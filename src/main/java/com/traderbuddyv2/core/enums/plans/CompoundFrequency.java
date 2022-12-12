@@ -5,7 +5,7 @@ import com.traderbuddyv2.core.services.calculator.CompoundInterestCalculator;
 import lombok.Getter;
 
 /**
- * Eum representing the compound frequency for a {@link TradingPlan}
+ * Enum representing the compound frequency for a {@link TradingPlan}
  *
  * @author Stephen Prizio
  * @version 1.0

@@ -1,4 +1,4 @@
-package com.traderbuddyv2.core.models.nonentities;
+package com.traderbuddyv2.core.models.nonentities.account;
 
 import lombok.Getter;
 import lombok.Setter;

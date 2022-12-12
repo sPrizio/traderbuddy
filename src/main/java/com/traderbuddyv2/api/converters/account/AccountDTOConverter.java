@@ -36,8 +36,8 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
 
         AccountDTO accountDTO = new AccountDTO();
 
-        accountDTO.setAccountOpenTime(entity.getAccountOpenTime());
         accountDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
+        accountDTO.setAccountOpenTime(entity.getAccountOpenTime());
         accountDTO.setActive(entity.isActive());
         accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
 
