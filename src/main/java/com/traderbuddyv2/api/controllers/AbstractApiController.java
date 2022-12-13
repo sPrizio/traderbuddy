@@ -20,6 +20,17 @@ public abstract class AbstractApiController {
      *
      * @param start start date of format yyyy-MM-dd
      * @param end end date of format yyyy-MM-dd
+     */
+    public void validate(final String start, final String end) {
+        validateLocalDateFormat(start, CoreConstants.DATE_FORMAT, CoreConstants.Validation.START_DATE_INVALID_FORMAT, start, CoreConstants.DATE_FORMAT);
+        validateLocalDateFormat(end, CoreConstants.DATE_FORMAT, CoreConstants.Validation.END_DATE_INVALID_FORMAT, end, CoreConstants.DATE_FORMAT);
+    }
+
+    /**
+     * Basic data integrity validation
+     *
+     * @param start start date of format yyyy-MM-dd
+     * @param end end date of format yyyy-MM-dd
      * @param interval string value of {@link AggregateInterval}
      */
     public void validate(final String start, final String end, final String interval) {
