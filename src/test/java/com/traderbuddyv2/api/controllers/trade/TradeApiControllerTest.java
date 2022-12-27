@@ -93,6 +93,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade())));
+        Mockito.when(this.tradeService.findTradeRecap(anyString())).thenReturn(generateIntradayDto());
     }
 
 
@@ -211,6 +212,20 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trade/for-trade-id").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.tradeId", is("testId1")));
+    }
+
+
+    //  ----------------- getTradeRecap -----------------
+
+    @Test
+    public void test_getTradeRecap_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("tradeId", List.of("testId1"));
+
+        this.mockMvc.perform(get("/api/v1/trade/recap").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.entries[0].high", is(205.37)));
     }
 
 

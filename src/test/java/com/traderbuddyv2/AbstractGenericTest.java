@@ -193,7 +193,7 @@ public abstract class AbstractGenericTest {
     }
 
     public IntradayHistoricalDataResponse generateIntradayResponse() {
-        return new IntradayHistoricalDataResponse(List.of(new IntradayHistoricalDataEntryResponse(1564752900, 0, "2019-08-02 13:35:00", 205.14, 205.37, 204.75, 204.7683, 231517)));
+        return new IntradayHistoricalDataResponse(LocalDate.MAX, "Test", "Test", List.of(new IntradayHistoricalDataEntryResponse(1564752900, 0, "2019-08-02 13:35:00", 205.14, 205.37, 204.75, 204.7683, 231517)));
     }
 
     public IntradayHistoricalDataDTO generateIntradayDto() {

@@ -3,7 +3,6 @@ package com.traderbuddyv2.api.models.dto.retrospective;
 import com.traderbuddyv2.api.models.dto.GenericDTO;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.api.models.dto.trade.record.TradeRecordDTO;
-import com.traderbuddyv2.api.models.dto.trade.record.TradeRecordStatisticsDTO;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import lombok.Getter;

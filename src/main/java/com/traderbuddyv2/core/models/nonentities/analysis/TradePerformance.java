@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.models.nonentities.analysis;
 
+import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,16 +42,26 @@ public class TradePerformance {
     @Setter
     private double lotSize;
 
+    @Getter
+    @Setter
+    private String product;
+
+    @Getter
+    @Setter
+    private boolean loss;
+
 
     //  CONSTRUCTORS
 
     public TradePerformance(final Trade trade) {
         this.tradeOpenTime = trade.getTradeOpenTime();
         this.tradeCloseTime = trade.getTradeCloseTime();
+        this.loss = trade.getNetProfit() < 0;
         this.netProfit = trade.getNetProfit();
         this.pips = getPips(trade);
         this.tradeDuration = Math.abs(ChronoUnit.SECONDS.between(trade.getTradeOpenTime(), trade.getTradeCloseTime()));
         this.lotSize = trade.getLotSize();
+        this.product = trade.getProduct();
     }
 
 
@@ -64,6 +75,11 @@ public class TradePerformance {
      * @return {@link Double}
      */
     private double getPips(final Trade trade) {
-        return Math.abs(BigDecimal.valueOf(trade.getClosePrice()).subtract(BigDecimal.valueOf(trade.getOpenPrice())).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
+
+        if (trade.getTradeType().equals(TradeType.BUY)) {
+            return BigDecimal.valueOf(trade.getClosePrice()).subtract(BigDecimal.valueOf(trade.getOpenPrice())).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        } else {
+            return BigDecimal.valueOf(trade.getOpenPrice()).subtract(BigDecimal.valueOf(trade.getClosePrice())).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        }
     }
 }

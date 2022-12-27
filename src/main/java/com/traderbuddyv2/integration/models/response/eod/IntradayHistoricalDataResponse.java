@@ -4,6 +4,7 @@ import com.traderbuddyv2.integration.models.response.GenericIntegrationResponse;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -12,7 +13,12 @@ import java.util.List;
  * @author Stephen Prizio
  * @version 1.0
  */
-public record IntradayHistoricalDataResponse(@Getter List<IntradayHistoricalDataEntryResponse> entries) implements GenericIntegrationResponse {
+public record IntradayHistoricalDataResponse(
+        @Getter LocalDate date,
+        @Getter String symbol,
+        @Getter String name,
+        @Getter List<IntradayHistoricalDataEntryResponse> entries
+) implements GenericIntegrationResponse {
 
 
     //  METHODS

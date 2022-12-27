@@ -6,6 +6,8 @@ import com.traderbuddyv2.integration.translators.GenericTranslator;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * Translates {@link IntradayHistoricalDataResponse}s into {@link IntradayHistoricalDataDTO}s
@@ -27,7 +29,13 @@ public class IntradayHistoricalDataTranslator implements GenericTranslator<Intra
 
         if (response != null && !response.isEmpty()) {
             IntradayHistoricalDataDTO intradayHistoricalDataDTO = new IntradayHistoricalDataDTO();
+
+            intradayHistoricalDataDTO.setDate(response.date());
+            intradayHistoricalDataDTO.setProduct(response.name());
+            intradayHistoricalDataDTO.setSymbol(response.symbol());
+            intradayHistoricalDataDTO.setOffset(ZonedDateTime.now(ZoneId.of("America/New_York")).getOffset().getTotalSeconds() / 3600); // HARDCODED TO EASTERN TIME FOR NOW
             intradayHistoricalDataDTO.setEntries(this.intradayHistoricalDataEntryTranslator.translateAll(response.entries()));
+
             return intradayHistoricalDataDTO;
         }
 

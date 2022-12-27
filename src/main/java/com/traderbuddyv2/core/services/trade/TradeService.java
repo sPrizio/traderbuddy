@@ -6,17 +6,21 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.repositories.trade.TradeRepository;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
+import com.traderbuddyv2.integration.models.dto.eod.TradePointDTO;
+import com.traderbuddyv2.integration.services.eod.EODIntegrationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
-import static com.traderbuddyv2.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
-import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
+import static com.traderbuddyv2.core.validation.GenericValidator.*;
 
 /**
  * Service-layer for {@link Trade}
@@ -26,6 +30,9 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
  */
 @Component("tradeService")
 public class TradeService {
+
+    @Resource(name = "eodIntegrationService")
+    private EODIntegrationService eodIntegrationService;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -130,6 +137,23 @@ public class TradeService {
     public List<Trade> findTradesByProcessed(final boolean processed) {
         validateParameterIsNotNull(processed, "processed cannot be null");
         return this.tradeRepository.findAllByProcessedAndAccountAndRelevantIsTrueOrderByTradeOpenTimeAsc(processed, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+    }
+
+    /**
+     * Finds the trade recap data for a trade with the given trade id
+     *
+     * @param tradeId {@link Trade} trade id
+     * @return {@link IntradayHistoricalDataDTO}
+     */
+    public IntradayHistoricalDataDTO findTradeRecap(final String tradeId) {
+
+        Optional<Trade> trade = findTradeByTradeId(tradeId);
+        validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
+
+        IntradayHistoricalDataDTO recap = this.eodIntegrationService.getIntradayData("NDX.INDX", "5m", trade.get().getTradeCloseTime().with(ChronoField.NANO_OF_DAY, LocalTime.MIN.toNanoOfDay()), trade.get().getTradeCloseTime().with(ChronoField.NANO_OF_DAY, LocalTime.MAX.toNanoOfDay()));
+        recap.setPoints(List.of(new TradePointDTO(trade.get(), true), new TradePointDTO(trade.get(), false)));
+
+        return recap;
     }
 
     /**

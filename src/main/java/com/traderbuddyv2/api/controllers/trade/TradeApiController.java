@@ -8,10 +8,10 @@ import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
-import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.services.GenericImportService;
+import com.traderbuddyv2.integration.services.eod.EODIntegrationService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -41,6 +41,9 @@ import static com.traderbuddyv2.importing.validation.ImportValidator.validateImp
 public class TradeApiController {
 
     private static final String TRADE_ID = "tradeId";
+
+    @Resource(name = "eodIntegrationService")
+    private EODIntegrationService eodIntegrationService;
 
     @Resource(name = "genericImportService")
     private GenericImportService genericImportService;
@@ -137,6 +140,18 @@ public class TradeApiController {
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId);
         validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
         return trade.map(value -> new StandardJsonResponse(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(true, new TradeDTO(), StringUtils.EMPTY));
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a chart recap for the given trade
+     *
+     * @param tradeId trade id
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/recap")
+    public StandardJsonResponse getTradeRecap(final @RequestParam(TRADE_ID) String tradeId) {
+        return new StandardJsonResponse(true, this.tradeService.findTradeRecap(tradeId), StringUtils.EMPTY);
     }
 
 

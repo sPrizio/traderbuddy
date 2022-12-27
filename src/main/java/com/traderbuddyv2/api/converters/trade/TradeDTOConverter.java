@@ -4,6 +4,7 @@ import com.traderbuddyv2.api.converters.GenericDTOConverter;
 import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,9 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
 
     @Resource(name = "accountDTOConverter")
     private AccountDTOConverter accountDTOConverter;
+
+    @Resource(name = "mathService")
+    private MathService mathService;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;
@@ -48,6 +52,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
         tradeDTO.setTradeCloseTime(entity.getTradeCloseTime());
         tradeDTO.setLotSize(entity.getLotSize());
         tradeDTO.setNetProfit(entity.getNetProfit());
+        tradeDTO.setPips(Math.abs(this.mathService.subtract(entity.getOpenPrice(), entity.getClosePrice())));
         tradeDTO.setReasonForEntrance(entity.getReasonForEntrance());
         tradeDTO.setRelevant(entity.isRelevant());
         tradeDTO.setProcessed(entity.isProcessed());

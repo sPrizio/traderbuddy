@@ -4,6 +4,7 @@ import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
 import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 
 /**
  * Testing class for {@link TradeDTOConverter}
@@ -34,11 +36,15 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
     private TradeDTOConverter tradeDTOConverter;
 
     @MockBean
+    private MathService mathService;
+
+    @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Before
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+        Mockito.when(this.mathService.subtract(anyDouble(), anyDouble())).thenReturn(0.0);
     }
 
 

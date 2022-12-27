@@ -4,11 +4,14 @@ import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
+import com.traderbuddyv2.core.exceptions.validation.NoResultFoundException;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.repositories.trade.TradeRepository;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
+import com.traderbuddyv2.integration.services.eod.EODIntegrationService;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +26,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * Testing class for {@link TradeService}
@@ -51,6 +56,9 @@ public class TradeServiceTest extends AbstractGenericTest {
     private TradeService tradeService;
 
     @MockBean
+    private EODIntegrationService eodIntegrationService;
+
+    @MockBean
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
     @Before
@@ -68,6 +76,8 @@ public class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findAllRelevantTradesWithinDate(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findAllTradesForTradeRecord(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
+        Mockito.when(this.eodIntegrationService.getIntradayData(anyString(), anyString(), any(), any())).thenReturn(new IntradayHistoricalDataDTO());
+        Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("123", testAccount)).thenReturn(generateTestBuyTrade());
     }
 
 
@@ -86,13 +96,6 @@ public class TradeServiceTest extends AbstractGenericTest {
                 .hasSize(1)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .containsExactly(Tuple.tuple(13083.41, 13098.67, 14.85));
-    }
-
-    @Test
-    public void test_findAllByTradeType_success_empty() {
-        TEST_TRADE_1.setRelevant(false);
-        assertThat(this.tradeService.findAllByTradeType(TradeType.BUY, false))
-                .isEmpty();
     }
 
 
@@ -207,6 +210,23 @@ public class TradeServiceTest extends AbstractGenericTest {
     public void test_findTradesByProcessed_success() {
         assertThat(this.tradeService.findTradesByProcessed(false))
                 .hasSize(1);
+    }
+
+
+    //  ----------------- findTradeRecap -----------------
+
+    @Test
+    public void test_findTradeRecap_badId() {
+        assertThatExceptionOfType(NoResultFoundException.class)
+                .isThrownBy(() -> this.tradeService.findTradeRecap("BAD"))
+                .withMessage("No trade was found with trade id: BAD");
+    }
+
+    @Test
+    public void test_findTradeRecap_success() {
+        assertThat(this.tradeService.findTradeRecap("123"))
+                .extracting("points")
+                .isNotNull();
     }
 
 

@@ -65,6 +65,8 @@ public class TradeRecordStatisticsService {
         statistics.setNumberOfLosingTrades(statistics.getNumberOfLosingTrades() + sortedLosingTrades.size());
         statistics.setWinPercentage(this.mathService.wholePercentage(statistics.getNumberOfWinningTrades(), statistics.getNumberOfTrades()));
         statistics.setPercentageProfit(this.mathService.delta(statistics.getNetProfit(), tradeRecord.getBalance()));
+        statistics.setPipsEarned(this.mathService.add(statistics.getPipsEarned(), sortedWinningTrades.stream().mapToDouble(trade -> Math.abs(this.mathService.subtract(trade.getOpenPrice(), trade.getClosePrice()))).sum()));
+        statistics.setPipsLost(this.mathService.add(statistics.getPipsLost(), sortedLosingTrades.stream().mapToDouble(trade -> Math.abs(this.mathService.subtract(trade.getOpenPrice(), trade.getClosePrice()))).sum()));
 
         final List<Trade> recordTrades = this.tradeService.findAllTradesForTradeRecord(tradeRecord);
         final Set<LocalDate> dates = new HashSet<>();

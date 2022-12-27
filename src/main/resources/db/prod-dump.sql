@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `account_balance_modifications` (
   CONSTRAINT `FKdifbvxvm6eissuh3at4i60uw7` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.account_balance_modifications: ~6 rows (approximately)
+-- Dumping data for table trader_buddy.account_balance_modifications: ~7 rows (approximately)
 /*!40000 ALTER TABLE `account_balance_modifications` DISABLE KEYS */;
 REPLACE INTO `account_balance_modifications` (`id`, `amount`, `date_time`, `modification_type`, `account_id`, `processed`) VALUES
 	(14, 350, '2022-09-01 00:00:01.000000', 2, 1, b'1'),

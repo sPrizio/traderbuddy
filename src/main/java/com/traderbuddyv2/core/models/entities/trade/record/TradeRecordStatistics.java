@@ -98,6 +98,16 @@ public class TradeRecordStatistics implements GenericEntity {
 
     @Getter
     @Setter
+    @Column
+    private double pipsEarned;
+
+    @Getter
+    @Setter
+    @Column
+    private double pipsLost;
+
+    @Getter
+    @Setter
     @OneToOne(mappedBy = "statistics", cascade = CascadeType.ALL)
     private TradeRecord tradeRecord;
 }

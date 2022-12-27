@@ -78,7 +78,7 @@ public class EODIntegrationService implements GenericIntegrationService {
 
         try {
             final IntradayHistoricalDataEntryResponse[] entries = this.objectMapper.readValue(response, IntradayHistoricalDataEntryResponse[].class);
-            return this.intradayHistoricalDataTranslator.translate(new IntradayHistoricalDataResponse(Arrays.stream(entries).toList()));
+            return this.intradayHistoricalDataTranslator.translate(new IntradayHistoricalDataResponse(from.toLocalDate(), symbol, "Nasdaq 100", Arrays.stream(entries).toList()));
         } catch (Exception e) {
             throw new IntegrationException("The response came in an unexpected format", e);
         }

@@ -49,6 +49,7 @@ public class TradeRecordStatisticsDTOConverterTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.mathService.getDouble(184.05)).thenReturn(184.05);
+        Mockito.when(this.mathService.subtract(anyDouble(), anyDouble())).thenReturn(0.0);
         Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean())).thenReturn(List.of(generateTestBuyTrade(), generateTestSellTrade()));
     }

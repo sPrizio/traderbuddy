@@ -64,6 +64,10 @@ public class TradeDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private double pips;
+
+    @Getter
+    @Setter
     private String reasonForEntrance;
 
     @Getter

@@ -67,6 +67,9 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
         tradeRecordStatisticsDTO.setLargestLossSize(entity.getLargestLossSize());
         tradeRecordStatisticsDTO.setTradingRate(entity.getTradingRate());
         tradeRecordStatisticsDTO.setPercentageProfit(entity.getPercentageProfit());
+        tradeRecordStatisticsDTO.setPipsEarned(entity.getPipsEarned());
+        tradeRecordStatisticsDTO.setPipsLost(entity.getPipsLost());
+        tradeRecordStatisticsDTO.setNetPips(this.mathService.subtract(entity.getPipsEarned(), entity.getPipsLost()));
 
         computeDeltas(tradeRecordStatisticsDTO, entity);
         computePoints(tradeRecordStatisticsDTO, entity);

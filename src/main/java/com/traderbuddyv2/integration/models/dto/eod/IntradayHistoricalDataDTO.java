@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -17,7 +18,27 @@ public class IntradayHistoricalDataDTO implements GenericIntegrationDTO {
 
     @Getter
     @Setter
+    private LocalDate date;
+
+    @Getter
+    @Setter
+    private String product;
+
+    @Getter
+    @Setter
+    private String symbol;
+
+    @Getter
+    @Setter
+    private int offset;
+
+    @Getter
+    @Setter
     private List<IntradayHistoricalDataEntryDTO> entries;
+
+    @Getter
+    @Setter
+    private List<TradePointDTO> points;
 
 
     //  METHODS
