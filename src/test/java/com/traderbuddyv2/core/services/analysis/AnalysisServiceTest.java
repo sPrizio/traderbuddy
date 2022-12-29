@@ -8,7 +8,6 @@ import com.traderbuddyv2.core.services.trade.TradeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,5 +63,14 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     public void test_getTopTradePerformance_success() {
         assertThat(this.analysisService.getTopTradePerformance(LocalDate.MIN, LocalDate.MAX, AnalysisSort.PIPS, false, 10))
                 .isNotEmpty();
+    }
+
+
+    //  ----------------- getAverageTradePerformance -----------------
+
+    @Test
+    public void test_getAverageTradePerformance_success() {
+        assertThat(this.analysisService.getAverageTradePerformance(LocalDate.MIN, LocalDate.MAX, true, 10))
+                .isNotNull();
     }
 }

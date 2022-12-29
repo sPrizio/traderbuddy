@@ -2,7 +2,6 @@ package com.traderbuddyv2.core.services.math;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

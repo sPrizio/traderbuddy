@@ -63,4 +63,29 @@ public class AnalysisApiController extends AbstractApiController {
                 StringUtils.EMPTY
         );
     }
+
+    /**
+     * Obtains the averages
+     *
+     * @param start start date
+     * @param end end date
+     * @param win filter by wins or losses
+     * @param count limit count
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/average")
+    public StandardJsonResponse getAverage(
+            final @RequestParam("start") String start,
+            final @RequestParam("end") String end,
+            final @RequestParam("win") boolean win,
+            final @RequestParam("count") int count) {
+
+        validate(start, end);
+        return new StandardJsonResponse(
+                true,
+                this.analysisService.getAverageTradePerformance(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), win, count),
+                StringUtils.EMPTY
+        );
+    }
 }

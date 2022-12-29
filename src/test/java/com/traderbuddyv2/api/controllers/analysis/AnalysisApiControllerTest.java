@@ -45,6 +45,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
     @Before
     public void setUp() {
         Mockito.when(this.analysisService.getTopTradePerformance(any(), any(), any(), anyBoolean(), anyInt())).thenReturn(List.of(new TradePerformance(generateTestBuyTrade())));
+        Mockito.when(this.analysisService.getAverageTradePerformance(any(), any(), anyBoolean(), anyInt())).thenReturn(generateAverageTradePerformance());
     }
 
 
@@ -78,5 +79,22 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/analysis/top-trades").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].pips", Matchers.is(15.26)));
+    }
+
+
+    //  ----------------- getAverage -----------------
+
+    @Test
+    public void test_getAverage_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-01-01"));
+        map.put("end", List.of("2022-02-01"));
+        map.put("win", List.of("false"));
+        map.put("count", List.of("1"));
+
+        this.mockMvc.perform(get("/api/v1/analysis/average").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.profitability", Matchers.is(1.89)));
     }
 }

@@ -20,6 +20,7 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
+import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;
@@ -356,5 +357,15 @@ public abstract class AbstractGenericTest {
         return List.of(
                 new ForecastEntry(LocalDate.MIN, LocalDate.MAX, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
         );
+    }
+
+    public AverageTradePerformance generateAverageTradePerformance() {
+
+        final AverageTradePerformance averageTradePerformance = new AverageTradePerformance();
+
+        averageTradePerformance.setTotalTrades(2);
+        averageTradePerformance.setProfitability(1.89);
+
+        return averageTradePerformance;
     }
 }

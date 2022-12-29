@@ -13,6 +13,7 @@ import java.util.Comparator;
  */
 public enum AnalysisSort {
 
+    CLOSE_TIME(Comparator.comparing(TradePerformance::getTradeCloseTime)),
     LOT_SIZE(Comparator.comparing(TradePerformance::getLotSize)),
     NET_PROFIT(Comparator.comparing(TradePerformance::getNetProfit)),
     PIPS(Comparator.comparing(TradePerformance::getPips)),

@@ -1,7 +1,6 @@
 package com.traderbuddyv2.core.services.security;
 
 import com.traderbuddyv2.AbstractGenericTest;
-import com.traderbuddyv2.core.exceptions.system.AnonymousUserException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import org.junit.Before;
 import org.junit.Test;
