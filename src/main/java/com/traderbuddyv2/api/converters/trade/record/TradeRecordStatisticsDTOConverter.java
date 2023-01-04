@@ -73,7 +73,6 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
 
         computeDeltas(tradeRecordStatisticsDTO, entity);
         computePoints(tradeRecordStatisticsDTO, entity);
-        //computePercentageGain(tradeRecordStatisticsDTO, entity);
 
         return tradeRecordStatisticsDTO;
     }
@@ -117,7 +116,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
 
             double sum = 0.0;
             for (Trade trade : trades) {
-                sum = this.mathService.add(trade.getNetProfit(), sum);
+                sum = this.mathService.add(computePoints(trade), sum);
                 points.add(new IntradayEquityCurvePoint(trade.getTradeCloseTime(), sum));
             }
         }
@@ -126,12 +125,16 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
     }
 
     /**
-     * Computes the percentage gain
-     * @param tradeRecordStatisticsDTO {@link TradeRecordStatisticsDTO}
-     * @param entity {@link TradeRecordStatistics}
+     * Computes the pips within a {@link Trade}
+     *
+     * @param trade {@link Trade}
+     * @return pips gained/lost
      */
-    private void computePercentageGain(final TradeRecordStatisticsDTO tradeRecordStatisticsDTO, final TradeRecordStatistics entity) {
-        Optional<TradeRecord> previous = this.tradeRecordService.findPreviousTradeRecord(entity.getTradeRecord());
-        previous.ifPresent(rec -> tradeRecordStatisticsDTO.setPercentageProfit(this.mathService.delta(entity.getNetProfit(), rec.getBalance())));
+    private double computePoints(final Trade trade) {
+        if (trade.getNetProfit() >= 0.0) {
+            return Math.abs(this.mathService.subtract(trade.getOpenPrice(), trade.getClosePrice()));
+        } else {
+            return Math.abs(this.mathService.subtract(trade.getOpenPrice(), trade.getClosePrice())) * -1.0;
+        }
     }
 }

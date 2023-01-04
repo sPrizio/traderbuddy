@@ -96,6 +96,7 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRecordRepository.findRecentHistory(anyInt(), anyInt(), anyLong())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordRepository.findHistory(any(), any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeService.findTradeByTradeId(anyString())).thenReturn(Optional.of(trade));
+        Mockito.when(this.tradeService.findAllTradesForTradeRecord(any())).thenReturn(List.of(generateTestBuyTrade(), generateTestSellTrade()));
     }
 
 
@@ -222,6 +223,28 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
     public void test_findPreviousTradeRecord_success() {
         assertThat(this.tradeRecordService.findPreviousTradeRecord(generateTestTradeRecord()))
                 .isNotEmpty();
+    }
+
+
+    //  ----------------- computeTradingRate -----------------
+
+    @Test
+    public void test_computeTradingRate_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeRecordService.computeTradingRate(null, LocalDate.MAX, null))
+                .withMessage(CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeRecordService.computeTradingRate(LocalDate.MIN, null, null))
+                .withMessage(CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.tradeRecordService.computeTradingRate(LocalDate.MAX, LocalDate.MIN, null))
+                .withMessage(CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+    }
+
+    @Test
+    public void test_computeTradingRate_success() {
+        assertThat(this.tradeRecordService.computeTradingRate(LocalDate.MIN, LocalDate.MAX, null))
+                .isEqualTo(0.0);
     }
 
 

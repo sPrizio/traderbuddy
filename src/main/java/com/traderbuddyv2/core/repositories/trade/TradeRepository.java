@@ -99,7 +99,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param account {@link Account}
      * @return {@link List} of {@link Trade}s
      */
-    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 AND t.account = ?3 ORDER BY t.tradeOpenTime ASC")
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 AND t.account = ?3 AND t.relevant = true ORDER BY t.tradeOpenTime ASC")
     List<Trade> findAllTradesForTradeRecord(final LocalDateTime start, final LocalDateTime end, final Account account);
 }
 

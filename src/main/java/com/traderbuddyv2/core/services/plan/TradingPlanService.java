@@ -124,13 +124,13 @@ public class TradingPlanService {
         validateParameterIsNotNull(interval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
         validateParameterIsNotNull(begin, "begin cannot be null");
         validateParameterIsNotNull(limit, "limit cannot be null");
-        validateDatesAreNotMutuallyExclusive(begin.atStartOfDay(), limit.atStartOfDay(), "The start date was after the end date or vice versa");
+        validateDatesAreNotMutuallyExclusive(begin.atStartOfDay(), limit.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
         LocalDate startDate = computeStart(tradingPlan.getStartDate(), tradingPlan.getAggregateInterval());
         LocalDate endDate = tradingPlan.getEndDate();
         LocalDate compare = startDate;
 
-        validateDatesAreNotMutuallyExclusive(startDate.atStartOfDay(), endDate.atStartOfDay(), "start date cannot be after end date or vice versa");
+        validateDatesAreNotMutuallyExclusive(startDate.atStartOfDay(), endDate.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
         List<ForecastEntry> entries = new ArrayList<>();
         BigDecimal accruedEarnings = BigDecimal.ZERO;

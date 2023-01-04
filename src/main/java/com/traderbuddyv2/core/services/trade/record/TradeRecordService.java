@@ -236,6 +236,36 @@ public class TradeRecordService {
         LOGGER.info("Trade processing completed without issue");
     }
 
+    /**
+     * Computes the trading rate for the given start and end dates
+     *
+     * @param start {@link LocalDate} start
+     * @param end {@link LocalDate} end
+     * @param filterWins should filter only winning trades, losing trades or null for no filters
+     * @return average trades taken per period
+     */
+    public double computeTradingRate(final LocalDate start, final LocalDate end, final Boolean filterWins) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+
+        final List<Trade> allTrades = new ArrayList<>();
+        final List<TradeRecord> tradeRecords = findHistory(start, end, AggregateInterval.DAILY);
+        tradeRecords.forEach(rec -> allTrades.addAll(this.tradeService.findAllTradesForTradeRecord(rec)));
+
+        final long trades;
+        if (filterWins == null) {
+            trades = allTrades.size();
+        } else if (Boolean.FALSE.equals(filterWins)) {
+            trades = allTrades.stream().filter(tr -> tr.getNetProfit() < 0.0).count();
+        } else {
+            trades = allTrades.stream().filter(tr -> tr.getNetProfit() >= 0.0).count();
+        }
+
+        return this.mathService.divide(trades, tradeRecords.size());
+    }
+
 
     //  HELPER
 

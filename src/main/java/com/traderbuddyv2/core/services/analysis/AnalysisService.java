@@ -9,13 +9,13 @@ import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
+import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +40,9 @@ public class AnalysisService {
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
+
+    @Resource(name = "tradeRecordService")
+    private TradeRecordService tradeRecordService;
 
 
     //  METHODS
@@ -99,7 +102,7 @@ public class AnalysisService {
         final double winningPips = winningPerformances.stream().mapToDouble(TradePerformance::getPips).sum();
         final double losingPips = Math.abs(losingPerformances.stream().mapToDouble(TradePerformance::getPips).sum());
 
-        averageTradePerformance.setTradingRate(this.mathService.divide(tradePerformances.size(), ChronoUnit.DAYS.between(start, end)));
+        averageTradePerformance.setTradingRate(this.tradeRecordService.computeTradingRate(start, end, win));
         averageTradePerformance.setAveragePips(this.mathService.getDouble(tradePerformances.stream().mapToDouble(TradePerformance::getPips).average().orElse(0.0)));
         averageTradePerformance.setAverageTradeDuration((long) tradePerformances.stream().mapToLong(TradePerformance::getTradeDuration).average().orElse(0.0));
         averageTradePerformance.setAverageProfit(this.mathService.getDouble(tradePerformances.stream().mapToDouble(TradePerformance::getNetProfit).average().orElse(0.0)));

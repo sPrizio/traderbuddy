@@ -1,12 +1,9 @@
 package com.traderbuddyv2.core.models.nonentities.analysis;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 

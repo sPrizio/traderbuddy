@@ -188,7 +188,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.tradingPlanService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MIN, LocalDate.MAX))
-                .withMessage("start date cannot be after end date or vice versa");
+                .withMessage("start date was after end date or vice versa");
 
         tradingPlan.setStartDate(LocalDate.MIN);
         tradingPlan.setEndDate(LocalDate.MAX);
@@ -207,7 +207,7 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.tradingPlanService.forecast(tradingPlan, AggregateInterval.MONTHLY, LocalDate.MAX, LocalDate.MIN))
-                .withMessage("The start date was after the end date or vice versa");
+                .withMessage("start date was after end date or vice versa");
     }
 
     @Test
