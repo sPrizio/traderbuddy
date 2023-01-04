@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.records.trade.MonthRecord;
+import com.traderbuddyv2.core.models.records.trade.YearRecord;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
@@ -143,6 +144,15 @@ public class TradeRecordService {
         }
 
         return monthRecords;
+    }
+
+    /**
+     * Obtains a {@link List} of {@link YearRecord}s
+     *
+     * @return {@link List} of {@link YearRecord}
+     */
+    public List<YearRecord> findActiveYears() {
+        return findHistory(CoreConstants.MIN_DATE, CoreConstants.MAX_DATE, AggregateInterval.YEARLY).stream().map(this::generateYearRecord).toList();
     }
 
     /**
@@ -459,6 +469,26 @@ public class TradeRecordService {
 
         return new MonthRecord(
                 tradeRecord.getStartDate().getMonth(),
+                tradeRecord.getStatistics().getNumberOfTrades() > 0,
+                tradeRecord.getStatistics().getNumberOfTrades(),
+                this.mathService.getDouble(tradeRecord.getStatistics().getNetProfit())
+        );
+    }
+
+    /**
+     * Generates a {@link YearRecord} from a {@link TradeRecord}
+     *
+     * @param tradeRecord {@link TradeRecord}
+     * @return {@link YearRecord}
+     */
+    private YearRecord generateYearRecord(final TradeRecord tradeRecord) {
+
+        if (tradeRecord == null) {
+            return new YearRecord(-1, false, 0, 0.0);
+        }
+
+        return new YearRecord(
+                tradeRecord.getStartDate().getYear(),
                 tradeRecord.getStatistics().getNumberOfTrades() > 0,
                 tradeRecord.getStatistics().getNumberOfTrades(),
                 this.mathService.getDouble(tradeRecord.getStatistics().getNetProfit())

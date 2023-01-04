@@ -2,9 +2,11 @@ package com.traderbuddyv2.core.services.analysis;
 
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
+import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -92,8 +96,8 @@ public class AnalysisService {
         final List<TradePerformance> tradePerformances = win ? winningPerformances : losingPerformances;
 
         final int size = winningPerformances.size() + losingPerformances.size();
-        final double winningPips = winningPerformances.stream().mapToDouble(TradePerformance::getPips).average().orElse(0.0);
-        final double losingPips = Math.abs(losingPerformances.stream().mapToDouble(TradePerformance::getPips).average().orElse(0.0));
+        final double winningPips = winningPerformances.stream().mapToDouble(TradePerformance::getPips).sum();
+        final double losingPips = Math.abs(losingPerformances.stream().mapToDouble(TradePerformance::getPips).sum());
 
         averageTradePerformance.setTradingRate(this.mathService.divide(tradePerformances.size(), ChronoUnit.DAYS.between(start, end)));
         averageTradePerformance.setAveragePips(this.mathService.getDouble(tradePerformances.stream().mapToDouble(TradePerformance::getPips).average().orElse(0.0)));
@@ -108,5 +112,50 @@ public class AnalysisService {
         averageTradePerformance.setTotalPips(this.mathService.getDouble(tradePerformances.stream().mapToDouble(TradePerformance::getPips).sum()));
 
         return averageTradePerformance;
+    }
+
+    /**
+     * Obtains a {@link List} of {@link TradeTimeBucket}s
+     *
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
+     * @param bucket {@link AnalysisTimeBucket}
+     * @return {@link List} of {@link TradeTimeBucket}s
+     */
+    public List<TradeTimeBucket> getTradeBuckets(final LocalDate start, final LocalDate end, final AnalysisTimeBucket bucket) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(bucket, "bucket cannot be null");
+
+        final List<TradeTimeBucket> buckets = new ArrayList<>();
+        final List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(start.atStartOfDay(), end.atStartOfDay(), false);
+
+        LocalTime compare = LocalTime.of(9, 30);
+        while ((compare.isBefore(LocalTime.of(16, 5)))) {
+            LocalTime temp = compare;
+            final TradeTimeBucket tradeTimeBucket = new TradeTimeBucket(temp, temp.plusMinutes(bucket.getMinutes()), trades.stream().filter(trade -> compareTradeTimes(trade, temp, bucket)).toList());
+            tradeTimeBucket.setWinPercentage(this.mathService.wholePercentage(tradeTimeBucket.getWinningTrades(), tradeTimeBucket.getTrades()));
+            buckets.add(tradeTimeBucket);
+            compare = compare.plusMinutes(bucket.getMinutes());
+        }
+
+        return buckets.stream().filter(b -> b.getTrades() > 0).toList();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Compares {@link Trade} close times to be within the bucket
+     *
+     * @param trade {@link Trade}
+     * @param compare compare date
+     * @param bucket {@link AnalysisTimeBucket}
+     * @return true if the {@link Trade} close time is within the bucket bounds
+     */
+    private boolean compareTradeTimes(final Trade trade, final LocalTime compare, final AnalysisTimeBucket bucket) {
+        return (trade.getTradeCloseTime().toLocalTime().isAfter(compare)) && (trade.getTradeCloseTime().toLocalTime().isBefore(compare.plusMinutes(bucket.getMinutes())));
     }
 }

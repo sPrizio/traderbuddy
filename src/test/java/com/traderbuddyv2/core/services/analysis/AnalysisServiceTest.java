@@ -3,6 +3,7 @@ package com.traderbuddyv2.core.services.analysis;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
+import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import org.junit.Before;
@@ -71,6 +72,15 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     @Test
     public void test_getAverageTradePerformance_success() {
         assertThat(this.analysisService.getAverageTradePerformance(LocalDate.MIN, LocalDate.MAX, true, 10))
+                .isNotNull();
+    }
+
+
+    //  ----------------- getTradeBuckets -----------------
+
+    @Test
+    public void test_getTradeBuckets_success() {
+        assertThat(this.analysisService.getTradeBuckets(LocalDate.MIN, LocalDate.MAX, AnalysisTimeBucket.FIVE_MINUTES))
                 .isNotNull();
     }
 }

@@ -181,6 +181,15 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- findActiveYears -----------------
+
+    @Test
+    public void test_findActiveYears_success() {
+        assertThat(this.tradeRecordService.findActiveYears())
+                .isNotEmpty();
+    }
+
+
     //  ----------------- findTradeRecordForTrade -----------------
 
     @Test

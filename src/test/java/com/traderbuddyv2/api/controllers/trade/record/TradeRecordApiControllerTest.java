@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.controllers.trade.record;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.models.records.trade.MonthRecord;
+import com.traderbuddyv2.core.models.records.trade.YearRecord;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -63,6 +64,7 @@ public class TradeRecordApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordService.findHistory(any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordService.findActiveMonths(anyInt())).thenReturn(List.of(new MonthRecord(Month.JANUARY, true, 10, 135.65)));
+        Mockito.when(this.tradeRecordService.findActiveYears()).thenReturn(List.of(new YearRecord(2023, true, 10, 136.63)));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean())).thenReturn(List.of(generateTestBuyTrade(), generateTestSellTrade()));
     }
 
@@ -136,5 +138,15 @@ public class TradeRecordApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/trade-record/active-months").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].netProfit", is(135.65)));
+    }
+
+
+    //  ----------------- getActiveYears -----------------
+
+    @Test
+    public void test_getActiveYears_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/trade-record/active-years"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].netProfit", is(136.63)));
     }
 }

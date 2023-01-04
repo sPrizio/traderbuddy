@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.constants;
 
+import java.time.LocalDate;
 import java.time.Year;
 
 /**
@@ -24,6 +25,16 @@ public class CoreConstants {
      * to asking the collection to not have a size limit, i.e. show me all results
      */
     public static final int MAX_RESULT_SIZE = -1;
+
+    /**
+     * Represents the lowest supported date in the system
+     */
+    public static final LocalDate MIN_DATE = LocalDate.of(1970, 1, 1);
+
+    /**
+     * Represents the highest supported date in the system
+     */
+    public static final LocalDate MAX_DATE = LocalDate.of(2201, 1, 1);
 
     /**
      * Represents the maximum allowable calendar year value

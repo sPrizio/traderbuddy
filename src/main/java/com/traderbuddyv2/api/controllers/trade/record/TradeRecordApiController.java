@@ -8,7 +8,9 @@ import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.trade.MonthRecord;
+import com.traderbuddyv2.core.models.records.trade.YearRecord;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -104,5 +107,16 @@ public class TradeRecordApiController extends AbstractApiController {
     @GetMapping("/active-months")
     public StandardJsonResponse getActiveMonths(final @RequestParam("year") int year) {
         return new StandardJsonResponse(true, this.tradeRecordService.findActiveMonths(year), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link YearRecord}
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/active-years")
+    public StandardJsonResponse getActiveYears() {
+        return new StandardJsonResponse(true, this.tradeRecordService.findActiveYears(), StringUtils.EMPTY);
     }
 }

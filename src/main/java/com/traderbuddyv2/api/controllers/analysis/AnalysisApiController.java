@@ -4,6 +4,7 @@ import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.models.records.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
+import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.services.analysis.AnalysisService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -87,5 +88,24 @@ public class AnalysisApiController extends AbstractApiController {
                 this.analysisService.getAverageTradePerformance(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), win, count),
                 StringUtils.EMPTY
         );
+    }
+
+    /**
+     * Obtains the time buckets
+     *
+     * @param start start date
+     * @param end end date
+     * @param bucket {@link AnalysisTimeBucket}
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/bucket")
+    public StandardJsonResponse getTradeBuckets(
+            final @RequestParam("start") String start,
+            final @RequestParam("end") String end,
+            final @RequestParam("bucket") String bucket) {
+
+        validate(start, end);
+        return new StandardJsonResponse(true, this.analysisService.getTradeBuckets((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), AnalysisTimeBucket.get(bucket)), StringUtils.EMPTY);
     }
 }
