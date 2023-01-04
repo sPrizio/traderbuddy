@@ -121,5 +121,9 @@ public class TradeRecordStatisticsDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private double profitability;
+
+    @Getter
+    @Setter
     private List<IntradayEquityCurvePoint> points;
 }
