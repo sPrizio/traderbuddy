@@ -3,13 +3,8 @@ package com.traderbuddyv2.core.services.account;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
-import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
-import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
-import com.traderbuddyv2.core.services.math.MathService;
-import com.traderbuddyv2.core.services.plan.TradingPlanService;
-import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -18,7 +13,6 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -32,49 +26,11 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
 @Component("accountService")
 public class AccountService {
 
-    @Resource(name = "mathService")
-    private MathService mathService;
-
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
 
-    @Resource(name = "traderBuddyUserDetailsService")
-    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
-
-    @Resource(name = "tradingPlanService")
-    private TradingPlanService tradingPlanService;
-
 
     //  METHODS
-
-    /**
-     * Returns an {@link AccountOverview} for the current user
-     *
-     * @return {@link AccountOverview}
-     */
-    public AccountOverview getAccountOverview() {
-
-        final Account account = this.traderBuddyUserDetailsService.getCurrentUser().getAccount();
-        final List<TradeRecord> monthlyRecords = this.tradeRecordService.findRecentHistory(1, AggregateInterval.MONTHLY);
-        final List<TradeRecord> dailyRecords = this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY);
-        final Optional<TradingPlan> plan = this.tradingPlanService.findCurrentlyActiveTradingPlan();
-
-        final AccountOverview accountOverview = new AccountOverview();
-        accountOverview.setBalance(account.getBalance());
-
-        if (CollectionUtils.isNotEmpty(monthlyRecords)) {
-            TradeRecord tradeRecord = monthlyRecords.get(0);
-            accountOverview.setMonthlyEarnings(tradeRecord.getBalance());
-            accountOverview.setDateTime(tradeRecord.getStartDate().atStartOfDay());
-        }
-
-        if (CollectionUtils.isNotEmpty(dailyRecords)) {
-            accountOverview.setDailyEarnings(dailyRecords.get(0).getStatistics().getNetProfit());
-        }
-
-        plan.ifPresent(p -> accountOverview.setNextTarget(this.mathService.computeIncrement(account.getBalance(), p.getProfitTarget(), p.isAbsolute())));
-        return accountOverview;
-    }
 
     /**
      * Returns a {@link List} of {@link EquityCurveEntry}
