@@ -112,7 +112,7 @@ public class TradeService {
      * @return {@link List} of {@link Trade}s
      */
     public List<Trade> findAllTradesForTradeRecord(final TradeRecord tradeRecord) {
-        validateParameterIsNotNull(tradeRecord, "trade record cannot be null");
+        validateParameterIsNotNull(tradeRecord, CoreConstants.Validation.TRADE_RECORD_CANNOT_BE_NULL);
         return this.tradeRepository.findAllTradesForTradeRecord(tradeRecord.getStartDate().atStartOfDay(), tradeRecord.getEndDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
     }
 

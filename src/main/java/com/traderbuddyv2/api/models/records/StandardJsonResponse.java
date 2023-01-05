@@ -1,7 +1,6 @@
 package com.traderbuddyv2.api.models.records;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -10,38 +9,18 @@ import org.apache.commons.lang3.StringUtils;
  * @author Stephen Prizio
  * @version 1.0
  */
-public class StandardJsonResponse {
-
-    @Getter
-    @Setter
-    private boolean success;
-
-    @Getter
-    @Setter
-    private Object data;
-
-    @Getter
-    @Setter
-    private String message;
-
-    @Getter
-    @Setter
-    private String internalMessage;
-
-
-    //  CONSTRUCTORS
+public record StandardJsonResponse(
+        @Getter
+        boolean success,
+        @Getter
+        Object data,
+        @Getter
+        String message,
+        @Getter
+        String internalMessage
+) {
 
     public StandardJsonResponse(final boolean success, final Object data, final String message) {
-        this.success = success;
-        this.data = data;
-        this.message = message;
-        this.internalMessage = StringUtils.EMPTY;
-    }
-
-    public StandardJsonResponse(final boolean success, Object data, final String message, final String internalMessage) {
-        this.success = success;
-        this.data = data;
-        this.message = message;
-        this.internalMessage = internalMessage;
+        this(success, data, message, StringUtils.EMPTY);
     }
 }

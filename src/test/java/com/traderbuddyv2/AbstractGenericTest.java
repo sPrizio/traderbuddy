@@ -10,6 +10,7 @@ import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.plan.DepositPlan;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
@@ -19,7 +20,7 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
-import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
+import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
@@ -136,6 +137,8 @@ public abstract class AbstractGenericTest {
         statistics.setLargestLossAmount(148.56);
         statistics.setLargestLossSize(2.1);
         statistics.setTradingRate(17);
+        statistics.setPipsEarned(301);
+        statistics.setPipsLost(115);
 
         TradeRecord tradeRecord = new TradeRecord();
         tradeRecord.setStartDate(LocalDate.of(2022, 8, 24));
@@ -224,6 +227,7 @@ public abstract class AbstractGenericTest {
         account.setActive(true);
         account.setRetrospectives(new ArrayList<>());
         account.setBalanceModifications(List.of());
+        account.setSkill(generateTestSkill());
 
         return account;
     }
@@ -341,16 +345,14 @@ public abstract class AbstractGenericTest {
     }
 
     public AccountOverview generateAccountOverview() {
-
-        final AccountOverview accountOverview = new AccountOverview();
-
-        accountOverview.setDailyEarnings(25.0);
-        accountOverview.setMonthlyEarnings(25.0);
-        accountOverview.setDateTime(LocalDateTime.of(2022, 8, 24, 0, 0, 0));
-        accountOverview.setNextTarget(41.38);
-        accountOverview.setBalance(1025.0);
-
-        return accountOverview;
+        return new AccountOverview(
+                LocalDateTime.of(2022, 8, 24, 0, 0, 0),
+                1025.0,
+                25.0,
+                25.0,
+                41.38,
+                null
+        );
     }
 
     public List<ForecastEntry> generateForecast() {
@@ -367,5 +369,16 @@ public abstract class AbstractGenericTest {
         averageTradePerformance.setProfitability(1.89);
 
         return averageTradePerformance;
+    }
+
+    public Skill generateTestSkill() {
+
+        final Skill skill = new Skill();
+
+        skill.setStepIncrement(100);
+        skill.setPoints(38);
+        skill.setLevel(2);
+
+        return skill;
     }
 }

@@ -1,6 +1,7 @@
 package com.traderbuddyv2.core.services.trade.record;
 
 import com.traderbuddyv2.AbstractGenericTest;
+import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class TradeRecordStatisticsServiceTest extends AbstractGenericTest {
     public void test_generateStatistics_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeRecordStatisticsService.generateStatistics(null, List.of()))
-                .withMessage("trade record cannot be null");
+                .withMessage(CoreConstants.Validation.TRADE_RECORD_CANNOT_BE_NULL);
 
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeRecordStatisticsService.generateStatistics(generateTestTradeRecord(), null))

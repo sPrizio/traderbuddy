@@ -76,6 +76,17 @@ public class MathService {
     }
 
     /**
+     * Performs a basic multiply
+     *
+     * @param a {@link Double}
+     * @param b {@link Double}
+     * @return {@link Double}
+     */
+    public double multiply(final double a, final double b) {
+        return getDouble(BigDecimal.valueOf(a).multiply(BigDecimal.valueOf(b)).doubleValue());
+    }
+
+    /**
      * Obtains the percentage change rounded to a number larger than 1
      * Example: 9 / 87 would normally be 0.103448, this method would return 10.34
      *

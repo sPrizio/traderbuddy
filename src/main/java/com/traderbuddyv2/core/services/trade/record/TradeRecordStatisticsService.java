@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.services.trade.record;
 
+import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -48,7 +49,7 @@ public class TradeRecordStatisticsService {
      */
     public TradeRecordStatistics generateStatistics(final TradeRecord tradeRecord, final List<Trade> trades) {
 
-        validateParameterIsNotNull(tradeRecord, "trade record cannot be null");
+        validateParameterIsNotNull(tradeRecord, CoreConstants.Validation.TRADE_RECORD_CANNOT_BE_NULL);
         validateParameterIsNotNull(trades, "trades cannot be null");
 
         double profit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).sum());

@@ -65,6 +65,15 @@ public class MathServiceTest {
     }
 
 
+    //  ----------------- multiply -----------------
+
+    @Test
+    public void test_multiply_success() {
+        assertThat(this.mathService.multiply(34.87, 963.253))
+                .isEqualTo(33588.63);
+    }
+
+
     //  ----------------- delta -----------------
 
     @Test

@@ -179,7 +179,7 @@ public class TradeRecordService {
      */
     public Optional<TradeRecord> findPreviousTradeRecord(final TradeRecord tradeRecord) {
 
-        validateParameterIsNotNull(tradeRecord, "trade record cannot be null");
+        validateParameterIsNotNull(tradeRecord, CoreConstants.Validation.TRADE_RECORD_CANNOT_BE_NULL);
 
         List<TradeRecord> recent = findHistory(tradeRecord.getStartDate().minusYears(1), tradeRecord.getEndDate(), tradeRecord.getAggregateInterval());
         if (CollectionUtils.isNotEmpty(recent)) {

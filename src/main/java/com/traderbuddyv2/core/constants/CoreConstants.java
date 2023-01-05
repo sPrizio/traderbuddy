@@ -1,5 +1,7 @@
 package com.traderbuddyv2.core.constants;
 
+import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
+
 import java.time.LocalDate;
 import java.time.Year;
 
@@ -51,17 +53,26 @@ public class CoreConstants {
      */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
+    /**
+     * All {@link Skill}s will start with a default step increment of 100
+     */
+    public static final int DEFAULT_SKILL_STEP_INCREMENT = 100;
+
     public static class Validation {
 
         private Validation() {
             throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
         }
 
+        public static final String ACCOUNT_CANNOT_BE_NULL = "account cannot be null";
+
         public static final String INTERVAL_CANNOT_BE_NULL = "interval cannot be null";
 
         public static final String START_DATE_CANNOT_BE_NULL = "start date cannot be null";
 
         public static final String END_DATE_CANNOT_BE_NULL = "end date cannot be null";
+
+        public static final String TRADE_RECORD_CANNOT_BE_NULL = "trade record cannot be null";
 
         public static final String UID_CANNOT_BE_NULL = "uid cannot be null";
 

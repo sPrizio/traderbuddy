@@ -77,14 +77,10 @@ public class RetrospectiveApiController extends AbstractApiController {
     @ResponseBody
     @GetMapping("/unique")
     public StandardJsonResponse getRetrospectiveForStartDateAndEndDateAndInterval(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
-
         validate(start, end, interval);
         Optional<Retrospective> retrospective = this.retrospectiveService.findRetrospectiveForStartDateAndEndDateAndInterval(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), AggregateInterval.valueOf(interval));
-        if (retrospective.isEmpty()) {
-            return new StandardJsonResponse(false, null, String.format("No retrospective was found for start date %s, end date %s and interval %s", start, end, interval));
-        }
+        return retrospective.map(value -> new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No retrospective was found for start date %s, end date %s and interval %s", start, end, interval)));
 
-        return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
     }
 
     /**
@@ -96,13 +92,9 @@ public class RetrospectiveApiController extends AbstractApiController {
     @ResponseBody
     @GetMapping("/uid")
     public StandardJsonResponse getRetrospectiveForUid(final @RequestParam("uid") String uid) {
-
         Optional<Retrospective> retrospective = this.retrospectiveService.findRetrospectiveForUid(uid);
-        if (retrospective.isEmpty()) {
-            return new StandardJsonResponse(false, null, String.format("No retrospective was found for uid %s", uid));
-        }
+        return retrospective.map(value -> new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No retrospective was found for uid %s", uid)));
 
-        return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(retrospective.get()), StringUtils.EMPTY);
     }
 
     /**

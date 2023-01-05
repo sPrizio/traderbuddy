@@ -1,6 +1,7 @@
 package com.traderbuddyv2.api.controllers.account;
 
 import com.traderbuddyv2.AbstractGenericTest;
+import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.core.services.account.AccountService;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AccountApiControllerTest extends AbstractGenericTest {
 
     @MockBean
+    private AccountFacade accountFacade;
+
+    @MockBean
     private AccountService accountService;
 
     @Autowired
@@ -42,7 +46,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.accountService.getAccountOverview()).thenReturn(generateAccountOverview());
+        Mockito.when(this.accountFacade.getAccountOverview()).thenReturn(generateAccountOverview());
         Mockito.when(this.accountService.getEquityCurve(any(), any(), any())).thenReturn(List.of());
     }
 

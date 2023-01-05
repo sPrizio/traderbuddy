@@ -176,7 +176,7 @@ public class TradeServiceTest extends AbstractGenericTest {
     public void test_findAllTradesForTradeRecord_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesForTradeRecord(null))
-                .withMessage("trade record cannot be null");
+                .withMessage(CoreConstants.Validation.TRADE_RECORD_CANNOT_BE_NULL);
     }
 
     @Test

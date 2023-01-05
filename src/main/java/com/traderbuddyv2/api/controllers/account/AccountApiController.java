@@ -1,10 +1,11 @@
 package com.traderbuddyv2.api.controllers.account;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
+import com.traderbuddyv2.api.facades.AccountFacade;
+import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.api.models.records.StandardJsonResponse;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
-import com.traderbuddyv2.core.models.nonentities.account.AccountOverview;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.services.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,9 @@ import java.util.List;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
 
+    @Resource(name = "accountFacade")
+    private AccountFacade accountFacade;
+
     @Resource(name = "accountService")
     private AccountService accountService;
 
@@ -43,7 +47,7 @@ public class AccountApiController extends AbstractApiController {
     @ResponseBody
     @GetMapping("/overview")
     public StandardJsonResponse getAccountOverview() {
-        return new StandardJsonResponse(true, this.accountService.getAccountOverview(), StringUtils.EMPTY);
+        return new StandardJsonResponse(true, this.accountFacade.getAccountOverview(), StringUtils.EMPTY);
     }
 
     /**
