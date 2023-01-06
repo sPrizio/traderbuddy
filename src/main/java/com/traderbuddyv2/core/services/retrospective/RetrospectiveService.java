@@ -107,10 +107,13 @@ public class RetrospectiveService {
 
         Map<String, LocalDate> map = new HashMap<>();
         LocalDate compare = LocalDate.of(year, 1, 1);
-        List<Retrospective> retrospectives = this.retrospectiveRepository.findAllRetrospectivesWithinDate(compare, compare.plusYears(1), this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
-        retrospectives.forEach(retro -> map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("MMMM yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfMonth())));
+        List<Retrospective> retrospectives = this.retrospectiveRepository.findAllRetrospectivesWithinDate(compare.minusWeeks(1), compare.plusYears(1), this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        retrospectives.forEach(retro -> {
+            map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("MMMM yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfMonth()));
+            map.put(retro.getEndDate().format(DateTimeFormatter.ofPattern("MMMM yyyy")), retro.getEndDate().with(TemporalAdjusters.firstDayOfMonth()));
+        });
 
-        return new ArrayList<>(map.values()).stream().sorted(LocalDate::compareTo).sorted(Comparator.reverseOrder()).toList();
+        return new ArrayList<>(map.values()).stream().filter(loc -> loc.getYear() == year).sorted(LocalDate::compareTo).sorted(Comparator.reverseOrder()).toList();
     }
 
     /**
@@ -121,7 +124,10 @@ public class RetrospectiveService {
     public List<LocalDate> findActiveRetrospectiveYears() {
         Map<String, LocalDate> map = new HashMap<>();
         Iterable<Retrospective> retrospectives = this.retrospectiveRepository.findAllByAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
-        retrospectives.forEach(retro -> map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfYear())));
+        retrospectives.forEach(retro -> {
+            map.put(retro.getStartDate().format(DateTimeFormatter.ofPattern("yyyy")), retro.getStartDate().with(TemporalAdjusters.firstDayOfYear()));
+            map.put(retro.getEndDate().format(DateTimeFormatter.ofPattern("yyyy")), retro.getEndDate().with(TemporalAdjusters.firstDayOfYear()));
+        });
 
         return new ArrayList<>(map.values()).stream().sorted(LocalDate::compareTo).sorted(Comparator.reverseOrder()).toList();
     }

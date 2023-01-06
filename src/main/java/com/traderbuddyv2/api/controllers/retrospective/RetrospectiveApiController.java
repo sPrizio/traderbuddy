@@ -100,20 +100,12 @@ public class RetrospectiveApiController extends AbstractApiController {
     /**
      * Obtains a {@link List} of {@link LocalDate}s representing the first of the month for a list of months that a user has a retrospective
      *
-     * @param includeStarterMonth if true, adds the current month to the return set
      * @return {@link StandardJsonResponse}
      */
     @ResponseBody
     @GetMapping("/active-months")
-    public StandardJsonResponse getActiveRetrospectiveMonths(final @RequestParam("year") int year,final @RequestParam(value = "includeStarterMonth", defaultValue = "false") boolean includeStarterMonth) {
-
-        List<LocalDate> dates = this.retrospectiveService.findActiveRetrospectiveMonths(year);
-        if (includeStarterMonth && !dates.contains(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()))) {
-            dates = new ArrayList<>(dates);
-            dates.add(0, LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
-        }
-
-        return new StandardJsonResponse(true, dates, StringUtils.EMPTY);
+    public StandardJsonResponse getActiveRetrospectiveMonths(final @RequestParam("year") int year) {
+        return new StandardJsonResponse(true, this.retrospectiveService.findActiveRetrospectiveMonths(year), StringUtils.EMPTY);
     }
 
     /**

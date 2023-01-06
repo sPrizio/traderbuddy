@@ -37,5 +37,9 @@ public class SkillDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private int remaining;
+
+    @Getter
+    @Setter
     private LocalDateTime lastUpdated;
 }

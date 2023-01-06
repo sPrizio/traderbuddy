@@ -38,6 +38,7 @@ public class SkillDTOConverter implements GenericDTOConverter<Skill, SkillDTO> {
         skillDTO.setStepIncrement(entity.getStepIncrement());
         skillDTO.setDelta(entity.getDelta());
         skillDTO.setLastUpdated(entity.getLastUpdated());
+        skillDTO.setRemaining(entity.getRemaining());
 
         return skillDTO;
     }

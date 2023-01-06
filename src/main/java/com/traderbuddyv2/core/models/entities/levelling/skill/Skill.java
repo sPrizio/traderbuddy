@@ -46,6 +46,11 @@ public class Skill implements GenericEntity {
     @Getter
     @Setter
     @Column
+    private int remaining;
+
+    @Getter
+    @Setter
+    @Column
     private LocalDateTime lastUpdated;
 
     @Getter
