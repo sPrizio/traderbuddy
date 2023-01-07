@@ -1,7 +1,7 @@
-package com.traderbuddyv2.api.converters.levelling.skill;
+package com.traderbuddyv2.api.converters.levelling.rank;
 
 import com.traderbuddyv2.AbstractGenericTest;
-import com.traderbuddyv2.api.models.dto.levelling.skill.SkillDTO;
+import com.traderbuddyv2.api.models.dto.levelling.rank.RankDTO;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +18,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
- * Testing class for {@link SkillDTOConverter}
+ * Testing class for {@link RankDTOConverter}
  *
  * @author Stephen Prizio
  * @version 1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class SkillDTOConverterTest extends AbstractGenericTest {
+public class RankDTOConverterTest extends AbstractGenericTest {
 
     @Autowired
-    private SkillDTOConverter skillDTOConverter;
+    private RankDTOConverter rankDTOConverter;
 
     @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
@@ -43,18 +43,18 @@ public class SkillDTOConverterTest extends AbstractGenericTest {
 
     @Test
     public void test_convert_success_emptyResult() {
-        assertThat(this.skillDTOConverter.convert(null))
+        assertThat(this.rankDTOConverter.convert(null))
                 .isNotNull()
-                .satisfies(SkillDTO::isEmpty);
+                .satisfies(RankDTO::isEmpty);
 
     }
 
     @Test
     public void test_convert_success() {
-        assertThat(this.skillDTOConverter.convert(generateTestSkill()))
+        assertThat(this.rankDTOConverter.convert(generateTestRank()))
                 .isNotNull()
-                .extracting("level", "points")
-                .containsExactly(2, 38);
+                .extracting("level")
+                .isEqualTo(1);
 
     }
 
@@ -63,10 +63,10 @@ public class SkillDTOConverterTest extends AbstractGenericTest {
 
     @Test
     public void test_convertAll_success() {
-        assertThat(this.skillDTOConverter.convertAll(List.of(generateTestSkill())))
+        assertThat(this.rankDTOConverter.convertAll(List.of(generateTestRank())))
                 .isNotEmpty()
                 .first()
-                .extracting("level", "points")
-                .containsExactly(2, 38);
+                .extracting("level")
+                .isEqualTo(1);
     }
 }

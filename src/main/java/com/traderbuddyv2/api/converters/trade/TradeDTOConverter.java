@@ -38,7 +38,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
             return new TradeDTO();
         }
 
-        TradeDTO tradeDTO = new TradeDTO();
+        final TradeDTO tradeDTO = new TradeDTO();
 
         tradeDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         tradeDTO.setTradeId(entity.getTradeId());

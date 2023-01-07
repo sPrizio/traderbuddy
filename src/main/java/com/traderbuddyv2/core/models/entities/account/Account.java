@@ -1,6 +1,7 @@
 package com.traderbuddyv2.core.models.entities.account;
 
 import com.traderbuddyv2.core.models.entities.GenericEntity;
+import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
@@ -69,6 +70,12 @@ public class Account implements GenericEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "skills_id")
     private Skill skill;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "rank_id")
+    private Rank rank;
 
 
     //  METHODS

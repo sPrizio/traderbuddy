@@ -3,6 +3,7 @@ package com.traderbuddyv2;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.api.models.dto.plans.DepositPlanDTO;
 import com.traderbuddyv2.api.models.dto.plans.WithdrawalPlanDTO;
+import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
@@ -10,6 +11,8 @@ import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.levelling.rank.BaseRank;
+import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.plan.DepositPlan;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
@@ -20,7 +23,6 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
-import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
@@ -228,6 +230,7 @@ public abstract class AbstractGenericTest {
         account.setRetrospectives(new ArrayList<>());
         account.setBalanceModifications(List.of());
         account.setSkill(generateTestSkill());
+        account.setRank(generateTestRank());
 
         return account;
     }
@@ -380,5 +383,26 @@ public abstract class AbstractGenericTest {
         skill.setLevel(2);
 
         return skill;
+    }
+
+    public BaseRank generateTestBaseRank() {
+
+        final BaseRank baseRank = new BaseRank();
+
+        baseRank.setMultiplier(1);
+        baseRank.setPriority(1);
+        baseRank.setName("Test Base Rank");
+
+        return baseRank;
+    }
+
+    public Rank generateTestRank() {
+
+        final Rank rank = new Rank();
+
+        rank.setBaseRank(generateTestBaseRank());
+        rank.setLevel(1);
+
+        return rank;
     }
 }

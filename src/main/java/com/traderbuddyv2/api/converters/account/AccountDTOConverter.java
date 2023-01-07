@@ -1,6 +1,7 @@
 package com.traderbuddyv2.api.converters.account;
 
 import com.traderbuddyv2.api.converters.GenericDTOConverter;
+import com.traderbuddyv2.api.converters.levelling.rank.RankDTOConverter;
 import com.traderbuddyv2.api.converters.levelling.skill.SkillDTOConverter;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.core.models.entities.account.Account;
@@ -21,6 +22,9 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
 
     @Resource(name = "mathService")
     private MathService mathService;
+
+    @Resource(name = "rankDTOConverter")
+    private RankDTOConverter rankDTOConverter;
 
     @Resource(name = "skillDTOConverter")
     private SkillDTOConverter skillDTOConverter;
@@ -45,6 +49,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setActive(entity.isActive());
         accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
         accountDTO.setSkill(this.skillDTOConverter.convert(entity.getSkill()));
+        accountDTO.setRank(this.rankDTOConverter.convert(entity.getRank()));
 
         return accountDTO;
     }

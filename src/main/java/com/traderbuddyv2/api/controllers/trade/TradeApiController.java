@@ -11,7 +11,6 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.services.GenericImportService;
-import com.traderbuddyv2.integration.services.eod.EODIntegrationService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -41,9 +40,6 @@ import static com.traderbuddyv2.importing.validation.ImportValidator.validateImp
 public class TradeApiController {
 
     private static final String TRADE_ID = "tradeId";
-
-    @Resource(name = "eodIntegrationService")
-    private EODIntegrationService eodIntegrationService;
 
     @Resource(name = "genericImportService")
     private GenericImportService genericImportService;

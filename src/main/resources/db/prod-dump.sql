@@ -26,19 +26,22 @@ CREATE TABLE IF NOT EXISTS `account` (
   `trading_plan_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `skills_id` bigint(20) DEFAULT NULL,
+  `rank_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKk8mim6eq849fvhk528y9pv7lj` (`trading_plan_id`),
   KEY `FKra7xoi9wtlcq07tmoxxe5jrh4` (`user_id`),
   KEY `FKetf0myrpvhqfh8rj0yixc1f73` (`skills_id`),
+  KEY `FKjd9gn0jtaygwwnrfergi7f2n5` (`rank_id`),
   CONSTRAINT `FKetf0myrpvhqfh8rj0yixc1f73` FOREIGN KEY (`skills_id`) REFERENCES `skills` (`id`),
+  CONSTRAINT `FKjd9gn0jtaygwwnrfergi7f2n5` FOREIGN KEY (`rank_id`) REFERENCES `ranks` (`id`),
   CONSTRAINT `FKk8mim6eq849fvhk528y9pv7lj` FOREIGN KEY (`trading_plan_id`) REFERENCES `trading_plans` (`id`),
   CONSTRAINT `FKra7xoi9wtlcq07tmoxxe5jrh4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.account: ~0 rows (approximately)
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-REPLACE INTO `account` (`id`, `account_id`, `account_open_time`, `active`, `balance`, `trading_plan_id`, `user_id`, `skills_id`) VALUES
-	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3096.42, NULL, NULL, 1);
+REPLACE INTO `account` (`id`, `account_id`, `account_open_time`, `active`, `balance`, `trading_plan_id`, `user_id`, `skills_id`, `rank_id`) VALUES
+	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3096.42, NULL, NULL, 1, NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.account_balance_modifications
@@ -86,24 +89,25 @@ CREATE TABLE IF NOT EXISTS `base_ranks` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `multiplier` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.base_ranks: ~12 rows (approximately)
 /*!40000 ALTER TABLE `base_ranks` DISABLE KEYS */;
-REPLACE INTO `base_ranks` (`id`, `multiplier`, `name`) VALUES
-	(1, 0, 'Unranked'),
-	(2, 1, 'Bronze'),
-	(3, 2, 'Garnet'),
-	(4, 5, 'Silver'),
-	(5, 10, 'Amethyst'),
-	(6, 25, 'Gold'),
-	(7, 50, 'Sapphire'),
-	(8, 100, 'Platinum'),
-	(9, 225, 'Diamond'),
-	(10, 500, 'Ruby'),
-	(11, 1000, 'Emerald'),
-	(12, 10000, 'Opal');
+REPLACE INTO `base_ranks` (`id`, `multiplier`, `name`, `priority`) VALUES
+	(1, 0, 'Unranked', 0),
+	(2, 1, 'Bronze', 1),
+	(3, 2, 'Garnet', 2),
+	(4, 5, 'Silver', 3),
+	(5, 10, 'Amethyst', 4),
+	(6, 25, 'Gold', 5),
+	(7, 50, 'Sapphire', 6),
+	(8, 100, 'Platinum', 7),
+	(9, 225, 'Diamond', 8),
+	(10, 500, 'Ruby', 9),
+	(11, 1000, 'Emerald', 10),
+	(12, 10000, 'Opal', 11);
 /*!40000 ALTER TABLE `base_ranks` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.deposit_plans
@@ -295,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `retrospectives` (
   CONSTRAINT `FK45ox2nc7as2dui59tb1uyfgqb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospectives: ~22 rows (approximately)
+-- Dumping data for table trader_buddy.retrospectives: ~19 rows (approximately)
 /*!40000 ALTER TABLE `retrospectives` DISABLE KEYS */;
 REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`) VALUES
 	(3, '2022-08-08', 1, '2022-08-01', 1),
@@ -334,7 +338,7 @@ CREATE TABLE IF NOT EXISTS `retrospective_entries` (
   CONSTRAINT `FKepdlvjuqm0ejb712uio01et63` FOREIGN KEY (`retrospective_id`) REFERENCES `retrospectives` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=216 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospective_entries: ~109 rows (approximately)
+-- Dumping data for table trader_buddy.retrospective_entries: ~108 rows (approximately)
 /*!40000 ALTER TABLE `retrospective_entries` DISABLE KEYS */;
 REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_number`, `retrospective_id`) VALUES
 	(97, 'Only 1 promo payment on Friday. We\'re improving on the promo payments which I think is a good win!', b'1', 1, 20),
@@ -490,7 +494,7 @@ CREATE TABLE IF NOT EXISTS `trades` (
   CONSTRAINT `FKhrx1ya4wn13vvty5h2t85970t` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2524 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trades: ~2,323 rows (approximately)
+-- Dumping data for table trader_buddy.trades: ~2,313 rows (approximately)
 /*!40000 ALTER TABLE `trades` DISABLE KEYS */;
 REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_price`, `reason_for_entrance`, `result_of_trade`, `trade_close_time`, `trade_id`, `trade_open_time`, `trade_type`, `trading_platform`, `product`, `relevant`, `processed`, `account_id`) VALUES
 	(1, 12584.97, 0.5, 1.2, 12586.84, '', '', '2022-07-21 15:32:00', 'O5-75-5DXQFJ', '2022-07-21 15:32:00', 1, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
@@ -2855,7 +2859,7 @@ CREATE TABLE IF NOT EXISTS `trade_records` (
   CONSTRAINT `FKlt8dfxccamqy5gcglyv6jqjo3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2856 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records: ~124 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records: ~122 rows (approximately)
 /*!40000 ALTER TABLE `trade_records` DISABLE KEYS */;
 REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`, `start_date`, `account_id`, `statistics_id`, `target`) VALUES
 	(2732, 3, 3000, '2023-01-01', '2022-01-01', 1, 2990, 37.5),
@@ -3007,7 +3011,7 @@ CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3114 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records_statistics: ~124 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records_statistics: ~122 rows (approximately)
 /*!40000 ALTER TABLE `trade_records_statistics` DISABLE KEYS */;
 REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_loss_size`, `average_win_amount`, `average_win_size`, `largest_loss_amount`, `largest_loss_size`, `largest_win_amount`, `largest_win_size`, `net_profit`, `number_of_losing_trades`, `number_of_trades`, `number_of_winning_trades`, `percentage_profit`, `trading_rate`, `win_percentage`, `pips_earned`, `pips_lost`) VALUES
 	(2990, -21.39, 1.93, 21.86, 1.86, -288.79, 3, 135.63, 1.7, 2327.62, 710, 1511, 801, 77.59, 16.79, 53, 7577.76, 6176.15),

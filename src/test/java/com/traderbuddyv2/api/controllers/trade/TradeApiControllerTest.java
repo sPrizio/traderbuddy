@@ -9,7 +9,6 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
-import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.services.GenericImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -71,9 +70,6 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
     @MockBean
     private TradeService tradeService;
-
-    @MockBean
-    private TradeRecordService tradeRecordService;
 
     @MockBean
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
