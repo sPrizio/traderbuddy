@@ -297,9 +297,9 @@ CREATE TABLE IF NOT EXISTS `retrospectives` (
   UNIQUE KEY `UniqueIntervalAndStartDateAndEndDate` (`interval_frequency`,`start_date`,`end_date`),
   KEY `FK45ox2nc7as2dui59tb1uyfgqb` (`account_id`),
   CONSTRAINT `FK45ox2nc7as2dui59tb1uyfgqb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospectives: ~19 rows (approximately)
+-- Dumping data for table trader_buddy.retrospectives: ~20 rows (approximately)
 /*!40000 ALTER TABLE `retrospectives` DISABLE KEYS */;
 REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`) VALUES
 	(3, '2022-08-08', 1, '2022-08-01', 1),
@@ -323,7 +323,8 @@ REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_da
 	(34, '2022-12-12', 1, '2022-12-05', 1),
 	(35, '2022-12-19', 1, '2022-12-12', 1),
 	(36, '2022-12-26', 1, '2022-12-19', 1),
-	(37, '2023-01-02', 1, '2022-12-26', 1);
+	(37, '2023-01-02', 1, '2022-12-26', 1),
+	(38, '2023-01-09', 1, '2023-01-02', 1);
 /*!40000 ALTER TABLE `retrospectives` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.retrospective_entries
@@ -336,9 +337,9 @@ CREATE TABLE IF NOT EXISTS `retrospective_entries` (
   PRIMARY KEY (`id`),
   KEY `FKepdlvjuqm0ejb712uio01et63` (`retrospective_id`),
   CONSTRAINT `FKepdlvjuqm0ejb712uio01et63` FOREIGN KEY (`retrospective_id`) REFERENCES `retrospectives` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=216 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospective_entries: ~108 rows (approximately)
+-- Dumping data for table trader_buddy.retrospective_entries: ~113 rows (approximately)
 /*!40000 ALTER TABLE `retrospective_entries` DISABLE KEYS */;
 REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_number`, `retrospective_id`) VALUES
 	(97, 'Only 1 promo payment on Friday. We\'re improving on the promo payments which I think is a good win!', b'1', 1, 20),
@@ -449,7 +450,12 @@ REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_num
 	(212, 'The week was okay. Had 2 good days and 1 bad mistake day. If I would have cleaned up my bad mistakes each of these days would have been 30+ point days. This needs to be my top priority', b'0', 2, 37),
 	(213, 'Follow the routine. No ifs or buts', b'1', 3, 37),
 	(214, 'Clean up those bad mistakes. They are costing you your profitability', b'1', 4, 37),
-	(215, 'I tend to have the best days when my trades number between 5 & 12. I should focus on reducing the number of trades taken in a day', b'0', 3, 37);
+	(215, 'I tend to have the best days when my trades number between 5 & 12. I should focus on reducing the number of trades taken in a day', b'0', 3, 37),
+	(216, 'Good first week of the new year. Following my strategy and system and I was feeling good. Had a few trades where I was scared to lose and letting my heart rate increase. Need to continue working on my ability to lose.', b'0', 1, 38),
+	(217, 'First trading day saw me enter a set of losing positions that I had to write off. There wasn\'t anything special about this, I got caught up with trading a tiny position size, acted stupidly and paid the price. I need to focus on allowing myself to switch sides at will. I need to be okay with invalidating my hypothesis and switching sides.', b'0', 2, 38),
+	(218, 'I\'ve been doing well by focusing on the points and the right trades.', b'0', 3, 38),
+	(219, 'The system is working, let\'s keep working on following it and being consistent and disciplined.', b'1', 4, 38),
+	(220, 'Be okay with losing, invalidating your hypothesis and even switching sides. This is a key point and needs to be a focal point of the next days & weeks', b'1', 5, 38);
 /*!40000 ALTER TABLE `retrospective_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.skills
