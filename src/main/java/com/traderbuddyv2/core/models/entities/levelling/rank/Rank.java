@@ -31,6 +31,11 @@ public class Rank implements GenericEntity, Comparable<Rank> {
     @Column
     private int level;
 
+    @Getter
+    @Setter
+    @Column
+    private String imageUrl;
+
 
     //  METHODS
 

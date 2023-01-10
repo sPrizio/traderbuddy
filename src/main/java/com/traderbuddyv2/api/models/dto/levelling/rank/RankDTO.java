@@ -21,6 +21,10 @@ public class RankDTO implements GenericDTO, Comparable<RankDTO> {
     @Setter
     private int level;
 
+    @Getter
+    @Setter
+    private String imageUrl;
+
 
     //  METHODS
 

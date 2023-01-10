@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Testing class for {@link RankController}
+ * Testing class for {@link RankApiController}
  *
  * @author Stephen Prizio
  * @version 1.0
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-public class RankControllerTest extends AbstractGenericTest {
+public class RankApiControllerTest extends AbstractGenericTest {
 
     @Autowired
     private MockMvc mockMvc;

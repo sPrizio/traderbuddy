@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/rank")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
-public class RankController {
+public class RankApiController {
 
     @Resource(name = "baseRankDTOConverter")
     private BaseRankDTOConverter baseRankDTOConverter;
