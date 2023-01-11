@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `account` (
 -- Dumping data for table trader_buddy.account: ~0 rows (approximately)
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
 REPLACE INTO `account` (`id`, `account_id`, `account_open_time`, `active`, `balance`, `trading_plan_id`, `user_id`, `skills_id`, `rank_id`) VALUES
-	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3096.42, NULL, NULL, 1, NULL);
+	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3114.45, NULL, NULL, 1, NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.account_balance_modifications
@@ -104,10 +104,10 @@ REPLACE INTO `base_ranks` (`id`, `multiplier`, `name`, `priority`) VALUES
 	(6, 25, 'Gold', 5),
 	(7, 50, 'Sapphire', 6),
 	(8, 100, 'Platinum', 7),
-	(9, 225, 'Diamond', 8),
-	(10, 500, 'Ruby', 9),
+	(9, 500, 'Diamond', 9),
+	(10, 225, 'Ruby', 8),
 	(11, 1000, 'Emerald', 10),
-	(12, 10000, 'Opal', 11);
+	(12, 10000, 'Obsidian', 11);
 /*!40000 ALTER TABLE `base_ranks` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.deposit_plans
@@ -166,124 +166,66 @@ CREATE TABLE IF NOT EXISTS `ranks` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `level` int(11) DEFAULT NULL,
   `base_rank_id` bigint(20) DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKc5o5po1vvs7hdli3is527k9s` (`base_rank_id`),
   CONSTRAINT `FKc5o5po1vvs7hdli3is527k9s` FOREIGN KEY (`base_rank_id`) REFERENCES `base_ranks` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.ranks: ~110 rows (approximately)
+-- Dumping data for table trader_buddy.ranks: ~51 rows (approximately)
 /*!40000 ALTER TABLE `ranks` DISABLE KEYS */;
-REPLACE INTO `ranks` (`id`, `level`, `base_rank_id`) VALUES
-	(1, 1, 2),
-	(2, 2, 2),
-	(3, 3, 2),
-	(4, 4, 2),
-	(5, 5, 2),
-	(6, 1, 3),
-	(7, 2, 3),
-	(8, 3, 3),
-	(9, 4, 3),
-	(10, 5, 3),
-	(11, 1, 4),
-	(12, 2, 4),
-	(13, 3, 4),
-	(14, 4, 4),
-	(15, 5, 4),
-	(16, 1, 5),
-	(17, 2, 5),
-	(18, 3, 5),
-	(19, 4, 5),
-	(20, 5, 5),
-	(21, 1, 6),
-	(22, 2, 6),
-	(23, 3, 6),
-	(24, 4, 6),
-	(25, 5, 6),
-	(26, 1, 7),
-	(27, 2, 7),
-	(28, 3, 7),
-	(29, 4, 7),
-	(30, 5, 7),
-	(31, 1, 8),
-	(32, 2, 8),
-	(33, 3, 8),
-	(34, 4, 8),
-	(35, 5, 8),
-	(36, 1, 9),
-	(37, 2, 9),
-	(38, 3, 9),
-	(39, 4, 9),
-	(40, 5, 9),
-	(41, 1, 10),
-	(42, 2, 10),
-	(43, 3, 10),
-	(44, 4, 10),
-	(45, 5, 10),
-	(46, 1, 11),
-	(47, 2, 11),
-	(48, 3, 11),
-	(49, 4, 11),
-	(50, 5, 11),
-	(51, 1, 12),
-	(52, 2, 12),
-	(53, 3, 12),
-	(54, 4, 12),
-	(55, 5, 12),
-	(56, 1, 2),
-	(57, 2, 2),
-	(58, 3, 2),
-	(59, 4, 2),
-	(60, 5, 2),
-	(61, 1, 3),
-	(62, 2, 3),
-	(63, 3, 3),
-	(64, 4, 3),
-	(65, 5, 3),
-	(66, 1, 4),
-	(67, 2, 4),
-	(68, 3, 4),
-	(69, 4, 4),
-	(70, 5, 4),
-	(71, 1, 5),
-	(72, 2, 5),
-	(73, 3, 5),
-	(74, 4, 5),
-	(75, 5, 5),
-	(76, 1, 6),
-	(77, 2, 6),
-	(78, 3, 6),
-	(79, 4, 6),
-	(80, 5, 6),
-	(81, 1, 7),
-	(82, 2, 7),
-	(83, 3, 7),
-	(84, 4, 7),
-	(85, 5, 7),
-	(86, 1, 8),
-	(87, 2, 8),
-	(88, 3, 8),
-	(89, 4, 8),
-	(90, 5, 8),
-	(91, 1, 9),
-	(92, 2, 9),
-	(93, 3, 9),
-	(94, 4, 9),
-	(95, 5, 9),
-	(96, 1, 10),
-	(97, 2, 10),
-	(98, 3, 10),
-	(99, 4, 10),
-	(100, 5, 10),
-	(101, 1, 11),
-	(102, 2, 11),
-	(103, 3, 11),
-	(104, 4, 11),
-	(105, 5, 11),
-	(106, 1, 12),
-	(107, 2, 12),
-	(108, 3, 12),
-	(109, 4, 12),
-	(110, 5, 12);
+REPLACE INTO `ranks` (`id`, `level`, `base_rank_id`, `image_url`) VALUES
+	(9, 2, 3, '/ranks/garnet/garnet_2.png'),
+	(10, 5, 3, '/ranks/garnet/garnet_5.png'),
+	(14, 3, 4, '/ranks/silver/silver_3.png'),
+	(15, 5, 4, '/ranks/silver/silver_5.png'),
+	(18, 1, 5, '/ranks/amethyst/amethyst_1.png'),
+	(19, 2, 5, '/ranks/amethyst/amethyst_2.png'),
+	(20, 4, 5, '/ranks/amethyst/amethyst_4.png'),
+	(23, 1, 6, '/ranks/gold/gold_1.png'),
+	(24, 2, 6, '/ranks/gold/gold_2.png'),
+	(25, 5, 6, '/ranks/gold/gold_5.png'),
+	(28, 1, 7, '/ranks/sapphire/sapphire_1.png'),
+	(29, 3, 7, '/ranks/sapphire/sapphire_3.png'),
+	(30, 4, 7, '/ranks/sapphire/sapphire_4.png'),
+	(33, 1, 8, '/ranks/platinum/platinum_1.png'),
+	(34, 2, 8, '/ranks/platinum/platinum_2.png'),
+	(35, 4, 8, '/ranks/platinum/platinum_4.png'),
+	(39, 3, 9, '/ranks/diamond/diamond_3.png'),
+	(40, 5, 9, '/ranks/diamond/diamond_5.png'),
+	(44, 2, 10, '/ranks/ruby/ruby_2.png'),
+	(45, 5, 10, '/ranks/ruby/ruby_5.png'),
+	(48, 1, 11, '/ranks/emerald/emerald_1.png'),
+	(49, 3, 11, '/ranks/emerald/emerald_3.png'),
+	(50, 5, 11, '/ranks/emerald/emerald_5.png'),
+	(53, 1, 12, '/ranks/obsidian/obsidian_1.png'),
+	(56, 1, 2, '/ranks/bronze/bronze_1.png'),
+	(57, 2, 2, '/ranks/bronze/bronze_2.png'),
+	(58, 3, 2, '/ranks/bronze/bronze_3.png'),
+	(59, 4, 2, '/ranks/bronze/bronze_4.png'),
+	(60, 5, 2, '/ranks/bronze/bronze_5.png'),
+	(63, 1, 3, '/ranks/garnet/garnet_1.png'),
+	(64, 3, 3, '/ranks/garnet/garnet_3.png'),
+	(65, 4, 3, '/ranks/garnet/garnet_4.png'),
+	(68, 1, 4, '/ranks/silver/silver_1.png'),
+	(69, 2, 4, '/ranks/silver/silver_2.png'),
+	(70, 4, 4, '/ranks/silver/silver_4.png'),
+	(74, 3, 5, '/ranks/amethyst/amethyst_3.png'),
+	(75, 5, 5, '/ranks/amethyst/amethyst_5.png'),
+	(79, 3, 6, '/ranks/gold/gold_3.png'),
+	(80, 4, 6, '/ranks/gold/gold_4.png'),
+	(84, 2, 7, '/ranks/sapphire/sapphire_2.png'),
+	(85, 5, 7, '/ranks/sapphire/sapphire_5.png'),
+	(89, 3, 8, '/ranks/platinum/platinum_3.png'),
+	(90, 5, 8, '/ranks/platinum/platinum_5.png'),
+	(93, 1, 9, '/ranks/diamond/diamond_1.png'),
+	(94, 2, 9, '/ranks/diamond/diamond_2.png'),
+	(95, 4, 9, '/ranks/diamond/diamond_4.png'),
+	(98, 1, 10, '/ranks/ruby/ruby_1.png'),
+	(99, 3, 10, '/ranks/ruby/ruby_3.png'),
+	(100, 4, 10, '/ranks/ruby/ruby_4.png'),
+	(104, 2, 11, '/ranks/emerald/emerald_2.png'),
+	(105, 4, 11, '/ranks/emerald/emerald_4.png');
 /*!40000 ALTER TABLE `ranks` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.retrospectives
@@ -299,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `retrospectives` (
   CONSTRAINT `FK45ox2nc7as2dui59tb1uyfgqb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospectives: ~20 rows (approximately)
+-- Dumping data for table trader_buddy.retrospectives: ~19 rows (approximately)
 /*!40000 ALTER TABLE `retrospectives` DISABLE KEYS */;
 REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`) VALUES
 	(3, '2022-08-08', 1, '2022-08-01', 1),
@@ -339,7 +281,7 @@ CREATE TABLE IF NOT EXISTS `retrospective_entries` (
   CONSTRAINT `FKepdlvjuqm0ejb712uio01et63` FOREIGN KEY (`retrospective_id`) REFERENCES `retrospectives` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospective_entries: ~113 rows (approximately)
+-- Dumping data for table trader_buddy.retrospective_entries: ~108 rows (approximately)
 /*!40000 ALTER TABLE `retrospective_entries` DISABLE KEYS */;
 REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_number`, `retrospective_id`) VALUES
 	(97, 'Only 1 promo payment on Friday. We\'re improving on the promo payments which I think is a good win!', b'1', 1, 20),
@@ -473,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `skills` (
 -- Dumping data for table trader_buddy.skills: ~0 rows (approximately)
 /*!40000 ALTER TABLE `skills` DISABLE KEYS */;
 REPLACE INTO `skills` (`id`, `delta`, `last_updated`, `level`, `points`, `step_increment`, `remaining`) VALUES
-	(1, 54, '2023-01-06 10:16:11.944050', 2, 68, 100, 32);
+	(1, 7, '2023-01-11 11:01:07.496174', 3, 35, 100, 65);
 /*!40000 ALTER TABLE `skills` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trades
@@ -498,9 +440,9 @@ CREATE TABLE IF NOT EXISTS `trades` (
   UNIQUE KEY `UK_8d1lubanjnkryvjsjpqol15qh` (`trade_id`),
   KEY `FKhrx1ya4wn13vvty5h2t85970t` (`account_id`),
   CONSTRAINT `FKhrx1ya4wn13vvty5h2t85970t` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2524 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2577 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trades: ~2,313 rows (approximately)
+-- Dumping data for table trader_buddy.trades: ~2,340 rows (approximately)
 /*!40000 ALTER TABLE `trades` DISABLE KEYS */;
 REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_price`, `reason_for_entrance`, `result_of_trade`, `trade_close_time`, `trade_id`, `trade_open_time`, `trade_type`, `trading_platform`, `product`, `relevant`, `processed`, `account_id`) VALUES
 	(1, 12584.97, 0.5, 1.2, 12586.84, '', '', '2022-07-21 15:32:00', 'O5-75-5DXQFJ', '2022-07-21 15:32:00', 1, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
@@ -2845,7 +2787,60 @@ REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_pric
 	(2520, 10805.43, 0.2, 1.17, 10801.1, '', '', '2023-01-06 10:02:58', 'O1-BT-70LTR7', '2023-01-06 10:02:44', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
 	(2521, 10818.77, 0.2, 2.08, 10811.05, '', '', '2023-01-06 10:08:48', 'O1-BT-70LXC6', '2023-01-06 10:08:19', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
 	(2522, 10734.05, 0.2, 5.66, 10755.05, '', '', '2023-01-06 09:42:45', 'O1-BT-70LKEE', '2023-01-06 09:42:08', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
-	(2523, 10767.59, 0.2, 5.67, 10746.59, '', '', '2023-01-06 10:00:00', 'O1-BT-70LRS0', '2023-01-06 09:58:15', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1);
+	(2523, 10767.59, 0.2, 5.67, 10746.59, '', '', '2023-01-06 10:00:00', 'O1-BT-70LRS0', '2023-01-06 09:58:15', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2524, 11250.89, 0.2, 0.27, 11249.89, '', '', '2023-01-09 10:34:07', 'O1-BT-70S0R2', '2023-01-09 10:33:07', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2525, 11236.82, 0.2, 0.85, 11233.61, '', '', '2023-01-09 10:00:08', 'O1-BT-70RR0M', '2023-01-09 09:59:59', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2526, 11160.94, 0.2, 4.82, 11142.87, '', '', '2023-01-09 09:44:36', 'O1-BT-70RKT9', '2023-01-09 09:43:53', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2527, 11218.89, 0.2, 0.27, 11219.89, '', '', '2023-01-09 09:57:55', 'O1-BT-70RPXS', '2023-01-09 09:56:11', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2528, 11212.79, 0.2, -4.27, 11196.94, '', '', '2023-01-09 09:52:06', 'O1-BT-70RN5R', '2023-01-09 09:50:24', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2529, 11257.15, 0.2, 0.09, 11256.83, '', '', '2023-01-09 10:36:22', 'O1-BT-70S1DK', '2023-01-09 10:35:14', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2530, 11136.64, 0.2, -4.16, 11121.21, '', '', '2023-01-09 09:42:58', 'O1-BT-70RKHT', '2023-01-09 09:42:43', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2531, 11214.29, 0.2, 0.27, 11213.29, '', '', '2023-01-09 09:55:24', 'O1-BT-70RPFK', '2023-01-09 09:54:22', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2532, 11237.11, 0.2, 0.27, 11238.11, '', '', '2023-01-09 10:06:49', 'O1-BT-70RSYE', '2023-01-09 10:05:51', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2533, 11211.63, 0.2, 0.27, 11212.63, '', '', '2023-01-09 10:22:23', 'O1-BT-70RY2Y', '2023-01-09 10:21:35', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2534, 11214.79, 0.2, -0.95, 11218.32, '', '', '2023-01-09 10:26:49', 'O1-BT-70RYQ6', '2023-01-09 10:24:03', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2535, 11132.72, 0.2, -3.68, 11146.39, '', '', '2023-01-09 09:41:33', 'O1-BT-70RJXH', '2023-01-09 09:40:57', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2536, 11236.15, 0.2, 0.13, 11236.63, '', '', '2023-01-09 10:02:04', 'O1-BT-70RRHP', '2023-01-09 10:01:18', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2537, 11230.54, 0.2, 0.27, 11229.54, '', '', '2023-01-09 10:30:48', 'O1-BT-70S02J', '2023-01-09 10:30:16', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2538, 11211.84, 0.2, 6.23, 11235.24, '', '', '2023-01-09 10:13:21', 'O1-BT-70RV3B', '2023-01-09 10:10:48', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2539, 11223.04, 0.2, 0.27, 11222.04, '', '', '2023-01-09 10:21:01', 'O1-BT-70RXFR', '2023-01-09 10:19:32', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2540, 11154.63, 0.2, 3.2, 11166.63, '', '', '2023-01-09 09:32:39', 'O1-BT-70RFNL', '2023-01-09 09:32:09', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2541, 11112.83, 0.2, 0.27, 11111.83, '', '', '2023-01-10 09:45:02', 'O1-BT-70XTSW', '2023-01-10 09:43:51', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2542, 11133.45, 0.2, -4.25, 11149.24, '', '', '2023-01-10 09:39:07', 'O1-BT-70XRRG', '2023-01-10 09:37:55', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2543, 11094.51, 0.2, -10.75, 11134.39, '', '', '2023-01-10 09:46:15', 'O1-BT-70XV7Z', '2023-01-10 09:45:28', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2544, 11124.84, 0.2, 6.34, 11101.1, '', '', '2023-01-10 09:53:25', 'O1-BT-70XX7L', '2023-01-10 09:51:20', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2545, 11094.19, 0.2, 0.27, 11093.19, '', '', '2023-01-10 09:31:37', 'O1-BT-70XNWX', '2023-01-10 09:31:22', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2546, 11153.79, 0.2, 2.74, 11164.07, '', '', '2023-01-10 09:35:07', 'O1-BT-70XQF8', '2023-01-10 09:34:53', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2547, 11125.13, 0.2, 14.24, 11071.77, '', '', '2023-01-10 09:53:25', 'O1-BT-70XVW7', '2023-01-10 09:47:08', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2548, 11069.03, 0.2, -4.34, 11085.13, '', '', '2023-01-10 09:47:01', 'O1-BT-70XVNN', '2023-01-10 09:46:36', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2549, 11110.97, 0.2, 7.17, 11137.86, '', '', '2023-01-10 09:41:12', 'O1-BT-70XSQ3', '2023-01-10 09:40:50', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2550, 11257.39, 0.3, 0.4, 11258.39, '', '', '2023-01-11 10:02:18', 'O1-BT-712XBW', '2023-01-11 10:01:26', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2551, 11283.4, 0.3, -1.13, 11280.6, '', '', '2023-01-11 10:20:44', 'O1-BT-71320N', '2023-01-11 10:19:08', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2552, 11261.75, 0.3, -1.66, 11265.86, '', '', '2023-01-11 10:00:43', 'O1-BT-712WYL', '2023-01-11 10:00:09', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2553, 11257.81, 0.3, -5.77, 11243.55, '', '', '2023-01-11 09:36:04', 'O1-BT-712MR9', '2023-01-11 09:35:58', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2554, 11242.43, 0.3, 10.41, 11268.4, '', '', '2023-01-11 10:56:43', 'O1-BT-7138X8', '2023-01-11 10:42:44', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2555, 11275.24, 0.3, 0.19, 11274.77, '', '', '2023-01-11 10:09:00', 'O1-BT-712YME', '2023-01-11 10:06:37', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2556, 11273.54, 0.3, 5.76, 11259.17, '', '', '2023-01-11 09:37:51', 'O1-BT-712MVE', '2023-01-11 09:36:12', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2557, 11258.91, 0.3, 0.19, 11258.44, '', '', '2023-01-11 10:04:49', 'O1-BT-712XL9', '2023-01-11 10:02:35', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2558, 11242.43, 0.3, 4.78, 11254.34, '', '', '2023-01-11 10:56:43', 'O1-BT-7136RB', '2023-01-11 10:36:18', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2559, 11231.15, 0.3, -3.97, 11221.33, '', '', '2023-01-11 09:33:48', 'O1-BT-712LNG', '2023-01-11 09:33:04', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2560, 11276.3, 0.3, -11.38, 11304.38, '', '', '2023-01-11 10:35:12', 'O1-BT-7134EV', '2023-01-11 10:30:26', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2561, 11279.06, 0.3, -5.17, 11266.28, '', '', '2023-01-11 09:50:35', 'O1-BT-712SZS', '2023-01-11 09:50:01', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2562, 11268.28, 0.3, 0.4, 11267.28, '', '', '2023-01-11 09:45:14', 'O1-BT-712QDB', '2023-01-11 09:42:50', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2563, 11276.5, 0.3, -0.92, 11278.77, '', '', '2023-01-11 09:49:22', 'O1-BT-712SDF', '2023-01-11 09:48:22', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2564, 11242.43, 0.3, 7.28, 11260.58, '', '', '2023-01-11 10:56:43', 'O1-BT-7136XX', '2023-01-11 10:36:42', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2565, 11267.07, 0.3, 0.4, 11268.07, '', '', '2023-01-11 09:41:09', 'O1-BT-712PBG', '2023-01-11 09:40:08', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2566, 11269.44, 0.3, 0.4, 11270.44, '', '', '2023-01-11 09:56:39', 'O1-BT-712THK', '2023-01-11 09:51:34', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2567, 11257.88, 0.3, 0.28, 11258.59, '', '', '2023-01-11 09:58:57', 'O1-BT-712WFE', '2023-01-11 09:58:22', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2568, 11280.25, 0.3, 0.4, 11279.25, '', '', '2023-01-11 10:15:22', 'O1-BT-7130XY', '2023-01-11 10:14:45', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2569, 11271.82, 0.3, -2.37, 11265.95, '', '', '2023-01-11 09:48:08', 'O1-BT-712S1N', '2023-01-11 09:47:04', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2570, 11242.43, 0.3, 6.24, 11258, '', '', '2023-01-11 10:56:43', 'O1-BT-713706', '2023-01-11 10:36:52', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2571, 11283.04, 0.3, 0.83, 11285.1, '', '', '2023-01-11 10:13:11', 'O1-BT-712ZW8', '2023-01-11 10:10:39', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2572, 11276.3, 0.3, -4.02, 11286.23, '', '', '2023-01-11 10:35:12', 'O1-BT-7135Q8', '2023-01-11 10:33:44', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2573, 11291.41, 0.3, -5.92, 11276.79, '', '', '2023-01-11 10:17:25', 'O1-BT-713190', '2023-01-11 10:16:02', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2574, 11276.3, 0.3, -7.51, 11294.84, '', '', '2023-01-11 10:35:12', 'O1-BT-7134SC', '2023-01-11 10:31:15', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2575, 11242.43, 0.3, 8.77, 11264.31, '', '', '2023-01-11 10:56:43', 'O1-BT-7136BP', '2023-01-11 10:35:22', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2576, 11296.98, 0.3, 5.28, 11283.8, '', '', '2023-01-11 10:25:53', 'O1-BT-7132BS', '2023-01-11 10:20:55', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1);
 /*!40000 ALTER TABLE `trades` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_records
@@ -2863,19 +2858,19 @@ CREATE TABLE IF NOT EXISTS `trade_records` (
   KEY `FKi5sk7nqeg33tum7hvh9oj2tm5` (`statistics_id`),
   CONSTRAINT `FKi5sk7nqeg33tum7hvh9oj2tm5` FOREIGN KEY (`statistics_id`) REFERENCES `trade_records_statistics` (`id`),
   CONSTRAINT `FKlt8dfxccamqy5gcglyv6jqjo3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2856 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2860 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records: ~122 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records: ~128 rows (approximately)
 /*!40000 ALTER TABLE `trade_records` DISABLE KEYS */;
 REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`, `start_date`, `account_id`, `statistics_id`, `target`) VALUES
 	(2732, 3, 3000, '2023-01-01', '2022-01-01', 1, 2990, 37.5),
-	(2733, 3, 3096.42, '2024-01-01', '2023-01-01', 1, 2991, 38.71),
+	(2733, 3, 3114.45, '2024-01-01', '2023-01-01', 1, 2991, 38.93),
 	(2734, 2, 1437.29, '2022-09-01', '2022-08-01', 1, 2992, 17.97),
 	(2735, 2, 2430.34, '2022-10-01', '2022-09-01', 1, 2993, 30.38),
 	(2736, 2, 3645.34, '2022-11-01', '2022-10-01', 1, 2994, 45.57),
 	(2737, 2, 4131.5, '2022-12-01', '2022-11-01', 1, 2995, 51.64),
 	(2738, 2, 3000, '2023-01-01', '2022-12-01', 1, 2996, 37.5),
-	(2739, 2, 3096.42, '2023-02-01', '2023-01-01', 1, 2997, 38.71),
+	(2739, 2, 3114.45, '2023-02-01', '2023-01-01', 1, 2997, 38.93),
 	(2740, 1, 1075.47, '2022-08-08', '2022-08-01', 1, 2998, 13.44),
 	(2741, 1, 1163.7, '2022-08-15', '2022-08-08', 1, 2999, 14.55),
 	(2742, 1, 1254.07, '2022-08-22', '2022-08-15', 1, 3000, 15.68),
@@ -2991,7 +2986,11 @@ REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`,
 	(2852, 0, 3003.83, '2023-01-04', '2023-01-03', 1, 3110, 37.55),
 	(2853, 0, 3077.24, '2023-01-05', '2023-01-04', 1, 3111, 38.47),
 	(2854, 0, 3081.84, '2023-01-06', '2023-01-05', 1, 3112, 38.52),
-	(2855, 0, 3096.42, '2023-01-07', '2023-01-06', 1, 3113, 38.71);
+	(2855, 0, 3096.42, '2023-01-07', '2023-01-06', 1, 3113, 38.71),
+	(2856, 1, 3114.45, '2023-01-16', '2023-01-09', 1, 3114, 38.93),
+	(2857, 0, 3100.57, '2023-01-10', '2023-01-09', 1, 3115, 38.76),
+	(2858, 0, 3112.26, '2023-01-11', '2023-01-10', 1, 3116, 38.9),
+	(2859, 0, 3114.45, '2023-01-12', '2023-01-11', 1, 3117, 38.93);
 /*!40000 ALTER TABLE `trade_records` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_records_statistics
@@ -3015,19 +3014,19 @@ CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
   `pips_earned` double DEFAULT NULL,
   `pips_lost` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3114 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3118 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records_statistics: ~122 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records_statistics: ~123 rows (approximately)
 /*!40000 ALTER TABLE `trade_records_statistics` DISABLE KEYS */;
 REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_loss_size`, `average_win_amount`, `average_win_size`, `largest_loss_amount`, `largest_loss_size`, `largest_win_amount`, `largest_win_size`, `net_profit`, `number_of_losing_trades`, `number_of_trades`, `number_of_winning_trades`, `percentage_profit`, `trading_rate`, `win_percentage`, `pips_earned`, `pips_lost`) VALUES
 	(2990, -21.39, 1.93, 21.86, 1.86, -288.79, 3, 135.63, 1.7, 2327.62, 710, 1511, 801, 77.59, 16.79, 53, 7577.76, 6176.15),
-	(2991, -1.14, 0.1, 1.84, 0.11, -2.23, 0.1, 5.67, 0.2, 29.89, 11, 34, 23, 0.97, 8.5, 68, 260.9, 92.44),
+	(2991, -3.27, 0.19, 2.46, 0.19, -11.38, 0.3, 14.24, 0.2, 47.92, 29, 87, 58, 1.54, 12.43, 67, 571.39, 335.77),
 	(2992, -7.47, 0.71, 8.91, 0.67, -21.88, 0.5, 36.8, 0.68, 437.29, 75, 187, 112, 30.42, 8.13, 60, 1105.36, 623.92),
 	(2993, -14.11, 1.04, 18.68, 1.07, -105.18, 1.15, 99.99, 1.15, 643.05, 108, 224, 116, 26.46, 12.44, 52, 1557.48, 1124.63),
 	(2994, -18.83, 1.44, 17.86, 1.54, -137.85, 1.7, 135.63, 1.7, 865, 103, 260, 157, 23.73, 15.29, 60, 1473.02, 1027.82),
 	(2995, -28.23, 2.78, 31.98, 2.79, -288.79, 3, 125.52, 2.85, 136.16, 284, 539, 255, 3.3, 28.37, 47, 2188.79, 2145.04),
 	(2996, -22.46, 1.9, 21.06, 2.06, -133.59, 3, 109.95, 3, 246.12, 140, 301, 161, 8.2, 23.15, 53, 1253.11, 1254.74),
-	(2997, -1.14, 0.1, 1.84, 0.11, -2.23, 0.1, 5.67, 0.2, 29.89, 11, 34, 23, 0.97, 8.5, 68, 260.9, 92.44),
+	(2997, -3.27, 0.19, 2.46, 0.19, -11.38, 0.3, 14.24, 0.2, 47.92, 29, 87, 58, 1.54, 12.43, 67, 571.39, 335.77),
 	(2998, -9.72, 0.57, 4.55, 0.57, -14.18, 0.6, 15.32, 0.6, 75.47, 3, 26, 23, 7.02, 5.2, 88, 142.28, 38.83),
 	(2999, -10.28, 0.64, 8.05, 0.63, -21.88, 0.5, 28.06, 0.65, 88.23, 11, 36, 25, 7.58, 7.2, 69, 247.3, 142.21),
 	(3000, -7.52, 0.66, 10.31, 0.65, -16.9, 0.69, 36.8, 0.68, 90.37, 25, 52, 27, 7.21, 10.4, 52, 311.78, 215.45),
@@ -3143,7 +3142,11 @@ REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_l
 	(3110, -1.18, 0.1, 1.43, 0.1, -2.21, 0.1, 2.91, 0.1, 3.83, 4, 10, 6, 0.13, 10, 60, 63.12, 34.5),
 	(3111, -1.28, 0.1, 1.33, 0.1, -2.23, 0.1, 2.12, 0.1, 6.88, 4, 13, 9, 0.22, 13, 69, 88.95, 37.45),
 	(3112, -0.93, 0.1, 1.85, 0.1, -2.06, 0.1, 2.84, 0.1, 4.6, 3, 7, 4, 0.15, 7, 57, 54.78, 20.49),
-	(3113, 0, 0, 3.64, 0.2, 0, 0, 5.67, 0.2, 14.58, 0, 4, 4, 0.47, 4, 100, 54.05, 0);
+	(3113, 0, 0, 3.64, 0.2, 0, 0, 5.67, 0.2, 14.58, 0, 4, 4, 0.47, 4, 100, 54.05, 0),
+	(3114, -4.57, 0.26, 2.86, 0.25, -11.38, 0.3, 14.24, 0.2, 18.03, 18, 53, 35, 0.58, 17.67, 66, 310.49, 243.33),
+	(3115, -3.26, 0.2, 1.32, 0.2, -4.27, 0.2, 6.23, 0.2, 4.15, 4, 17, 13, 0.13, 17, 76, 64.48, 48.48),
+	(3116, -6.45, 0.2, 5.17, 0.2, -10.75, 0.2, 14.24, 0.2, 11.69, 3, 9, 6, 0.38, 9, 67, 116.27, 71.77),
+	(3117, -4.53, 0.3, 3.25, 0.3, -11.38, 0.3, 10.41, 0.3, 2.19, 11, 27, 16, 0.07, 27, 59, 129.74, 123.08);
 /*!40000 ALTER TABLE `trade_records_statistics` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trading_plans
