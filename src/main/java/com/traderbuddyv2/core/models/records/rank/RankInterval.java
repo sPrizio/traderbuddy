@@ -14,5 +14,9 @@ public record RankInterval(
         @Getter
         int value,
         @Getter
-        int increment
+        int increment,
+        @Getter
+        String imageUrl,
+        @Getter
+        String className
 ) {}

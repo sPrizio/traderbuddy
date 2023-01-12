@@ -20,5 +20,11 @@ public record CurrentRank(
         @Getter
         int end,
         @Getter
-        String imageUrl
+        String imageUrl,
+        @Getter
+        String className,
+        @Getter
+        CurrentRank previousRank,
+        @Getter
+        CurrentRank nextRank
 ) {}
