@@ -14,6 +14,7 @@ import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRep
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordStatisticsRepository;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.levelling.skill.SkillService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.plan.TradingPlanService;
@@ -54,6 +55,9 @@ public class TradeRecordService {
 
     @Resource(name = "mathService")
     private MathService mathService;
+
+    @Resource(name = "rankService")
+    private RankService rankService;
 
     @Resource(name = "skillService")
     private SkillService skillService;
@@ -404,6 +408,7 @@ public class TradeRecordService {
 
             if (aggregateInterval.equals(AggregateInterval.DAILY)) {
                 this.skillService.computeSkill(tradeRecord, account);
+                this.rankService.computeRank(account);
             }
         });
     }

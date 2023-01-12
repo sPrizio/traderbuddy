@@ -361,7 +361,7 @@ public abstract class AbstractGenericTest {
     }
 
     public CurrentRank generateTestCurrentRank() {
-        return new CurrentRank("Test", 1000, 1100, 1200, "test.png", "class", null, null);
+        return new CurrentRank(1L, "Test", 1000, 1100, 1200, "test.png", "class", null, null);
     }
 
     public List<ForecastEntry> generateForecast() {

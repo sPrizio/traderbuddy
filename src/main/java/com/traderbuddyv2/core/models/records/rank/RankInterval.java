@@ -10,6 +10,8 @@ import lombok.Getter;
  */
 public record RankInterval(
         @Getter
+        Long uid,
+        @Getter
         String name,
         @Getter
         int value,

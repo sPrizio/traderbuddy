@@ -12,6 +12,7 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.repositories.trade.record.TradeRecordRepository;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -51,6 +52,9 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
 
     @MockBean
     private MathService mathService;
+
+    @MockBean
+    private RankService rankService;
 
     @MockBean
     private TradeRecordRepository tradeRecordRepository;

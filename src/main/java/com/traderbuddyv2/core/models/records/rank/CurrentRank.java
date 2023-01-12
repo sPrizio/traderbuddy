@@ -12,6 +12,8 @@ import lombok.Getter;
  */
 public record CurrentRank(
         @Getter
+        Long uid,
+        @Getter
         String name,
         @Getter
         int start,
