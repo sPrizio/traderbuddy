@@ -6,6 +6,7 @@ import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.plan.TradingPlanService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -29,6 +30,9 @@ public class AccountFacade {
 
     @Resource(name = "mathService")
     private MathService mathService;
+
+    @Resource(name = "rankService")
+    private RankService rankService;
 
     @Resource(name = "skillDTOConverter")
     private SkillDTOConverter skillDTOConverter;
@@ -78,6 +82,7 @@ public class AccountFacade {
                         monthlyEarnings,
                         dailyEarnings,
                         plan.map(p -> this.mathService.computeIncrement(account.getBalance(), p.getProfitTarget(), p.isAbsolute())).orElse(0.0),
-                        this.skillDTOConverter.convert(account.getSkill()));
+                        this.skillDTOConverter.convert(account.getSkill()),
+                        this.rankService.getCurrentRank());
     }
 }

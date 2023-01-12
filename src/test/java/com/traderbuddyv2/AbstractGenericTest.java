@@ -25,6 +25,7 @@ import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
+import com.traderbuddyv2.core.models.records.rank.CurrentRank;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataEntryResponse;
@@ -354,8 +355,13 @@ public abstract class AbstractGenericTest {
                 25.0,
                 25.0,
                 41.38,
-                null
+                null,
+                generateTestCurrentRank()
         );
+    }
+
+    public CurrentRank generateTestCurrentRank() {
+        return new CurrentRank("Test", 1000, 1100, 1200, "test.png");
     }
 
     public List<ForecastEntry> generateForecast() {
@@ -392,6 +398,7 @@ public abstract class AbstractGenericTest {
         baseRank.setMultiplier(1);
         baseRank.setPriority(1);
         baseRank.setName("Test Base Rank");
+        baseRank.setRanks(List.of());
 
         return baseRank;
     }

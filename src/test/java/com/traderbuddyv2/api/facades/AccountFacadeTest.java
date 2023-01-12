@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.facades;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.converters.levelling.skill.SkillDTOConverter;
 import com.traderbuddyv2.api.models.dto.levelling.skill.SkillDTO;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.plan.TradingPlanService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -37,6 +38,9 @@ public class AccountFacadeTest extends AbstractGenericTest {
     private MathService mathService;
 
     @MockBean
+    private RankService rankService;
+
+    @MockBean
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
     @MockBean
@@ -62,6 +66,7 @@ public class AccountFacadeTest extends AbstractGenericTest {
         Mockito.when(this.mathService.subtract(anyDouble(), anyDouble())).thenReturn(-100.0);
         Mockito.when(this.tradingPlanService.forecast(any(), any(), any(), any())).thenReturn(List.of());
         Mockito.when(this.skillDTOConverter.convert(any())).thenReturn(new SkillDTO());
+        Mockito.when(this.rankService.getCurrentRank()).thenReturn(generateTestCurrentRank());
     }
 
     //  ----------------- getAccountOverview -----------------

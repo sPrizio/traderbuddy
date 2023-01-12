@@ -35,6 +35,7 @@ public class RankDTOConverter implements GenericDTOConverter<Rank, RankDTO> {
         rankDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         rankDTO.setLevel(entity.getLevel());
         rankDTO.setImageUrl(entity.getImageUrl());
+        rankDTO.setName(entity.getBaseRank().getName() + " " + entity.getLevel());
 
         return rankDTO;
     }
