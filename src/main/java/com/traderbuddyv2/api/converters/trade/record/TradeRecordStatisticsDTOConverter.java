@@ -70,7 +70,12 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
         tradeRecordStatisticsDTO.setPipsEarned(entity.getPipsEarned());
         tradeRecordStatisticsDTO.setPipsLost(entity.getPipsLost());
         tradeRecordStatisticsDTO.setNetPips(this.mathService.subtract(entity.getPipsEarned(), entity.getPipsLost()));
-        tradeRecordStatisticsDTO.setProfitability(this.mathService.divide(entity.getPipsEarned(), entity.getPipsLost()));
+
+        if (entity.getPipsLost() == 0.0) {
+            tradeRecordStatisticsDTO.setProfitability(this.mathService.getDouble(entity.getPipsEarned()));
+        } else {
+            tradeRecordStatisticsDTO.setProfitability(this.mathService.divide(entity.getPipsEarned(), entity.getPipsLost()));
+        }
 
         computeDeltas(tradeRecordStatisticsDTO, entity);
         computePoints(tradeRecordStatisticsDTO, entity);

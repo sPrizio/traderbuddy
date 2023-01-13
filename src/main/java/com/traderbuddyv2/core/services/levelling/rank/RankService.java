@@ -59,7 +59,7 @@ public class RankService {
     public List<BaseRank> getAllBaseRanks() {
         Set<BaseRank> baseRanks = new TreeSet<>();
         this.baseRankRepository.findAll().forEach(baseRanks::add);
-        return new ArrayList<>(baseRanks);
+        return new ArrayList<>(baseRanks).subList(1, baseRanks.size());
     }
 
     /**
