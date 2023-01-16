@@ -108,4 +108,23 @@ public class AnalysisApiController extends AbstractApiController {
         validate(start, end);
         return new StandardJsonResponse(true, this.analysisService.getTradeBuckets((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), AnalysisTimeBucket.get(bucket)), StringUtils.EMPTY);
     }
+
+    /**
+     * Obtains the winning trade buckets
+     *
+     * @param start start date
+     * @param end end date
+     * @param bucketSize bucket size
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/winning-buckets")
+    public StandardJsonResponse getWinningTradeBuckets(
+            final @RequestParam("start") String start,
+            final @RequestParam("end") String end,
+            final @RequestParam("bucketSize") int bucketSize) {
+
+        validate(start, end);
+        return new StandardJsonResponse(true, this.analysisService.getWinningDaysBreakdown((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), bucketSize), StringUtils.EMPTY);
+    }
 }

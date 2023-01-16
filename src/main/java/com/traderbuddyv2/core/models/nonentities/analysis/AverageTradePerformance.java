@@ -9,7 +9,7 @@ import lombok.Setter;
  * @author Stephen Prizio
  * @version 1.0
  */
-public class AverageTradePerformance {
+public class AverageTradePerformance extends Analysis {
 
     @Getter
     @Setter

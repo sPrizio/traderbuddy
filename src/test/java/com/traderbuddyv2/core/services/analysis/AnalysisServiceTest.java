@@ -47,6 +47,7 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean())).thenReturn(List.of(generateTestBuyTrade(), generateTestSellTrade()));
         Mockito.when(this.tradeRecordService.computeTradingRate(any(), any(), any())).thenReturn(1.0);
+        Mockito.when(this.tradeRecordService.findHistory(any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
     }
 
 
@@ -87,5 +88,25 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     public void test_getTradeBuckets_success() {
         assertThat(this.analysisService.getTradeBuckets(LocalDate.MIN, LocalDate.MAX, AnalysisTimeBucket.FIVE_MINUTES))
                 .isNotNull();
+    }
+
+
+    //  ----------------- getWinningDaysBreakdown -----------------
+
+    @Test
+    public void test_getWinningDaysBreakdown_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(null, LocalDate.MAX, 10))
+                .withMessage(CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, null, 10))
+                .withMessage(CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    public void test_getWinningDaysBreakdown_success() {
+        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50))
+                .size()
+                .isEqualTo(4);
     }
 }

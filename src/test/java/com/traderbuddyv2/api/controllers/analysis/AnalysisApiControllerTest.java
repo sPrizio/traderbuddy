@@ -2,6 +2,7 @@ package com.traderbuddyv2.api.controllers.analysis;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.TradeRecordPerformanceBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
 import com.traderbuddyv2.core.services.analysis.AnalysisService;
 import org.hamcrest.Matchers;
@@ -49,6 +50,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.analysisService.getTopTradePerformance(any(), any(), any(), anyBoolean(), anyInt())).thenReturn(List.of(new TradePerformance(generateTestBuyTrade())));
         Mockito.when(this.analysisService.getAverageTradePerformance(any(), any(), anyBoolean(), anyInt())).thenReturn(generateAverageTradePerformance());
         Mockito.when(this.analysisService.getTradeBuckets(any(), any(), any())).thenReturn(List.of(new TradeTimeBucket(LocalTime.MIN, LocalTime.MAX, List.of())));
+        Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt())).thenReturn(List.of(new TradeRecordPerformanceBucket(50, 100, 17)));
     }
 
 
@@ -115,5 +117,21 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/analysis/bucket").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].start", Matchers.is("00:00:00")));
+    }
+
+
+    //  ----------------- getWinningTradeBuckets -----------------
+
+    @Test
+    public void test_getWinningTradeBuckets_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-01-01"));
+        map.put("end", List.of("2022-02-01"));
+        map.put("bucketSize", List.of("50"));
+
+        this.mockMvc.perform(get("/api/v1/analysis/winning-buckets").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].count", Matchers.is(17)));
     }
 }

@@ -3,9 +3,12 @@ package com.traderbuddyv2.core.services.analysis;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
+import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.TradeRecordPerformanceBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -147,6 +150,41 @@ public class AnalysisService {
         return buckets.stream().filter(b -> b.getTrades() > 0).toList();
     }
 
+    /**
+     * Obtains a {@link List} of {@link TradeRecordPerformanceBucket} which represents a bucket of trade records whose net pips
+     * are within a predefined interval for the given time span
+     *
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
+     * @param bucketSize size of each bucket
+     * @return {@link List} of {@link TradeRecordPerformanceBucket}
+     */
+    public List<TradeRecordPerformanceBucket> getWinningDaysBreakdown(final LocalDate start, final LocalDate end, final int bucketSize) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+
+        List<TradeRecordPerformanceBucket> buckets = new ArrayList<>();
+        List<TradeRecord> tradeRecords = this.tradeRecordService.findHistory(start, end, AggregateInterval.DAILY);
+        List<Double> reducedRecords = tradeRecords.stream().map(TradeRecord::getStatistics).map(rec -> this.mathService.subtract(rec.getPipsEarned(), rec.getPipsLost())).toList();
+
+        double min = 0.0;
+        double compare1 = min;
+        double compare2 = min + bucketSize;
+        double max = reducedRecords.stream().mapToDouble(rec -> rec).max().orElse(0.0);
+
+        List<Double> compareRecords;
+        while (compare1 < max) {
+            compareRecords = pipReduce(reducedRecords, compare1, compare2);
+            buckets.add(new TradeRecordPerformanceBucket(this.mathService.getInteger(compare1), this.mathService.getInteger(compare2), compareRecords.size()));
+
+            compare1 += bucketSize;
+            compare2 += bucketSize;
+        }
+
+        return buckets;
+    }
+
 
     //  HELPERS
 
@@ -160,5 +198,17 @@ public class AnalysisService {
      */
     private boolean compareTradeTimes(final Trade trade, final LocalTime compare, final AnalysisTimeBucket bucket) {
         return (trade.getTradeCloseTime().toLocalTime().isAfter(compare)) && (trade.getTradeCloseTime().toLocalTime().isBefore(compare.plusMinutes(bucket.getMinutes())));
+    }
+
+    /**
+     * Filters a {@link List} based on 2 compare values
+     *
+     * @param reducedRecords {@link List} of {@link Double}
+     * @param compare1 first compare
+     * @param compare2 second compare
+     * @return {@link List} of filtered {@link Double}
+     */
+    private List<Double> pipReduce(final List<Double> reducedRecords, final double compare1, final double compare2) {
+        return reducedRecords.stream().filter(d -> d >= compare1).filter(d -> d < compare2).toList();
     }
 }
