@@ -5,6 +5,9 @@ import com.traderbuddyv2.api.models.dto.plans.DepositPlanDTO;
 import com.traderbuddyv2.api.models.dto.plans.WithdrawalPlanDTO;
 import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
+import com.traderbuddyv2.core.enums.account.AccountType;
+import com.traderbuddyv2.core.enums.account.Broker;
+import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
 import com.traderbuddyv2.core.enums.trades.TradeType;
@@ -230,6 +233,11 @@ public abstract class AbstractGenericTest {
         account.setActive(true);
         account.setRetrospectives(new ArrayList<>());
         account.setBalanceModifications(List.of());
+        account.setAccountType(AccountType.CFD);
+        account.setAccountNumber(1234);
+        account.setName("Test Account");
+        account.setCurrency(Currency.CANADIAN_DOLLAR);
+        account.setBroker(Broker.CMC_MARKETS);
         account.setSkill(generateTestSkill());
         account.setRank(generateTestRank());
 

@@ -35,6 +35,26 @@ public class AccountDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private String name;
+
+    @Getter
+    @Setter
+    private long accountNumber;
+
+    @Getter
+    @Setter
+    private String currency;
+
+    @Getter
+    @Setter
+    private String broker;
+
+    @Getter
+    @Setter
+    private String accountType;
+
+    @Getter
+    @Setter
     private SkillDTO skill;
 
     @Getter

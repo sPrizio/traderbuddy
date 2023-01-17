@@ -1,6 +1,6 @@
 package com.traderbuddyv2.api.models.records;
 
-import com.traderbuddyv2.api.models.dto.levelling.skill.SkillDTO;
+import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.records.rank.CurrentRank;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public record AccountOverview(
         @Getter
         double nextTarget,
         @Getter
-        SkillDTO skill,
+        AccountDTO account,
         @Getter
         CurrentRank rank
 ) { }

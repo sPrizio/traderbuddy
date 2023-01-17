@@ -1,5 +1,8 @@
 package com.traderbuddyv2.core.models.entities.account;
 
+import com.traderbuddyv2.core.enums.account.AccountType;
+import com.traderbuddyv2.core.enums.account.Broker;
+import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
@@ -44,6 +47,31 @@ public class Account implements GenericEntity {
     @Setter
     @Column
     private boolean active;
+
+    @Getter
+    @Setter
+    @Column
+    private String name;
+
+    @Getter
+    @Setter
+    @Column
+    private long accountNumber;
+
+    @Getter
+    @Setter
+    @Column
+    private Currency currency;
+
+    @Getter
+    @Setter
+    @Column
+    private Broker broker;
+
+    @Getter
+    @Setter
+    @Column
+    private AccountType accountType;
 
     @Getter
     @Setter

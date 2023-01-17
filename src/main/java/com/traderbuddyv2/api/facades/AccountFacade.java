@@ -1,6 +1,6 @@
 package com.traderbuddyv2.api.facades;
 
-import com.traderbuddyv2.api.converters.levelling.skill.SkillDTOConverter;
+import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.api.models.records.AccountOverview;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
@@ -28,14 +28,14 @@ import java.util.Optional;
 @Component("accountFacade")
 public class AccountFacade {
 
+    @Resource(name = "accountDTOConverter")
+    private AccountDTOConverter accountDTOConverter;
+
     @Resource(name = "mathService")
     private MathService mathService;
 
     @Resource(name = "rankService")
     private RankService rankService;
-
-    @Resource(name = "skillDTOConverter")
-    private SkillDTOConverter skillDTOConverter;
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
@@ -82,7 +82,7 @@ public class AccountFacade {
                         monthlyEarnings,
                         dailyEarnings,
                         plan.map(p -> this.mathService.computeIncrement(account.getBalance(), p.getProfitTarget(), p.isAbsolute())).orElse(0.0),
-                        this.skillDTOConverter.convert(account.getSkill()),
+                        this.accountDTOConverter.convert(account),
                         this.rankService.getCurrentRank());
     }
 }
