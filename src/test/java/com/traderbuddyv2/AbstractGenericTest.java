@@ -441,7 +441,7 @@ public abstract class AbstractGenericTest {
         final MarketNewsSlot marketNewsSlot = new MarketNewsSlot();
 
         marketNewsSlot.setTime(LocalTime.of(13, 10));
-        marketNewsSlot.setEntries(List.of(generateTestMarketNewsEntry()));
+        marketNewsSlot.setEntries(new ArrayList<>(List.of(generateTestMarketNewsEntry())));
 
         return marketNewsSlot;
     }
@@ -451,7 +451,7 @@ public abstract class AbstractGenericTest {
         final MarketNews marketNews = new MarketNews();
 
         marketNews.setDate(LocalDate.of(2023, 1, 19));
-        marketNews.setSlots(List.of(generateTestMarketNewsSlot()));
+        marketNews.setSlots(new ArrayList<>(List.of(generateTestMarketNewsSlot())));
 
         return marketNews;
     }

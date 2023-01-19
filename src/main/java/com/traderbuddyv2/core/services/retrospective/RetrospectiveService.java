@@ -90,6 +90,7 @@ public class RetrospectiveService {
 
     /**
      * Returns a {@link Retrospective} for the given uid
+     *
      * @param uid uid
      * @return {@link Optional} {@link Retrospective}
      */
@@ -189,10 +190,10 @@ public class RetrospectiveService {
     }
 
     /**
-     * Deletes the {@link Retrospective} for the given start date, end date and interval
+     * Deletes the {@link Retrospective} for the given uid
      *
      * @param uid uid
-     * @return {@link Optional} {@link Retrospective}
+     * @return true if deleted, false if not
      */
     public boolean deleteRetrospective(final String uid) {
 

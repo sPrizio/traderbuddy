@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.enums.news;
 
+import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  */
 public enum MarketNewsSeverity {
 
+    NONE("None", 0),
     LOW("Low", 3),
     MODERATE("Moderate", 2),
     DANGEROUS("Dangerous", 1);
@@ -24,5 +26,20 @@ public enum MarketNewsSeverity {
     MarketNewsSeverity(final String description, final int level) {
         this.description = description;
         this.level = level;
+    }
+
+    /**
+     * Converts a level to a {@link MarketNewsSeverity}
+     *
+     * @param level level
+     * @return {@link MarketNewsSeverity}
+     */
+    public static MarketNewsSeverity get(final int level) {
+        return switch (level) {
+            case 1 -> DANGEROUS;
+            case 2 -> MODERATE;
+            case 3 -> LOW;
+            default -> NONE;
+        };
     }
 }

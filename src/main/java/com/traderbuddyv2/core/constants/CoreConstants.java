@@ -49,6 +49,16 @@ public class CoreConstants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     /**
+     * The global TraderBuddy short time format
+     */
+    public static final String SHORT_TIME_FORMAT = "HH:mm";
+
+    /**
+     * The global TraderBuddy time format
+     */
+    public static final String TIME_FORMAT = "HH:mm:ss";
+
+    /**
      * The global TraderBuddy date & time format
      */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
