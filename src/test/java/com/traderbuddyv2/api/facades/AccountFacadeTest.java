@@ -2,9 +2,7 @@ package com.traderbuddyv2.api.facades;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
-import com.traderbuddyv2.api.converters.levelling.skill.SkillDTOConverter;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
-import com.traderbuddyv2.api.models.dto.levelling.skill.SkillDTO;
 import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.plan.TradingPlanService;

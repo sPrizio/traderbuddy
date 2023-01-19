@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.enums.account.AccountType;
 import com.traderbuddyv2.core.enums.account.Broker;
 import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
 import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.enums.trades.TradingPlatform;
@@ -17,6 +18,9 @@ import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification
 import com.traderbuddyv2.core.models.entities.levelling.rank.BaseRank;
 import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
+import com.traderbuddyv2.core.models.entities.news.MarketNews;
+import com.traderbuddyv2.core.models.entities.news.MarketNewsEntry;
+import com.traderbuddyv2.core.models.entities.news.MarketNewsSlot;
 import com.traderbuddyv2.core.models.entities.plan.DepositPlan;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
@@ -39,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -419,5 +424,35 @@ public abstract class AbstractGenericTest {
         rank.setLevel(1);
 
         return rank;
+    }
+
+    public MarketNewsEntry generateTestMarketNewsEntry() {
+
+        final MarketNewsEntry marketNewsEntry = new MarketNewsEntry();
+
+        marketNewsEntry.setContent("Test News Entry");
+        marketNewsEntry.setSeverity(MarketNewsSeverity.DANGEROUS);
+
+        return marketNewsEntry;
+    }
+
+    public MarketNewsSlot generateTestMarketNewsSlot() {
+
+        final MarketNewsSlot marketNewsSlot = new MarketNewsSlot();
+
+        marketNewsSlot.setTime(LocalTime.of(13, 10));
+        marketNewsSlot.setEntries(List.of(generateTestMarketNewsEntry()));
+
+        return marketNewsSlot;
+    }
+
+    public MarketNews generateMarketNews() {
+
+        final MarketNews marketNews = new MarketNews();
+
+        marketNews.setDate(LocalDate.of(2023, 1, 19));
+        marketNews.setSlots(List.of(generateTestMarketNewsSlot()));
+
+        return marketNews;
     }
 }
