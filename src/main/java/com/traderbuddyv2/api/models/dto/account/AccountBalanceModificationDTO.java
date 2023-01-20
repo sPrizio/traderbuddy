@@ -30,4 +30,8 @@ public class AccountBalanceModificationDTO implements GenericDTO {
     @Getter
     @Setter
     private String modificationType;
+
+    @Getter
+    @Setter
+    private boolean processed;
 }

@@ -1,6 +1,5 @@
 package com.traderbuddyv2.core.enums.news;
 
-import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import lombok.Getter;
 
 /**

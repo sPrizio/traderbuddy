@@ -36,6 +36,7 @@ public class AccountBalanceModificationDTOConverter implements GenericDTOConvert
         accountBalanceModificationDTO.setModificationType(entity.getModificationType().getDescription());
         accountBalanceModificationDTO.setAmount(entity.getAmount());
         accountBalanceModificationDTO.setDateTime(entity.getDateTime());
+        accountBalanceModificationDTO.setProcessed(entity.isProcessed());
 
         return accountBalanceModificationDTO;
     }

@@ -2,7 +2,6 @@ package com.traderbuddyv2.api.converters.account;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.models.dto.account.AccountBalanceModificationDTO;
-import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;

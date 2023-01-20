@@ -32,6 +32,7 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateJsonInt
 @RequestMapping("${base.api.controller.endpoint}/retrospective")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class RetrospectiveApiController extends AbstractApiController {
+
     private static final List<String> REQUIRED_JSON_VALUES = List.of("retrospective");
 
     @Resource(name = "retrospectiveDTOConverter")
