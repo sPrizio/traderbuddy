@@ -29,6 +29,14 @@ public class TradeTimeBucket extends Analysis {
 
     @Getter
     @Setter
+    private double pipsEarned;
+
+    @Getter
+    @Setter
+    private double pipsLost;
+
+    @Getter
+    @Setter
     private double netProfit;
 
     @Getter
@@ -54,6 +62,8 @@ public class TradeTimeBucket extends Analysis {
         this.start = start;
         this.end = end;
         this.pips = trades.stream().mapToDouble(this::getPips).sum();
+        this.pipsEarned = trades.stream().mapToDouble(this::getPips).filter(pips -> pips >= 0.0).sum();
+        this.pipsLost = trades.stream().mapToDouble(this::getPips).filter(pips -> pips < 0.0).sum() * -1;
         this.netProfit = trades.stream().mapToDouble(Trade::getNetProfit).sum();
         this.trades = trades.size();
         this.winningTrades = trades.stream().filter(trade -> trade.getNetProfit() >= 0.0).count();
