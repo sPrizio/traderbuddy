@@ -155,6 +155,49 @@ CREATE TABLE IF NOT EXISTS `goals` (
 
 -- Dumping data for table trader_buddy.goals: ~0 rows (approximately)
 
+-- Dumping structure for table trader_buddy.market_news
+CREATE TABLE IF NOT EXISTS `market_news` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+
+-- Dumping data for table trader_buddy.market_news: ~1 rows (approximately)
+REPLACE INTO `market_news` (`id`, `date`) VALUES
+	(8, '2023-01-19');
+
+-- Dumping structure for table trader_buddy.market_news_entries
+CREATE TABLE IF NOT EXISTS `market_news_entries` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) DEFAULT NULL,
+  `severity` int(11) DEFAULT NULL,
+  `slot_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKjdd4wlxxdlnyipg8je835o13w` (`slot_id`),
+  CONSTRAINT `FKjdd4wlxxdlnyipg8je835o13w` FOREIGN KEY (`slot_id`) REFERENCES `market_news_slots` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb3;
+
+-- Dumping data for table trader_buddy.market_news_entries: ~3 rows (approximately)
+REPLACE INTO `market_news_entries` (`id`, `content`, `severity`, `slot_id`) VALUES
+	(25, 'PPI', 3, 15),
+	(26, 'Beige Book', 1, 15),
+	(27, 'Jobless Claims', 2, 16);
+
+-- Dumping structure for table trader_buddy.market_news_slots
+CREATE TABLE IF NOT EXISTS `market_news_slots` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `time` time DEFAULT NULL,
+  `news_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKgx55cd7fhbmhyfm2jig419vpp` (`news_id`),
+  CONSTRAINT `FKgx55cd7fhbmhyfm2jig419vpp` FOREIGN KEY (`news_id`) REFERENCES `market_news` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+
+-- Dumping data for table trader_buddy.market_news_slots: ~2 rows (approximately)
+REPLACE INTO `market_news_slots` (`id`, `time`, `news_id`) VALUES
+	(15, '14:00:00', 8),
+	(16, '08:30:00', 8);
+
 -- Dumping structure for table trader_buddy.ranks
 CREATE TABLE IF NOT EXISTS `ranks` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -408,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `skills` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table trader_buddy.skills: ~1 rows (approximately)
+-- Dumping data for table trader_buddy.skills: ~0 rows (approximately)
 REPLACE INTO `skills` (`id`, `delta`, `last_updated`, `level`, `points`, `step_increment`, `remaining`) VALUES
 	(1, 53, '2023-01-19 11:14:58.135169', 4, 89, 100, 11);
 
@@ -436,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `trades` (
   CONSTRAINT `FKhrx1ya4wn13vvty5h2t85970t` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2686 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table trader_buddy.trades: ~885 rows (approximately)
+-- Dumping data for table trader_buddy.trades: ~2,523 rows (approximately)
 REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_price`, `reason_for_entrance`, `result_of_trade`, `trade_close_time`, `trade_id`, `trade_open_time`, `trade_type`, `trading_platform`, `product`, `relevant`, `processed`, `account_id`) VALUES
 	(1, 12584.97, 0.5, 1.2, 12586.84, '', '', '2022-07-21 15:32:00', 'O5-75-5DXQFJ', '2022-07-21 15:32:00', 1, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
 	(2, 0, 0, 10, 0, '', '', '2022-07-06 16:42:00', '1093061181', '2022-07-06 16:42:00', 2, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
@@ -2961,7 +3004,7 @@ CREATE TABLE IF NOT EXISTS `trade_records` (
   CONSTRAINT `FKlt8dfxccamqy5gcglyv6jqjo3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3001 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table trader_buddy.trade_records: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records: ~134 rows (approximately)
 REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`, `start_date`, `account_id`, `statistics_id`, `target`) VALUES
 	(2867, 3, 3000, '2023-01-01', '2022-01-01', 1, 3125, 37.5),
 	(2868, 3, 3187.33, '2024-01-01', '2023-01-01', 1, 3126, 39.84),
@@ -3121,7 +3164,7 @@ CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3259 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table trader_buddy.trade_records_statistics: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records_statistics: ~134 rows (approximately)
 REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_loss_size`, `average_win_amount`, `average_win_size`, `largest_loss_amount`, `largest_loss_size`, `largest_win_amount`, `largest_win_size`, `net_profit`, `number_of_losing_trades`, `number_of_trades`, `number_of_winning_trades`, `percentage_profit`, `trading_rate`, `win_percentage`, `pips_earned`, `pips_lost`) VALUES
 	(3125, -21.39, 1.93, 21.86, 1.86, -288.79, 3, 135.63, 1.7, 2327.62, 710, 1511, 801, 77.59, 16.79, 53, 7577.76, 6176.15),
 	(3126, -3.6, 0.26, 2.99, 0.26, -11.38, 0.3, 15.34, 0.4, 120.8, 56, 164, 108, 3.79, 13.67, 66, 969.63, 578.62),
