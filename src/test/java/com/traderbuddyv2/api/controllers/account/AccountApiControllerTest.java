@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.controllers.account;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.core.services.account.AccountService;
+import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,9 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     @MockBean
     private AccountService accountService;
 
+    @MockBean
+    private UniqueIdentifierService uniqueIdentifierService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,6 +52,8 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.accountFacade.getAccountOverview()).thenReturn(generateAccountOverview());
         Mockito.when(this.accountService.getEquityCurve(any(), any(), any())).thenReturn(List.of());
+        Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+        Mockito.when(this.accountService.findAccountBalanceHistory(any(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
     }
 
 
@@ -73,6 +79,21 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         map.put("interval", List.of("DAILY"));
 
         this.mockMvc.perform(get("/api/v1/account/equity-curve").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getAccountBalanceHistory -----------------
+
+    @Test
+    public void test_getAccountBalanceHistory_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-08-24"));
+        map.put("end", List.of("2022-08-25"));
+
+        this.mockMvc.perform(get("/api/v1/account/balance-history").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }

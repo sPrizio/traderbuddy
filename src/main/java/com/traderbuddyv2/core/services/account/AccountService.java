@@ -3,8 +3,11 @@ package com.traderbuddyv2.core.services.account;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
+import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
+import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -26,8 +29,14 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
 @Component("accountService")
 public class AccountService {
 
+    @Resource(name = "accountBalanceModificationRepository")
+    private AccountBalanceModificationRepository accountBalanceModificationRepository;
+
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
+
+    @Resource(name = "traderBuddyUserDetailsService")
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
 
     //  METHODS
@@ -53,5 +62,27 @@ public class AccountService {
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns a {@link List} of {@link AccountBalanceModification} that are processed for the given {@link Account}
+     *
+     * @param start {@link LocalDate}
+     * @param end {@link LocalDate}
+     * @return {@link List} of {@link AccountBalanceModification}
+     */
+    public List<AccountBalanceModification> findAccountBalanceHistory(final LocalDate start, final LocalDate end) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+
+        final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByProcessedAndAccount(true, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        return
+                modifications
+                        .stream()
+                        .filter(mod -> mod.getDateTime().isEqual(start.atStartOfDay()) || mod.getDateTime().isAfter(start.atStartOfDay()))
+                        .filter(mod -> mod.getDateTime().isBefore(end.atStartOfDay()))
+                        .toList();
+
     }
 }
