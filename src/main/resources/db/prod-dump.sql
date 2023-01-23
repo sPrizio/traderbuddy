@@ -1,22 +1,19 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               10.6.9-MariaDB - mariadb.org binary distribution
+-- Server version:               10.3.14-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.1.0.6537
+-- HeidiSQL Version:             11.0.0.5919
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
 -- Dumping database structure for trader_buddy
-CREATE DATABASE IF NOT EXISTS `trader_buddy` /*!40100 DEFAULT CHARACTER SET utf8mb3 */;
+CREATE DATABASE IF NOT EXISTS `trader_buddy` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `trader_buddy`;
 
 -- Dumping structure for table trader_buddy.account
@@ -44,11 +41,13 @@ CREATE TABLE IF NOT EXISTS `account` (
   CONSTRAINT `FKjd9gn0jtaygwwnrfergi7f2n5` FOREIGN KEY (`rank_id`) REFERENCES `ranks` (`id`),
   CONSTRAINT `FKk8mim6eq849fvhk528y9pv7lj` FOREIGN KEY (`trading_plan_id`) REFERENCES `trading_plans` (`id`),
   CONSTRAINT `FKra7xoi9wtlcq07tmoxxe5jrh4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.account: ~1 rows (approximately)
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
 REPLACE INTO `account` (`id`, `account_id`, `account_open_time`, `active`, `balance`, `trading_plan_id`, `user_id`, `skills_id`, `rank_id`, `name`, `account_number`, `currency`, `account_type`, `broker`) VALUES
-	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3209.88, NULL, NULL, 1, 64, 'CMC Markets Live CFD', 25123700, 5, 2, 0);
+	(1, '1', '2022-10-25 22:18:39.000000', b'1', 3154.2, NULL, NULL, 1, 65, 'CMC Markets Live CFD', 25123700, 5, 2, 0);
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.account_balance_modifications
 CREATE TABLE IF NOT EXISTS `account_balance_modifications` (
@@ -61,9 +60,10 @@ CREATE TABLE IF NOT EXISTS `account_balance_modifications` (
   PRIMARY KEY (`id`),
   KEY `FKdifbvxvm6eissuh3at4i60uw7` (`account_id`),
   CONSTRAINT `FKdifbvxvm6eissuh3at4i60uw7` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.account_balance_modifications: ~8 rows (approximately)
+/*!40000 ALTER TABLE `account_balance_modifications` DISABLE KEYS */;
 REPLACE INTO `account_balance_modifications` (`id`, `amount`, `date_time`, `modification_type`, `account_id`, `processed`) VALUES
 	(14, 350, '2022-09-01 00:00:01.000000', 2, 1, b'1'),
 	(15, 350, '2022-10-05 00:00:01.000000', 2, 1, b'1'),
@@ -73,6 +73,7 @@ REPLACE INTO `account_balance_modifications` (`id`, `amount`, `date_time`, `modi
 	(19, -468.83, '2022-12-20 00:00:01.000000', 1, 1, b'1'),
 	(20, -1013.63, '2022-12-22 00:00:01.000000', 1, 1, b'1'),
 	(21, 66.53, '2023-01-04 00:00:01.000000', 0, 1, b'1');
+/*!40000 ALTER TABLE `account_balance_modifications` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.account_trading_plan
 CREATE TABLE IF NOT EXISTS `account_trading_plan` (
@@ -82,9 +83,11 @@ CREATE TABLE IF NOT EXISTS `account_trading_plan` (
   KEY `FK2tvhb1adnawvfghuq3cf8v2uo` (`account_id`),
   CONSTRAINT `FK2tvhb1adnawvfghuq3cf8v2uo` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `FKnlg1d43reog7exmmiq2ul8oog` FOREIGN KEY (`trading_plan_id`) REFERENCES `trading_plans` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.account_trading_plan: ~0 rows (approximately)
+/*!40000 ALTER TABLE `account_trading_plan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `account_trading_plan` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.base_ranks
 CREATE TABLE IF NOT EXISTS `base_ranks` (
@@ -93,9 +96,10 @@ CREATE TABLE IF NOT EXISTS `base_ranks` (
   `name` varchar(255) DEFAULT NULL,
   `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.base_ranks: ~12 rows (approximately)
+/*!40000 ALTER TABLE `base_ranks` DISABLE KEYS */;
 REPLACE INTO `base_ranks` (`id`, `multiplier`, `name`, `priority`) VALUES
 	(1, 0, 'Unranked', 0),
 	(2, 1, 'Bronze', 1),
@@ -109,6 +113,7 @@ REPLACE INTO `base_ranks` (`id`, `multiplier`, `name`, `priority`) VALUES
 	(10, 225, 'Ruby', 8),
 	(11, 1000, 'Emerald', 10),
 	(12, 10000, 'Obsidian', 11);
+/*!40000 ALTER TABLE `base_ranks` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.deposit_plans
 CREATE TABLE IF NOT EXISTS `deposit_plans` (
@@ -118,12 +123,14 @@ CREATE TABLE IF NOT EXISTS `deposit_plans` (
   `absolute` bit(1) DEFAULT NULL,
   `aggregate_interval` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.deposit_plans: ~2 rows (approximately)
+/*!40000 ALTER TABLE `deposit_plans` DISABLE KEYS */;
 REPLACE INTO `deposit_plans` (`id`, `amount`, `frequency`, `absolute`, `aggregate_interval`) VALUES
 	(1, 350, 5, b'1', NULL),
 	(2, 350, 5, b'1', NULL);
+/*!40000 ALTER TABLE `deposit_plans` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.excluded_periods
 CREATE TABLE IF NOT EXISTS `excluded_periods` (
@@ -136,9 +143,11 @@ CREATE TABLE IF NOT EXISTS `excluded_periods` (
   PRIMARY KEY (`id`),
   KEY `FKsw9fgy0ygwlq8q6itdb0ugnbq` (`trading_plan_id`),
   CONSTRAINT `FKsw9fgy0ygwlq8q6itdb0ugnbq` FOREIGN KEY (`trading_plan_id`) REFERENCES `trading_plans` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.excluded_periods: ~0 rows (approximately)
+/*!40000 ALTER TABLE `excluded_periods` DISABLE KEYS */;
+/*!40000 ALTER TABLE `excluded_periods` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.goals
 CREATE TABLE IF NOT EXISTS `goals` (
@@ -151,20 +160,24 @@ CREATE TABLE IF NOT EXISTS `goals` (
   `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UniqueNameAndStartDateAndEndDate` (`name`,`start_date`,`end_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.goals: ~0 rows (approximately)
+/*!40000 ALTER TABLE `goals` DISABLE KEYS */;
+/*!40000 ALTER TABLE `goals` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news
 CREATE TABLE IF NOT EXISTS `market_news` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.market_news: ~1 rows (approximately)
+/*!40000 ALTER TABLE `market_news` DISABLE KEYS */;
 REPLACE INTO `market_news` (`id`, `date`) VALUES
 	(8, '2023-01-19');
+/*!40000 ALTER TABLE `market_news` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_entries
 CREATE TABLE IF NOT EXISTS `market_news_entries` (
@@ -175,13 +188,15 @@ CREATE TABLE IF NOT EXISTS `market_news_entries` (
   PRIMARY KEY (`id`),
   KEY `FKjdd4wlxxdlnyipg8je835o13w` (`slot_id`),
   CONSTRAINT `FKjdd4wlxxdlnyipg8je835o13w` FOREIGN KEY (`slot_id`) REFERENCES `market_news_slots` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.market_news_entries: ~3 rows (approximately)
+/*!40000 ALTER TABLE `market_news_entries` DISABLE KEYS */;
 REPLACE INTO `market_news_entries` (`id`, `content`, `severity`, `slot_id`) VALUES
 	(25, 'PPI', 3, 15),
 	(26, 'Beige Book', 1, 15),
 	(27, 'Jobless Claims', 2, 16);
+/*!40000 ALTER TABLE `market_news_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_slots
 CREATE TABLE IF NOT EXISTS `market_news_slots` (
@@ -191,12 +206,14 @@ CREATE TABLE IF NOT EXISTS `market_news_slots` (
   PRIMARY KEY (`id`),
   KEY `FKgx55cd7fhbmhyfm2jig419vpp` (`news_id`),
   CONSTRAINT `FKgx55cd7fhbmhyfm2jig419vpp` FOREIGN KEY (`news_id`) REFERENCES `market_news` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.market_news_slots: ~2 rows (approximately)
+/*!40000 ALTER TABLE `market_news_slots` DISABLE KEYS */;
 REPLACE INTO `market_news_slots` (`id`, `time`, `news_id`) VALUES
 	(15, '14:00:00', 8),
 	(16, '08:30:00', 8);
+/*!40000 ALTER TABLE `market_news_slots` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.ranks
 CREATE TABLE IF NOT EXISTS `ranks` (
@@ -207,9 +224,10 @@ CREATE TABLE IF NOT EXISTS `ranks` (
   PRIMARY KEY (`id`),
   KEY `FKc5o5po1vvs7hdli3is527k9s` (`base_rank_id`),
   CONSTRAINT `FKc5o5po1vvs7hdli3is527k9s` FOREIGN KEY (`base_rank_id`) REFERENCES `base_ranks` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.ranks: ~52 rows (approximately)
+/*!40000 ALTER TABLE `ranks` DISABLE KEYS */;
 REPLACE INTO `ranks` (`id`, `level`, `base_rank_id`, `image_url`) VALUES
 	(9, 2, 3, '/ranks/garnet/garnet_2.png'),
 	(10, 5, 3, '/ranks/garnet/garnet_5.png'),
@@ -263,6 +281,7 @@ REPLACE INTO `ranks` (`id`, `level`, `base_rank_id`, `image_url`) VALUES
 	(104, 2, 11, '/ranks/emerald/emerald_2.png'),
 	(105, 4, 11, '/ranks/emerald/emerald_4.png'),
 	(106, 1, 1, '/ranks/unranked/unranked_1.png');
+/*!40000 ALTER TABLE `ranks` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.retrospectives
 CREATE TABLE IF NOT EXISTS `retrospectives` (
@@ -275,9 +294,10 @@ CREATE TABLE IF NOT EXISTS `retrospectives` (
   UNIQUE KEY `UniqueIntervalAndStartDateAndEndDate` (`interval_frequency`,`start_date`,`end_date`),
   KEY `FK45ox2nc7as2dui59tb1uyfgqb` (`account_id`),
   CONSTRAINT `FK45ox2nc7as2dui59tb1uyfgqb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.retrospectives: ~24 rows (approximately)
+/*!40000 ALTER TABLE `retrospectives` DISABLE KEYS */;
 REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`) VALUES
 	(3, '2022-08-08', 1, '2022-08-01', 1),
 	(4, '2022-08-15', 1, '2022-08-08', 1),
@@ -303,6 +323,7 @@ REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_da
 	(37, '2023-01-02', 1, '2022-12-26', 1),
 	(38, '2023-01-09', 1, '2023-01-02', 1),
 	(39, '2023-01-16', 1, '2023-01-09', 1);
+/*!40000 ALTER TABLE `retrospectives` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.retrospective_entries
 CREATE TABLE IF NOT EXISTS `retrospective_entries` (
@@ -314,9 +335,10 @@ CREATE TABLE IF NOT EXISTS `retrospective_entries` (
   PRIMARY KEY (`id`),
   KEY `FKepdlvjuqm0ejb712uio01et63` (`retrospective_id`),
   CONSTRAINT `FKepdlvjuqm0ejb712uio01et63` FOREIGN KEY (`retrospective_id`) REFERENCES `retrospectives` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.retrospective_entries: ~120 rows (approximately)
+/*!40000 ALTER TABLE `retrospective_entries` DISABLE KEYS */;
 REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_number`, `retrospective_id`) VALUES
 	(97, 'Only 1 promo payment on Friday. We\'re improving on the promo payments which I think is a good win!', b'1', 1, 20),
 	(98, 'Issue this week was forcing trades. I keep entering the market because I think I see something but I\'m really just convincing myself of something that isn\'t there. I end to be okay with the idea that I might not enter the market for a whole day.', b'0', 2, 20),
@@ -438,6 +460,7 @@ REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_num
 	(224, 'I\'ve developed a bad habit of adding to losing positions because I am convinced I am right and waiting through large drawdowns until the trades come back. This is not sustainable and will kill my account. I must stick to the fixed stop losses.', b'0', 4, 39),
 	(225, 'I am trading well and my system is working for me', b'0', 5, 39),
 	(226, 'Keep a cool head and be flexible with your ideas. Do not be married to a direction and don\'t add to a losing position', b'1', 6, 39);
+/*!40000 ALTER TABLE `retrospective_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.skills
 CREATE TABLE IF NOT EXISTS `skills` (
@@ -449,11 +472,13 @@ CREATE TABLE IF NOT EXISTS `skills` (
   `step_increment` int(11) DEFAULT NULL,
   `remaining` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.skills: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.skills: ~1 rows (approximately)
+/*!40000 ALTER TABLE `skills` DISABLE KEYS */;
 REPLACE INTO `skills` (`id`, `delta`, `last_updated`, `level`, `points`, `step_increment`, `remaining`) VALUES
-	(1, 42, '2023-01-20 10:27:11.586491', 5, 31, 100, 69);
+	(1, -82, '2023-01-23 10:29:45.620135', 4, 49, 100, 51);
+/*!40000 ALTER TABLE `skills` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trades
 CREATE TABLE IF NOT EXISTS `trades` (
@@ -477,9 +502,10 @@ CREATE TABLE IF NOT EXISTS `trades` (
   UNIQUE KEY `UK_8d1lubanjnkryvjsjpqol15qh` (`trade_id`),
   KEY `FKhrx1ya4wn13vvty5h2t85970t` (`account_id`),
   CONSTRAINT `FKhrx1ya4wn13vvty5h2t85970t` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2694 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2718 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trades: ~2,525 rows (approximately)
+-- Dumping data for table trader_buddy.trades: ~2,547 rows (approximately)
+/*!40000 ALTER TABLE `trades` DISABLE KEYS */;
 REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_price`, `reason_for_entrance`, `result_of_trade`, `trade_close_time`, `trade_id`, `trade_open_time`, `trade_type`, `trading_platform`, `product`, `relevant`, `processed`, `account_id`) VALUES
 	(1, 12584.97, 0.5, 1.2, 12586.84, '', '', '2022-07-21 15:32:00', 'O5-75-5DXQFJ', '2022-07-21 15:32:00', 1, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
 	(2, 0, 0, 10, 0, '', '', '2022-07-06 16:42:00', '1093061181', '2022-07-06 16:42:00', 2, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1),
@@ -2993,7 +3019,32 @@ REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_pric
 	(2690, 11351.63, 0.4, 5.51, 11341.36, '', '', '2023-01-20 09:40:07', 'O1-BT-71TM3Q', '2023-01-20 09:36:42', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
 	(2691, 11404.61, 0.4, 4.28, 11412.61, '', '', '2023-01-20 10:17:17', 'O1-BT-71TSEM', '2023-01-20 10:15:26', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
 	(2692, 11383.05, 0.4, 7.85, 11368.4, '', '', '2023-01-20 09:51:15', 'O1-BT-71TNZ8', '2023-01-20 09:50:31', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
-	(2693, 11330.8, 0.4, 4.53, 11339.24, '', '', '2023-01-20 09:35:14', 'O1-BT-71TLFR', '2023-01-20 09:33:00', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1);
+	(2693, 11330.8, 0.4, 4.53, 11339.24, '', '', '2023-01-20 09:35:14', 'O1-BT-71TLFR', '2023-01-20 09:33:00', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2694, 11761.75, 0.5, -10.67, 11745.88, '', '', '2023-01-23 09:55:32', 'O1-BV-7308FW', '2023-01-23 09:54:28', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2695, 11750.13, 0.5, -10.34, 11734.75, '', '', '2023-01-23 09:53:03', 'O1-BV-7307VG', '2023-01-23 09:51:36', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2696, 11733.25, 0.5, -9.92, 11718.5, '', '', '2023-01-23 09:50:58', 'O1-BV-7307CR', '2023-01-23 09:48:44', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2697, 11691.75, 0.5, -1.79, 11694.41, '', '', '2023-01-23 09:46:55', 'O1-BV-7306RH', '2023-01-23 09:45:58', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2698, 11774, 0.5, -12.28, 11755.75, '', '', '2023-01-23 10:22:35', 'O1-BV-730CM6', '2023-01-23 10:15:11', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2699, 11734.38, 0.5, -10.51, 11718.75, '', '', '2023-01-23 09:51:02', 'O1-BV-73077L', '2023-01-23 09:48:08', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2700, 11759.25, 0.5, 3.51, 11753.99, '', '', '2023-01-23 10:13:48', 'O1-BV-730C1Y', '2023-01-23 10:11:49', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2701, 11755.5, 0.5, -7.07, 11745, '', '', '2023-01-23 10:11:39', 'O1-BV-730BZC', '2023-01-23 10:11:22', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2702, 11754.38, 0.5, -6.81, 11744.25, '', '', '2023-01-23 09:55:12', 'O1-BV-7307YM', '2023-01-23 09:51:56', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2703, 11757, 0.5, 8.49, 11744.25, '', '', '2023-01-23 10:00:34', 'O1-BV-7309BX', '2023-01-23 10:00:14', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2704, 11737, 0.5, 8, 11749, '', '', '2023-01-23 09:58:17', 'O1-BV-7308KB', '2023-01-23 09:55:10', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2705, 11748.25, 0.5, -9.92, 11733.5, '', '', '2023-01-23 09:53:02', 'O1-BV-7307TK', '2023-01-23 09:51:25', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2706, 11773.81, 0.5, -8.86, 11760.64, '', '', '2023-01-23 10:22:35', 'O1-BV-730CPB', '2023-01-23 10:15:51', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2707, 11749.77, 0.5, -6.49, 11740.13, '', '', '2023-01-23 10:11:24', 'O1-BV-730BXJ', '2023-01-23 10:10:54', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2708, 11646.83, 0.5, 0.67, 11645.83, '', '', '2023-01-23 09:36:07', 'O1-BV-7304QV', '2023-01-23 09:35:15', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2709, 11773.54, 0.5, -11.3, 11756.75, '', '', '2023-01-23 10:22:35', 'O1-BV-730CRG', '2023-01-23 10:16:24', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2710, 11677.25, 0.5, 10, 11662.25, '', '', '2023-01-23 09:40:48', 'O1-BV-7305RT', '2023-01-23 09:40:01', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2711, 11759.25, 0.5, 0.83, 11758, '', '', '2023-01-23 10:13:48', 'O1-BV-730C4G', '2023-01-23 10:12:17', 0, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2712, 11644.25, 0.5, -9.93, 11629.5, '', '', '2023-01-23 09:37:03', 'O1-BV-73051Y', '2023-01-23 09:36:43', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2713, 11733.98, 0.5, 6.82, 11744.21, '', '', '2023-01-23 10:06:02', 'O1-BV-730B4N', '2023-01-23 10:05:23', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2714, 11733.88, 0.5, 9.41, 11748, '', '', '2023-01-23 10:06:10', 'O1-BV-730B2P', '2023-01-23 10:05:05', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2715, 11797.75, 0.5, -9.68, 11783.37, '', '', '2023-01-23 10:25:12', 'O1-BV-730DMH', '2023-01-23 10:23:13', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2716, 11737, 0.5, 8.75, 11750.13, '', '', '2023-01-23 09:58:17', 'O1-BV-7308R8', '2023-01-23 09:56:25', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1),
+	(2717, 11737, 0.5, 13.41, 11757.13, '', '', '2023-01-23 09:58:17', 'O1-BV-7308MS', '2023-01-23 09:55:40', 1, 0, 'US NDAQ 100 - Cash', b'1', b'1', 1);
+/*!40000 ALTER TABLE `trades` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_records
 CREATE TABLE IF NOT EXISTS `trade_records` (
@@ -3010,18 +3061,19 @@ CREATE TABLE IF NOT EXISTS `trade_records` (
   KEY `FKi5sk7nqeg33tum7hvh9oj2tm5` (`statistics_id`),
   CONSTRAINT `FKi5sk7nqeg33tum7hvh9oj2tm5` FOREIGN KEY (`statistics_id`) REFERENCES `trade_records_statistics` (`id`),
   CONSTRAINT `FKlt8dfxccamqy5gcglyv6jqjo3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3002 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3004 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records: ~135 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records: ~137 rows (approximately)
+/*!40000 ALTER TABLE `trade_records` DISABLE KEYS */;
 REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`, `start_date`, `account_id`, `statistics_id`, `target`) VALUES
 	(2867, 3, 3000, '2023-01-01', '2022-01-01', 1, 3125, 37.5),
-	(2868, 3, 3209.88, '2024-01-01', '2023-01-01', 1, 3126, 40.12),
+	(2868, 3, 3154.2, '2024-01-01', '2023-01-01', 1, 3126, 39.43),
 	(2869, 2, 1437.29, '2022-09-01', '2022-08-01', 1, 3127, 17.97),
 	(2870, 2, 2430.34, '2022-10-01', '2022-09-01', 1, 3128, 30.38),
 	(2871, 2, 3645.34, '2022-11-01', '2022-10-01', 1, 3129, 45.57),
 	(2872, 2, 4131.5, '2022-12-01', '2022-11-01', 1, 3130, 51.64),
 	(2873, 2, 3000, '2023-01-01', '2022-12-01', 1, 3131, 37.5),
-	(2874, 2, 3209.88, '2023-02-01', '2023-01-01', 1, 3132, 40.12),
+	(2874, 2, 3154.2, '2023-02-01', '2023-01-01', 1, 3132, 39.43),
 	(2875, 1, 1075.47, '2022-08-08', '2022-08-01', 1, 3133, 13.44),
 	(2876, 1, 1163.7, '2022-08-15', '2022-08-08', 1, 3134, 14.55),
 	(2877, 1, 1254.07, '2022-08-22', '2022-08-15', 1, 3135, 15.68),
@@ -3148,7 +3200,10 @@ REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`,
 	(2998, 0, 3140.42, '2023-01-17', '2023-01-16', 1, 3256, 39.26),
 	(2999, 0, 3158.9, '2023-01-18', '2023-01-17', 1, 3257, 39.49),
 	(3000, 0, 3187.33, '2023-01-19', '2023-01-18', 1, 3258, 39.84),
-	(3001, 0, 3209.88, '2023-01-21', '2023-01-20', 1, 3259, 40.12);
+	(3001, 0, 3209.88, '2023-01-21', '2023-01-20', 1, 3259, 40.12),
+	(3002, 1, 3154.2, '2023-01-30', '2023-01-23', 1, 3260, 39.43),
+	(3003, 0, 3154.2, '2023-01-24', '2023-01-23', 1, 3261, 39.43);
+/*!40000 ALTER TABLE `trade_records` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_records_statistics
 CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
@@ -3171,18 +3226,19 @@ CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
   `pips_earned` double DEFAULT NULL,
   `pips_lost` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3260 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3262 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records_statistics: ~135 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records_statistics: ~137 rows (approximately)
+/*!40000 ALTER TABLE `trade_records_statistics` DISABLE KEYS */;
 REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_loss_size`, `average_win_amount`, `average_win_size`, `largest_loss_amount`, `largest_loss_size`, `largest_win_amount`, `largest_win_size`, `net_profit`, `number_of_losing_trades`, `number_of_trades`, `number_of_winning_trades`, `percentage_profit`, `trading_rate`, `win_percentage`, `pips_earned`, `pips_lost`) VALUES
 	(3125, -21.39, 1.93, 21.86, 1.86, -288.79, 3, 135.63, 1.7, 2327.62, 710, 1511, 801, 77.59, 16.79, 53, 7577.76, 6176.15),
-	(3126, -3.68, 0.27, 3.08, 0.26, -11.38, 0.3, 15.34, 0.4, 143.35, 57, 172, 115, 4.47, 13.23, 67, 1027.01, 593.76),
+	(3126, -4.72, 0.32, 3.39, 0.28, -12.28, 0.5, 15.34, 0.4, 87.67, 71, 196, 125, 2.78, 14, 64, 1131.88, 780.41),
 	(3127, -7.47, 0.71, 8.91, 0.67, -21.88, 0.5, 36.8, 0.68, 437.29, 75, 187, 112, 30.42, 8.13, 60, 1105.36, 623.92),
 	(3128, -14.11, 1.04, 18.68, 1.07, -105.18, 1.15, 99.99, 1.15, 643.05, 108, 224, 116, 26.46, 12.44, 52, 1557.48, 1124.63),
 	(3129, -18.83, 1.44, 17.86, 1.54, -137.85, 1.7, 135.63, 1.7, 865, 103, 260, 157, 23.73, 15.29, 60, 1473.02, 1027.82),
 	(3130, -28.23, 2.78, 31.98, 2.79, -288.79, 3, 125.52, 2.85, 136.16, 284, 539, 255, 3.3, 28.37, 47, 2188.79, 2145.04),
 	(3131, -22.46, 1.9, 21.06, 2.06, -133.59, 3, 109.95, 3, 246.12, 140, 301, 161, 8.2, 23.15, 53, 1253.11, 1254.74),
-	(3132, -3.68, 0.27, 3.08, 0.26, -11.38, 0.3, 15.34, 0.4, 143.35, 57, 172, 115, 4.47, 13.23, 67, 1027.01, 593.76),
+	(3132, -4.72, 0.32, 3.39, 0.28, -12.28, 0.5, 15.34, 0.4, 87.67, 71, 196, 125, 2.78, 14, 64, 1131.88, 780.41),
 	(3133, -9.72, 0.57, 4.55, 0.57, -14.18, 0.6, 15.32, 0.6, 75.47, 3, 26, 23, 7.02, 5.2, 88, 142.28, 38.83),
 	(3134, -10.28, 0.64, 8.05, 0.63, -21.88, 0.5, 28.06, 0.65, 88.23, 11, 36, 25, 7.58, 7.2, 69, 247.3, 142.21),
 	(3135, -7.52, 0.66, 10.31, 0.65, -16.9, 0.69, 36.8, 0.68, 90.37, 25, 52, 27, 7.21, 10.4, 52, 311.78, 215.45),
@@ -3309,7 +3365,10 @@ REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_l
 	(3256, 0, 0, 1.43, 0.3, 0, 0, 2.56, 0.3, 4.29, 0, 3, 3, 0.14, 3, 100, 10.72, 0),
 	(3257, -4.28, 0.4, 4.84, 0.4, -7.27, 0.4, 11.45, 0.4, 18.48, 7, 17, 10, 0.59, 17, 59, 90.91, 55.62),
 	(3258, -2.46, 0.4, 4.17, 0.4, -3.46, 0.4, 15.34, 0.4, 28.43, 2, 10, 8, 0.89, 10, 80, 62.66, 9.17),
-	(3259, -8.21, 0.4, 4.39, 0.4, -8.21, 0.4, 7.85, 0.4, 22.55, 1, 8, 7, 0.7, 8, 88, 57.38, 15.14);
+	(3259, -8.21, 0.4, 4.39, 0.4, -8.21, 0.4, 7.85, 0.4, 22.55, 1, 8, 7, 0.7, 8, 88, 57.38, 15.14),
+	(3260, -8.97, 0.5, 6.99, 0.5, -12.28, 0.5, 13.41, 0.5, -55.68, 14, 24, 10, -1.77, 24, 42, 104.87, 186.65),
+	(3261, -8.97, 0.5, 6.99, 0.5, -12.28, 0.5, 13.41, 0.5, -55.68, 14, 24, 10, -1.77, 24, 42, 104.87, 186.65);
+/*!40000 ALTER TABLE `trade_records_statistics` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trading_plans
 CREATE TABLE IF NOT EXISTS `trading_plans` (
@@ -3335,11 +3394,13 @@ CREATE TABLE IF NOT EXISTS `trading_plans` (
   CONSTRAINT `FK2jc1tmys8i4y1dc8mo3dv31af` FOREIGN KEY (`deposit_plan_id`) REFERENCES `deposit_plans` (`id`),
   CONSTRAINT `FKa20wf8ar6x1mvkkmb2mo0w14b` FOREIGN KEY (`withdrawal_plan_id`) REFERENCES `withdrawal_plans` (`id`),
   CONSTRAINT `FKruni9vofdno2ve4uit2w6d3ep` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trading_plans: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.trading_plans: ~1 rows (approximately)
+/*!40000 ALTER TABLE `trading_plans` DISABLE KEYS */;
 REPLACE INTO `trading_plans` (`id`, `active`, `compound_frequency`, `end_date`, `name`, `profit_target`, `start_date`, `starting_balance`, `status`, `deposit_plan_id`, `withdrawal_plan_id`, `account_id`, `absolute`, `aggregate_interval`) VALUES
 	(2, b'1', 1, '2025-08-01', 'My Trading Plan', 1.25, '2022-08-01', 1000, 1, 1, NULL, 1, b'0', 0);
+/*!40000 ALTER TABLE `trading_plans` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -3353,11 +3414,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   KEY `FK3pwaj86pwopu3ot96qlrfo2up` (`account_id`),
   CONSTRAINT `FK3pwaj86pwopu3ot96qlrfo2up` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.users: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.users: ~1 rows (approximately)
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `email`, `first_name`, `last_name`, `password`, `username`, `account_id`) VALUES
 	(5, 's.prizio@hotmail.com', 'Stephen', 'Prizio', '$2a$10$/.HyJQA84yfceXoYgPO9euce1PmQNfisSI6GA7G52yHUBBxEBBHo6', 's.prizio', 1);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.withdrawal_plans
 CREATE TABLE IF NOT EXISTS `withdrawal_plans` (
@@ -3367,12 +3430,12 @@ CREATE TABLE IF NOT EXISTS `withdrawal_plans` (
   `absolute` bit(1) DEFAULT NULL,
   `aggregate_interval` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table trader_buddy.withdrawal_plans: ~0 rows (approximately)
+/*!40000 ALTER TABLE `withdrawal_plans` DISABLE KEYS */;
+/*!40000 ALTER TABLE `withdrawal_plans` ENABLE KEYS */;
 
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

@@ -76,7 +76,7 @@ public class AccountService {
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
 
-        final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByProcessedAndAccount(true, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByProcessedAndAccountOrderByDateTimeDesc(true, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
         return
                 modifications
                         .stream()

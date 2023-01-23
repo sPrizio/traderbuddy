@@ -50,7 +50,7 @@ public class AccountServiceTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordService.findHistory(any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
-        Mockito.when(this.accountBalanceModificationRepository.findAllByProcessedAndAccount(anyBoolean(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
+        Mockito.when(this.accountBalanceModificationRepository.findAllByProcessedAndAccountOrderByDateTimeDesc(anyBoolean(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
     }
 

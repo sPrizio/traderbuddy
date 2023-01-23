@@ -23,5 +23,5 @@ public interface AccountBalanceModificationRepository extends PagingAndSortingRe
      * @param account {@link Account}
      * @return {@link List} of {@link AccountBalanceModification}
      */
-    List<AccountBalanceModification> findAllByProcessedAndAccount(final boolean processed, final Account account);
+    List<AccountBalanceModification> findAllByProcessedAndAccountOrderByDateTimeDesc(final boolean processed, final Account account);
 }
