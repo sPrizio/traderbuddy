@@ -75,11 +75,12 @@ public class TradeService {
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start, end, CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
+        //  sometimes trades can be opened on 1 day and closed on another, we use the start day as the source of truth
         if (!includeNonRelevant) {
-            return this.tradeRepository.findAllTradesWithinDate(start, end, this.traderBuddyUserDetailsService.getCurrentUser().getAccount()).stream().filter(Trade::isRelevant).toList();
+            return this.tradeRepository.findAllTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount()).stream().filter(Trade::isRelevant).toList();
         }
 
-        return this.tradeRepository.findAllTradesWithinDate(start, end, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        return this.tradeRepository.findAllTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
     }
 
     /**
@@ -98,11 +99,12 @@ public class TradeService {
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start, end, CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
+        //  sometimes trades can be opened on 1 day and closed on another, we use the start day as the source of truth
         if (!includeNonRelevant) {
-            return this.tradeRepository.findAllRelevantTradesWithinDate(start, end, this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
+            return this.tradeRepository.findAllRelevantTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
         }
 
-        return this.tradeRepository.findAllTradesWithinDate(start, end, this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
+        return this.tradeRepository.findAllTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
     }
 
     /**

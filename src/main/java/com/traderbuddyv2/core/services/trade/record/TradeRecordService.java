@@ -360,7 +360,7 @@ public class TradeRecordService {
         validateParameterIsNotNull(aggregateInterval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
 
         Set<Pair<LocalDate, LocalDate>> buckets = new TreeSet<>();
-        trades.forEach(trade -> buckets.add(Pair.of(computeStartDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval), computeEndDate(trade.getTradeCloseTime().toLocalDate(), aggregateInterval))));
+        trades.forEach(trade -> buckets.add(Pair.of(computeStartDate(trade.getTradeOpenTime().toLocalDate(), aggregateInterval), computeEndDate(trade.getTradeOpenTime().toLocalDate(), aggregateInterval))));
 
         buckets.forEach(bucket -> {
 

@@ -34,4 +34,8 @@ public class AccountBalanceModificationDTO implements GenericDTO {
     @Getter
     @Setter
     private boolean processed;
+
+    @Getter
+    @Setter
+    private String description;
 }

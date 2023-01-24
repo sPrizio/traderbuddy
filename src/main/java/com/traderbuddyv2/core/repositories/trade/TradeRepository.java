@@ -38,7 +38,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param account {@link Account}
      * @return {@link List} of {@link Trade}s
      */
-    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 AND t.account = ?3 AND t.processed = true ORDER BY t.tradeOpenTime ASC")
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.processed = true ORDER BY t.tradeOpenTime ASC")
     List<Trade> findAllTradesWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account);
 
     /**
@@ -50,7 +50,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param pageable {@link Pageable}
      * @return {@link List} of {@link Trade}s
      */
-    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 AND t.account = ?3 AND t.processed = true ORDER BY t.tradeOpenTime ASC")
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.processed = true ORDER BY t.tradeOpenTime ASC")
     Page<Trade> findAllTradesWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account, final Pageable pageable);
 
     /**
@@ -62,7 +62,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param pageable {@link Pageable}
      * @return {@link List} of {@link Trade}s
      */
-    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeCloseTime < ?2 AND t.account = ?3 AND t.relevant = true AND t.processed = true ORDER BY t.tradeOpenTime ASC")
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.relevant = true AND t.processed = true ORDER BY t.tradeOpenTime ASC")
     Page<Trade> findAllRelevantTradesWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account, final Pageable pageable);
 
     /**
