@@ -111,7 +111,11 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
      */
     private void computePoints(final TradeRecordStatisticsDTO tradeRecordStatisticsDTO, final TradeRecordStatistics entity) {
         final List<IntradayEquityCurvePoint> points = new ArrayList<>();
-        final List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(entity.getTradeRecord().getStartDate().atStartOfDay(), entity.getTradeRecord().getEndDate().atStartOfDay(), false);
+        final List<Trade> trades =
+                this.tradeService.findAllTradesWithinTimespan(entity.getTradeRecord().getStartDate().atStartOfDay(), entity.getTradeRecord().getEndDate().atStartOfDay(), false)
+                        .stream()
+                        .filter(trade -> trade.getTradeOpenTime().toLocalDate().isEqual(entity.getTradeRecord().getStartDate()))
+                        .toList();
 
         if (CollectionUtils.isNotEmpty(trades)) {
             tradeRecordStatisticsDTO.setGrossWinAmount(this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d >= 0.0).sum()));
@@ -123,7 +127,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
             double sum = 0.0;
             for (Trade trade : trades) {
                 sum = this.mathService.add(computePoints(trade), sum);
-                points.add(new IntradayEquityCurvePoint(trade.getTradeCloseTime(), sum));
+                points.add(new IntradayEquityCurvePoint(trade.getTradeOpenTime(), sum));
             }
         }
 
