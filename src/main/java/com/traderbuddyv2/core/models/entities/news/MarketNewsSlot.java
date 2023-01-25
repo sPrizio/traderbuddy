@@ -37,7 +37,7 @@ public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot>
     @Getter
     @Setter
     @OneToMany(mappedBy = "slot", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("content ASC")
+    @OrderBy("severity DESC")
     private List<MarketNewsEntry> entries;
 
 

@@ -12,9 +12,9 @@ import lombok.Getter;
 public enum MarketNewsSeverity {
 
     NONE("None", 0),
-    LOW("Low", 3),
+    DANGEROUS("Dangerous", 1),
     MODERATE("Moderate", 2),
-    DANGEROUS("Dangerous", 1);
+    LOW("Low", 3);
 
     @Getter
     private final String description;
