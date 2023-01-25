@@ -88,7 +88,7 @@ public class AccountService {
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
 
-        final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByProcessedAndAccountOrderByDateTimeDesc(true, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByAccountOrderByDateTimeDesc(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
         return
                 modifications
                         .stream()
@@ -139,6 +139,8 @@ public class AccountService {
         validateParameterIsNotNull(uid, CoreConstants.Validation.UID_CANNOT_BE_NULL);
         Optional<AccountBalanceModification> modification = findAccountBalanceModificationForUid(uid);
         if (modification.isPresent()) {
+            modification.get().setAccount(null);
+            this.accountBalanceModificationRepository.save(modification.get());
             this.accountBalanceModificationRepository.delete(modification.get());
             return true;
         }
@@ -160,7 +162,7 @@ public class AccountService {
 
         Map<String, Object> mod = (Map<String, Object>) data.get("modification");
 
-        modification.setDateTime(LocalDateTime.parse(mod.get("dateTime").toString(), DateTimeFormatter.ofPattern(CoreConstants.DATE_TIME_FORMAT)));
+        modification.setDateTime(LocalDate.parse(mod.get("dateTime").toString(), DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)).atStartOfDay().plusSeconds(1));
         modification.setAmount(Double.parseDouble(mod.get("amount").toString()));
         modification.setModificationType(AccountBalanceModificationType.getForOrdinal(Integer.parseInt(mod.get("type").toString())));
         modification.setDescription(mod.get("description").toString());

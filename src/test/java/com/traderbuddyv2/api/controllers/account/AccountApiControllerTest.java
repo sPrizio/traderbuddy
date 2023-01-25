@@ -123,7 +123,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
                 Map.of(
                         "modification",
                         Map.of(
-                                "dateTime", "2022-09-12T11:08:53",
+                                "dateTime", "2022-09-12",
                                 "amount", "123.45",
                                 "type", "0",
                                 "description", "Test"

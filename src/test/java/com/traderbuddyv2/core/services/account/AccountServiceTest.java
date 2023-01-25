@@ -59,7 +59,7 @@ public class AccountServiceTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of(generateTestTradeRecord()));
         Mockito.when(this.tradeRecordService.findHistory(any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
-        Mockito.when(this.accountBalanceModificationRepository.findAllByProcessedAndAccountOrderByDateTimeDesc(anyBoolean(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
+        Mockito.when(this.accountBalanceModificationRepository.findAllByAccountOrderByDateTimeDesc(any())).thenReturn(List.of(generateTestAccountBalanceModification()));
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid("test")).thenReturn(1L);
         Mockito.when(this.accountBalanceModificationRepository.save(any())).thenReturn(generateTestAccountBalanceModification());
@@ -158,7 +158,7 @@ public class AccountServiceTest extends AbstractGenericTest {
                 Map.of(
                         "modification",
                         Map.of(
-                                "dateTime", "2022-09-05T11:08:53",
+                                "dateTime", "2022-09-05",
                                 "amount", "123.45",
                                 "type", "0",
                                 "description", "Test"

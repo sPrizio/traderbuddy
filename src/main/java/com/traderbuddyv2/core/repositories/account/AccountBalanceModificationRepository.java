@@ -17,11 +17,10 @@ import java.util.List;
 public interface AccountBalanceModificationRepository extends PagingAndSortingRepository<AccountBalanceModification, Long> {
 
     /**
-     * Returns a {@link List} of {@link AccountBalanceModification} that match the processed flag for the given {@link Account}
+     * Returns a {@link List} of {@link AccountBalanceModification} for the given {@link Account}
      *
-     * @param processed process flag
      * @param account {@link Account}
      * @return {@link List} of {@link AccountBalanceModification}
      */
-    List<AccountBalanceModification> findAllByProcessedAndAccountOrderByDateTimeDesc(final boolean processed, final Account account);
+    List<AccountBalanceModification> findAllByAccountOrderByDateTimeDesc(final Account account);
 }
