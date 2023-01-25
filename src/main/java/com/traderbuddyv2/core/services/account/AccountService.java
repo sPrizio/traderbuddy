@@ -1,21 +1,30 @@
 package com.traderbuddyv2.core.services.account;
 
 import com.traderbuddyv2.core.constants.CoreConstants;
+import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
+import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
+import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -37,6 +46,9 @@ public class AccountService {
 
     @Resource(name = "traderBuddyUserDetailsService")
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
+    @Resource(name = "uniqueIdentifierService")
+    private UniqueIdentifierService uniqueIdentifierService;
 
 
     //  METHODS
@@ -84,5 +96,77 @@ public class AccountService {
                         .filter(mod -> mod.getDateTime().isBefore(end.atStartOfDay()))
                         .toList();
 
+    }
+
+    /**
+     * Returns an {@link AccountBalanceModification} for the given uid
+     *
+     * @param uid uid
+     * @return {@link Optional} {@link AccountBalanceModification}
+     */
+    public Optional<AccountBalanceModification> findAccountBalanceModificationForUid(final String uid) {
+        validateParameterIsNotNull(uid, CoreConstants.Validation.UID_CANNOT_BE_NULL);
+        return this.accountBalanceModificationRepository.findById(this.uniqueIdentifierService.retrieveIdForUid(uid));
+    }
+
+    /**
+     * Creates a new {@link AccountBalanceModification} from the given {@link Map} of data
+     *
+     * @param data {@link Map}
+     * @return newly created {@link AccountBalanceModification}
+     */
+    public AccountBalanceModification createAccountBalanceModification(final Map<String, Object> data) {
+
+        if (MapUtils.isEmpty(data)) {
+            throw new MissingRequiredDataException("The required data for creating an AccountBalanceModification was null or empty");
+        }
+
+        try {
+            return applyChanges(new AccountBalanceModification(), data);
+        } catch (Exception e) {
+            throw new EntityCreationException(String.format("An AccountBalanceModification could not be created : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Deletes the {@link AccountBalanceModification} for the given uid
+     *
+     * @param uid uid
+     * @return true if deleted, false if not
+     */
+    public boolean deleteAccountBalanceModification(final String uid) {
+
+        validateParameterIsNotNull(uid, CoreConstants.Validation.UID_CANNOT_BE_NULL);
+        Optional<AccountBalanceModification> modification = findAccountBalanceModificationForUid(uid);
+        if (modification.isPresent()) {
+            this.accountBalanceModificationRepository.delete(modification.get());
+            return true;
+        }
+
+        return false;
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Applies changes to the given {@link AccountBalanceModification} with the given data
+     *
+     * @param modification {@link AccountBalanceModification}
+     * @param data {@link Map}
+     * @return updated {@link AccountBalanceModification}
+     */
+    private AccountBalanceModification applyChanges(AccountBalanceModification modification, final Map<String, Object> data) {
+
+        Map<String, Object> mod = (Map<String, Object>) data.get("modification");
+
+        modification.setDateTime(LocalDateTime.parse(mod.get("dateTime").toString(), DateTimeFormatter.ofPattern(CoreConstants.DATE_TIME_FORMAT)));
+        modification.setAmount(Double.parseDouble(mod.get("amount").toString()));
+        modification.setModificationType(AccountBalanceModificationType.getForOrdinal(Integer.parseInt(mod.get("type").toString())));
+        modification.setDescription(mod.get("description").toString());
+        modification.setProcessed(false);
+        modification.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+
+        return this.accountBalanceModificationRepository.save(modification);
     }
 }

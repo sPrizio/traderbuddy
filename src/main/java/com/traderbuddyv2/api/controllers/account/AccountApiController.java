@@ -9,6 +9,7 @@ import com.traderbuddyv2.api.models.records.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
+import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.services.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,9 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+
+import static com.traderbuddyv2.core.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API Controller for {@link Account}
@@ -29,6 +33,8 @@ import java.util.List;
 @RequestMapping("${base.api.controller.endpoint}/account")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
+
+    private static final List<String> REQUIRED_JSON_VALUES = List.of("modification");
 
     @Resource(name = "accountBalanceModificationDTOConverter")
     private AccountBalanceModificationDTOConverter accountBalanceModificationDTOConverter;
@@ -89,5 +95,36 @@ public class AccountApiController extends AbstractApiController {
                 ),
                 StringUtils.EMPTY
         );
+    }
+
+
+    //  ----------------- POST REQUESTS -----------------
+
+    /**
+     * Returns a new {@link AccountBalanceModification}
+     *
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PostMapping("/create-modification")
+    public StandardJsonResponse createAccountBalanceModification(final @RequestBody Map<String, Object> requestBody) {
+        validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+        return new StandardJsonResponse(true, this.accountBalanceModificationDTOConverter.convert(this.accountService.createAccountBalanceModification(requestBody)), StringUtils.EMPTY);
+    }
+
+
+    //  ----------------- DELETE REQUESTS -----------------
+
+    /**
+     * Deletes an existing {@link AccountBalanceModification}
+     *
+     * @param uid uid
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @DeleteMapping("/delete-modification")
+    public StandardJsonResponse deleteAccountBalanceModification(final @RequestParam("uid") String uid) {
+        return new StandardJsonResponse(true, this.accountService.deleteAccountBalanceModification(uid), StringUtils.EMPTY);
     }
 }

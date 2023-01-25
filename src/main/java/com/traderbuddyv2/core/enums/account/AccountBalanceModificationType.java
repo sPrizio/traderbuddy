@@ -20,4 +20,20 @@ public enum AccountBalanceModificationType {
     AccountBalanceModificationType(final String description) {
         this.description = description;
     }
+
+    /**
+     * Returns a {@link AccountBalanceModificationType} for the given ordinal
+     *
+     * @param ordinal enum ordinal
+     * @return {@link AccountBalanceModificationType}
+     */
+    public static AccountBalanceModificationType getForOrdinal(final int ordinal) {
+        return switch (ordinal) {
+            case 0 -> ONE_TIME_DEPOSIT;
+            case 1 -> ONE_TIME_WITHDRAWAL;
+            case 2 -> RECURRING_DEPOSIT;
+            case 3 -> RECURRING_WITHDRAWAL;
+            default -> null;
+        };
+    }
 }

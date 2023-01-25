@@ -68,7 +68,7 @@ public class TradeServiceTest extends AbstractGenericTest {
         testUser.setAccount(testAccount);
 
         Mockito.when(this.tradeRepository.findAllByTradeTypeAndAccountOrderByTradeOpenTimeAsc(TradeType.BUY, testAccount)).thenReturn(List.of(TEST_TRADE_1));
-        Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2, testAccount)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
+        Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST1.plusYears(1).toLocalDate().atStartOfDay(), testAccount)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("testId1", testAccount)).thenReturn(TEST_TRADE_1);
         Mockito.when(this.tradeRepository.findAllByProcessedAndAccountAndRelevantIsTrueOrderByTradeOpenTimeAsc(false, testAccount)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(testUser);
