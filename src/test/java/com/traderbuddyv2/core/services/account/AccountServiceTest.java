@@ -4,12 +4,14 @@ import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +52,9 @@ public class AccountServiceTest extends AbstractGenericTest {
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
     @MockBean
+    private TradeService tradeService;
+
+    @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Autowired
@@ -64,6 +69,7 @@ public class AccountServiceTest extends AbstractGenericTest {
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid("test")).thenReturn(1L);
         Mockito.when(this.accountBalanceModificationRepository.save(any())).thenReturn(generateTestAccountBalanceModification());
         Mockito.when(this.accountBalanceModificationRepository.findById(1L)).thenReturn(Optional.of(generateTestAccountBalanceModification()));
+        Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, true)).thenReturn(List.of(generateTestBuyTrade()));
     }
 
 
@@ -130,6 +136,15 @@ public class AccountServiceTest extends AbstractGenericTest {
     @Test
     public void test_findAccountBalanceModificationForUid_success() {
         assertThat(this.accountService.findAccountBalanceModificationForUid("test"))
+                .isNotEmpty();
+    }
+
+
+    //  ----------------- getPromoPayments -----------------
+
+    @Test
+    public void test_getPromoPayments_success() {
+        assertThat(this.accountService.getPromoPayments())
                 .isNotEmpty();
     }
 

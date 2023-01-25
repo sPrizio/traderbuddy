@@ -5,6 +5,7 @@ import com.traderbuddyv2.api.converters.account.AccountBalanceModificationDTOCon
 import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.api.models.dto.account.AccountBalanceModificationDTO;
 import com.traderbuddyv2.api.models.records.AccountOverview;
+import com.traderbuddyv2.api.models.records.PromotionalPaymentTotals;
 import com.traderbuddyv2.api.models.records.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
@@ -95,6 +96,17 @@ public class AccountApiController extends AbstractApiController {
                 ),
                 StringUtils.EMPTY
         );
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link PromotionalPaymentTotals}
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/promo-payments")
+    public StandardJsonResponse getPromotionalPayments() {
+        return new StandardJsonResponse(true, new PromotionalPaymentTotals(this.accountService.getPromoPayments()), StringUtils.EMPTY);
     }
 
 

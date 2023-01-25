@@ -3,15 +3,18 @@ package com.traderbuddyv2.core.services.account;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.trades.TradeType;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -19,12 +22,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -43,6 +42,9 @@ public class AccountService {
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
+
+    @Resource(name = "tradeService")
+    private TradeService tradeService;
 
     @Resource(name = "traderBuddyUserDetailsService")
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
@@ -146,6 +148,15 @@ public class AccountService {
         }
 
         return false;
+    }
+
+    /**
+     * Returns a {@link List} of {@link Trade}s that are promotional payments {@link TradeType}
+     *
+     * @return {@link List} of {@link Trade}s
+     */
+    public List<Trade> getPromoPayments() {
+        return this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, true).stream().sorted(Comparator.comparing(Trade::getTradeOpenTime).reversed()).toList();
     }
 
 

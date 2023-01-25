@@ -62,6 +62,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountService.findAccountBalanceHistory(any(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
         Mockito.when(this.accountService.deleteAccountBalanceModification(anyString())).thenReturn(true);
         Mockito.when(this.accountService.createAccountBalanceModification(any())).thenReturn(generateTestAccountBalanceModification());
+        Mockito.when(this.accountService.getPromoPayments()).thenReturn(List.of(generateTestBuyTrade()));
     }
 
 
@@ -104,6 +105,17 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/account/balance-history").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getPromotionalPayments -----------------
+
+    @Test
+    public void test_getPromotionalPayments_success() throws Exception {
+
+        this.mockMvc.perform(get("/api/v1/account/promo-payments"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.total", is(14.85)));
     }
 
 
