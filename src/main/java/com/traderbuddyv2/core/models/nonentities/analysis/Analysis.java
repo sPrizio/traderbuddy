@@ -21,7 +21,7 @@ public abstract class Analysis {
      * @param trade {@link Trade}
      * @return {@link Double}
      */
-    protected double getPips(final Trade trade) {
+    public double getPips(final Trade trade) {
         if (trade.getTradeType().equals(TradeType.BUY)) {
             return BigDecimal.valueOf(trade.getClosePrice()).subtract(BigDecimal.valueOf(trade.getOpenPrice())).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
         } else {

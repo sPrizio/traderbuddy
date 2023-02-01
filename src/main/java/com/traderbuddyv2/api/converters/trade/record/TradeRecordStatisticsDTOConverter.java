@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.converters.trade.record;
 import com.traderbuddyv2.api.converters.GenericDTOConverter;
 import com.traderbuddyv2.api.models.dto.trade.record.TradeRecordStatisticsDTO;
 import com.traderbuddyv2.api.models.records.IntradayEquityCurvePoint;
+import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -114,7 +115,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
         final List<Trade> trades =
                 this.tradeService.findAllTradesWithinTimespan(entity.getTradeRecord().getStartDate().atStartOfDay(), entity.getTradeRecord().getEndDate().atStartOfDay(), false)
                         .stream()
-                        .filter(trade -> trade.getTradeOpenTime().toLocalDate().isEqual(entity.getTradeRecord().getStartDate()))
+                        .filter(trade -> !entity.getTradeRecord().getAggregateInterval().equals(AggregateInterval.DAILY) || trade.getTradeOpenTime().toLocalDate().isEqual(entity.getTradeRecord().getStartDate()))
                         .toList();
 
         if (CollectionUtils.isNotEmpty(trades)) {

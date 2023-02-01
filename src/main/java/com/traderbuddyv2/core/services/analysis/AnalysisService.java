@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.services.analysis;
 
+import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
@@ -183,6 +184,22 @@ public class AnalysisService {
         }
 
         return buckets;
+    }
+
+    //  TODO : TEST
+
+    /**
+     * Returns an {@link IrrelevantTradeTotals} for the given start & end date
+     *
+     * @param start start
+     * @param end end
+     * @return {@link IrrelevantTradeTotals}
+     */
+    public IrrelevantTradeTotals getIrrelevantTrades(final LocalDate start, final LocalDate end) {
+        final List<Trade> current = this.tradeService.findAllTradesWithinTimespan(start.atStartOfDay(), end.atStartOfDay(), true).stream().filter(trade -> !trade.isRelevant()).toList();
+        final List<Trade> previous = this.tradeService.findAllTradesWithinTimespan(start.minusMonths(1).atStartOfDay(), start.atStartOfDay(), true).stream().filter(trade -> !trade.isRelevant()).toList();
+
+        return new IrrelevantTradeTotals(current, previous);
     }
 
 

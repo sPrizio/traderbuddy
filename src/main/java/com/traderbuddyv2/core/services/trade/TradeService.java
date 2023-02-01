@@ -101,10 +101,10 @@ public class TradeService {
 
         //  sometimes trades can be opened on 1 day and closed on another, we use the start day as the source of truth
         if (!includeNonRelevant) {
-            return this.tradeRepository.findAllRelevantTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
+            return this.tradeRepository.findAllRelevantTradesWithinDate(start, end.toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
         }
 
-        return this.tradeRepository.findAllTradesWithinDate(start, start.plusYears(1).toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
+        return this.tradeRepository.findAllTradesWithinDate(start, end.toLocalDate().atStartOfDay(), this.traderBuddyUserDetailsService.getCurrentUser().getAccount(), PageRequest.of(page, pageSize));
     }
 
     /**

@@ -127,4 +127,19 @@ public class AnalysisApiController extends AbstractApiController {
         validate(start, end);
         return new StandardJsonResponse(true, this.analysisService.getWinningDaysBreakdown((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), bucketSize), StringUtils.EMPTY);
     }
+
+    //  TODO : TEST
+    /**
+     * Obtains information about irrelevant trades
+     *
+     * @param start start date
+     * @param end end date
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/irrelevant-trades")
+    public StandardJsonResponse getIrrelevantTrades(final @RequestParam("start") String start, final @RequestParam("end") String end) {
+        validate(start, end);
+        return new StandardJsonResponse(true, this.analysisService.getIrrelevantTrades(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), StringUtils.EMPTY);
+    }
 }
