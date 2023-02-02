@@ -109,4 +109,15 @@ public class AnalysisServiceTest extends AbstractGenericTest {
                 .size()
                 .isEqualTo(4);
     }
+
+
+    //  ----------------- getIrrelevantTrades -----------------
+
+    @Test
+    public void test_getIrrelevantTrades_success() {
+        assertThat(this.analysisService.getIrrelevantTrades(LocalDate.of(2023, 2, 2), LocalDate.of(2023, 2, 18)))
+                .isNotNull()
+                .extracting("current")
+                .isNotNull();
+    }
 }
