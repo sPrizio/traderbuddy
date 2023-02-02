@@ -49,6 +49,6 @@ public class RankDTO implements GenericDTO, Comparable<RankDTO> {
 
     @Override
     public int compareTo(RankDTO o) {
-        return Integer.compare(this.level, o.level);
+        return Integer.compare(o.level, this.level);
     }
 }

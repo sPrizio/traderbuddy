@@ -128,7 +128,6 @@ public class AnalysisApiController extends AbstractApiController {
         return new StandardJsonResponse(true, this.analysisService.getWinningDaysBreakdown((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), bucketSize), StringUtils.EMPTY);
     }
 
-    //  TODO : TEST
     /**
      * Obtains information about irrelevant trades
      *

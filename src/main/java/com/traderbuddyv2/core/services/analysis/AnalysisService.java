@@ -186,8 +186,6 @@ public class AnalysisService {
         return buckets;
     }
 
-    //  TODO : TEST
-
     /**
      * Returns an {@link IrrelevantTradeTotals} for the given start & end date
      *
