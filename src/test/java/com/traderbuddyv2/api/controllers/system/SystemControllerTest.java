@@ -34,17 +34,17 @@ public class SystemControllerTest {
     private MockMvc mockMvc;
 
 
-    //  ----------------- getCurrentUser -----------------
+    //  ----------------- postContact -----------------
 
     @Test
-    public void test_postCreateRetrospective_badJsonIntegrity() throws Exception {
+    public void test_postContact_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/system/contact").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
-    public void test_postCreateRetrospective_success() throws Exception {
+    public void test_postContact_success() throws Exception {
 
         Map<String, Object> data =
                 Map.of(
@@ -58,6 +58,35 @@ public class SystemControllerTest {
                 );
 
         this.mockMvc.perform(post("/api/v1/system/contact").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- postReport -----------------
+
+    @Test
+    public void test_postReport_badJsonIntegrity() throws Exception {
+        this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    public void test_postReport_success() throws Exception {
+
+        Map<String, Object> data =
+                Map.of(
+                        "report",
+                        Map.of(
+                                "name", "Test User",
+                                "email", "test@email.com",
+                                "severity", "moderate",
+                                "message", "Hello There, General Kenobi"
+                        )
+                );
+
+        this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }
