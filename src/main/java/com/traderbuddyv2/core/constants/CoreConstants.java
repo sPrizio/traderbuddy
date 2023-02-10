@@ -68,6 +68,12 @@ public class CoreConstants {
      */
     public static final int DEFAULT_SKILL_STEP_INCREMENT = 100;
 
+    /**
+     * Global Phone number regex
+     * (1) = country, (2) = area code, (3) = exchange, (4) = subscriber, (5) = extension where (x) indicates matcher group
+     */
+    public static final String PHONE_NUMBER_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
+
     public static class Validation {
 
         private Validation() {
