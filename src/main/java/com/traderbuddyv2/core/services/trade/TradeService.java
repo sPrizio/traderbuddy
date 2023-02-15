@@ -1,7 +1,7 @@
 package com.traderbuddyv2.core.services.trade;
 
 import com.traderbuddyv2.core.constants.CoreConstants;
-import com.traderbuddyv2.core.enums.trades.TradeType;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.repositories.trade.TradeRepository;

@@ -11,8 +11,8 @@ import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.levelling.rank.BaseRank;
@@ -61,7 +61,7 @@ public abstract class AbstractGenericTest {
         Trade trade = new Trade();
 
         trade.setTradeId("testId1");
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
         trade.setResultOfTrade("Winner winner chicken dinner");
         trade.setTradeType(TradeType.BUY);
         trade.setClosePrice(13098.67);
@@ -83,7 +83,7 @@ public abstract class AbstractGenericTest {
         Trade trade = new Trade();
 
         trade.setTradeId("testId2");
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
         trade.setResultOfTrade("Loser like a real loser");
         trade.setTradeType(TradeType.SELL);
         trade.setClosePrice(13156.12);
@@ -109,7 +109,7 @@ public abstract class AbstractGenericTest {
             Trade trade = new Trade();
 
             trade.setTradeId("testId" + test.getDayOfYear());
-            trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
+            trade.setTradePlatform(TradePlatform.CMC_MARKETS);
             trade.setResultOfTrade(StringUtils.EMPTY);
             trade.setTradeType(TradeType.BUY);
             trade.setClosePrice(0.0);

@@ -2,8 +2,8 @@ package com.traderbuddyv2.api.converters.trade;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
@@ -65,7 +65,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
                 .extracting("tradeId", "tradingPlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit", "reasonForEntrance", "resultOfTrade")
                 .containsExactly(
                         "testId1",
-                        TradingPlatform.CMC_MARKETS,
+                        TradePlatform.CMC_MARKETS,
                         TradeType.BUY,
                         LocalDateTime.of(2022, 8, 24, 11, 32, 58),
                         LocalDateTime.of(2022, 8, 24, 11, 37, 24),
@@ -90,7 +90,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
                 .extracting("tradeId", "tradingPlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit", "reasonForEntrance", "resultOfTrade")
                 .containsExactly(
                         "testId1",
-                        TradingPlatform.CMC_MARKETS,
+                        TradePlatform.CMC_MARKETS,
                         TradeType.BUY,
                         LocalDateTime.of(2022, 8, 24, 11, 32, 58),
                         LocalDateTime.of(2022, 8, 24, 11, 37, 24),

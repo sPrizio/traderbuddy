@@ -1,7 +1,7 @@
 package com.traderbuddyv2.importing.services;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
@@ -215,7 +215,7 @@ public class CMCTradesImportService implements ImportService {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
         trade.setResultOfTrade(StringUtils.EMPTY);
         trade.setProduct(wrapper.product());
         trade.setTradeType(tradeType);
@@ -243,7 +243,7 @@ public class CMCTradesImportService implements ImportService {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
         trade.setResultOfTrade(StringUtils.EMPTY);
         trade.setTradeType(TradeType.PROMOTIONAL_PAYMENT);
         trade.setClosePrice(0.0);

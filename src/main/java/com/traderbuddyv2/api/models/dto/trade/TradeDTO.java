@@ -2,8 +2,8 @@ package com.traderbuddyv2.api.models.dto.trade;
 
 import com.traderbuddyv2.api.models.dto.GenericDTO;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class TradeDTO implements GenericDTO {
 
     @Getter
     @Setter
-    private TradingPlatform tradingPlatform;
+    private TradePlatform tradePlatform;
 
     @Getter
     @Setter

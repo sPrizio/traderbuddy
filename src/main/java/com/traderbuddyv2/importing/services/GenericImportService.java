@@ -1,6 +1,6 @@
 package com.traderbuddyv2.importing.services;
 
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,21 +31,21 @@ public class GenericImportService {
     //  METHODS
 
     /**
-     * Imports a {@link MultipartFile} for the given {@link TradingPlatform}
+     * Imports a {@link MultipartFile} for the given {@link TradePlatform}
      *
      * @param inputStream {@link InputStream}
      * @param delimiter unit delimiter
-     * @param platform {@link TradingPlatform}
+     * @param platform {@link TradePlatform}
      * @return import message
      */
-    public String importTrades(InputStream inputStream, Character delimiter, TradingPlatform platform) {
+    public String importTrades(InputStream inputStream, Character delimiter, TradePlatform platform) {
 
         validateParameterIsNotNull(inputStream, "import stream cannot be null");
         validateParameterIsNotNull(delimiter, "delimiter cannot be null");
         validateParameterIsNotNull(platform, "trading platform cannot be null");
 
         try {
-            if (platform.equals(TradingPlatform.CMC_MARKETS)) {
+            if (platform.equals(TradePlatform.CMC_MARKETS)) {
                 this.cmcTradesImportService.importTrades(inputStream, delimiter);
                 return StringUtils.EMPTY;
             }

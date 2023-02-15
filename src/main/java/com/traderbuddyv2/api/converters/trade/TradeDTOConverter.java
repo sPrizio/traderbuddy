@@ -42,7 +42,7 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
 
         tradeDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         tradeDTO.setTradeId(entity.getTradeId());
-        tradeDTO.setTradingPlatform(entity.getTradingPlatform());
+        tradeDTO.setTradePlatform(entity.getTradePlatform());
         tradeDTO.setProduct(entity.getProduct());
         tradeDTO.setResultOfTrade(entity.getResultOfTrade());
         tradeDTO.setTradeType(entity.getTradeType());

@@ -1,7 +1,7 @@
 package com.traderbuddyv2.core.models.entities.trade;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class Trade implements GenericEntity {
     @Getter
     @Setter
     @Column
-    private TradingPlatform tradingPlatform;
+    private TradePlatform tradePlatform;
 
     @Getter
     @Setter
