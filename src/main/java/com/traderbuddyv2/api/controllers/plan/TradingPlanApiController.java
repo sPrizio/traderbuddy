@@ -3,7 +3,7 @@ package com.traderbuddyv2.api.controllers.plan;
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.plan.TradingPlanDTOConverter;
 import com.traderbuddyv2.api.models.dto.plans.TradingPlanDTO;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;

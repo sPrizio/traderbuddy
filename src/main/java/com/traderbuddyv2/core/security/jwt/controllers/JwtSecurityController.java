@@ -2,7 +2,7 @@ package com.traderbuddyv2.core.security.jwt.controllers;
 
 import com.traderbuddyv2.api.converters.security.UserDTOConverter;
 import com.traderbuddyv2.api.models.dto.security.UserDTO;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.security.jwt.authentication.JwtTokenManager;
 import com.traderbuddyv2.core.security.jwt.models.JwtRequestModel;
 import com.traderbuddyv2.core.security.jwt.models.JwtResponseModel;

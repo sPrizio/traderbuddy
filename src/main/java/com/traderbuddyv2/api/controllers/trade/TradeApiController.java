@@ -2,7 +2,7 @@ package com.traderbuddyv2.api.controllers.trade;
 
 import com.traderbuddyv2.api.converters.trade.TradeDTOConverter;
 import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;

@@ -2,7 +2,7 @@ package com.traderbuddyv2.api.controllers.retrospective;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.retrospective.RetrospectiveDTOConverter;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;

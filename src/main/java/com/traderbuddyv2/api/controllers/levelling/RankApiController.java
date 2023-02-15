@@ -1,7 +1,7 @@
 package com.traderbuddyv2.api.controllers.levelling;
 
 import com.traderbuddyv2.api.converters.levelling.rank.BaseRankDTOConverter;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.models.entities.levelling.rank.BaseRank;
 import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.services.levelling.rank.RankService;

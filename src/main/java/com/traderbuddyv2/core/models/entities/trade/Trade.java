@@ -2,6 +2,8 @@ package com.traderbuddyv2.core.models.entities.trade;
 
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
+import com.traderbuddyv2.core.enums.trade.tag.TradeEntryReason;
+import com.traderbuddyv2.core.enums.trade.tag.TradeResult;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Class representation of a trade taken in the market
@@ -77,15 +80,13 @@ public class Trade implements GenericEntity {
 
     @Getter
     @Setter
-    @Lob
-    @Column
-    private String reasonForEntrance;
+    @ElementCollection
+    private List<TradeEntryReason> reasonsForEntry;
 
     @Getter
     @Setter
-    @Lob
-    @Column
-    private String resultOfTrade;
+    @ElementCollection
+    private List<TradeResult> resultsOfTrade;
 
     @Getter
     @Setter

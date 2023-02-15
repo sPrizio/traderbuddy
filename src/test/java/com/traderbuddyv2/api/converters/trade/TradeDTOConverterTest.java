@@ -62,7 +62,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
     public void test_convert_success() {
         assertThat(this.tradeDTOConverter.convert(generateTestBuyTrade()))
                 .isNotNull()
-                .extracting("tradeId", "tradingPlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit", "reasonForEntrance", "resultOfTrade")
+                .extracting("tradeId", "tradePlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit")
                 .containsExactly(
                         "testId1",
                         TradePlatform.CMC_MARKETS,
@@ -72,9 +72,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
                         0.75,
                         13083.41,
                         13098.67,
-                        14.85,
-                        "I have my reasons",
-                        "Winner winner chicken dinner"
+                        14.85
                 );
 
     }
@@ -87,7 +85,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
         assertThat(this.tradeDTOConverter.convertAll(List.of(generateTestBuyTrade())))
                 .isNotEmpty()
                 .first()
-                .extracting("tradeId", "tradingPlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit", "reasonForEntrance", "resultOfTrade")
+                .extracting("tradeId", "tradePlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit")
                 .containsExactly(
                         "testId1",
                         TradePlatform.CMC_MARKETS,
@@ -97,9 +95,7 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
                         0.75,
                         13083.41,
                         13098.67,
-                        14.85,
-                        "I have my reasons",
-                        "Winner winner chicken dinner"
+                        14.85
                 );
     }
 }

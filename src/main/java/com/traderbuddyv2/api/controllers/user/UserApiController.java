@@ -2,7 +2,7 @@ package com.traderbuddyv2.api.controllers.user;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.security.UserDTOConverter;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import org.apache.commons.lang3.StringUtils;

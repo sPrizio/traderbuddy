@@ -216,7 +216,7 @@ public class CMCTradesImportService implements ImportService {
 
         trade.setTradeId(wrapper.orderNumber());
         trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setResultOfTrade(StringUtils.EMPTY);
+        trade.setResultsOfTrade(List.of());
         trade.setProduct(wrapper.product());
         trade.setTradeType(tradeType);
         trade.setClosePrice(0.0);
@@ -225,7 +225,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setLotSize(wrapper.units());
         trade.setNetProfit(0.0);
         trade.setOpenPrice(wrapper.price());
-        trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setReasonsForEntry(List.of());
         trade.setRelevant(true);
         trade.setProcessed(false);
 
@@ -244,7 +244,7 @@ public class CMCTradesImportService implements ImportService {
 
         trade.setTradeId(wrapper.orderNumber());
         trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setResultOfTrade(StringUtils.EMPTY);
+        trade.setResultsOfTrade(List.of());
         trade.setTradeType(TradeType.PROMOTIONAL_PAYMENT);
         trade.setClosePrice(0.0);
         trade.setTradeCloseTime(wrapper.dateTime());
@@ -252,7 +252,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setLotSize(0.0);
         trade.setNetProfit(wrapper.amount());
         trade.setOpenPrice(0.0);
-        trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setReasonsForEntry(List.of());
         trade.setRelevant(true);
 
         return trade;

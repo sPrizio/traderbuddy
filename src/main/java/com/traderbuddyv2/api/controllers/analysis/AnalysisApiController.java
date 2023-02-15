@@ -1,7 +1,7 @@
 package com.traderbuddyv2.api.controllers.analysis;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;

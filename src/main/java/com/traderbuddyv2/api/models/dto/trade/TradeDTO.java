@@ -2,6 +2,8 @@ package com.traderbuddyv2.api.models.dto.trade;
 
 import com.traderbuddyv2.api.models.dto.GenericDTO;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
+import com.traderbuddyv2.api.models.records.wrapper.TradeReasonWrapper;
+import com.traderbuddyv2.api.models.records.wrapper.TradeResultWrapper;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
@@ -9,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * A DTO representation of a {@link Trade}
@@ -68,11 +71,11 @@ public class TradeDTO implements GenericDTO {
 
     @Getter
     @Setter
-    private String reasonForEntrance;
+    private List<TradeReasonWrapper> reasonForEntrance;
 
     @Getter
     @Setter
-    private String resultOfTrade;
+    private List<TradeResultWrapper> resultOfTrade;
 
     @Getter
     @Setter
