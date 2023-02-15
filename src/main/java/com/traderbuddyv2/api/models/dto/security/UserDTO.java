@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.List;
+
 /**
  * A DTO representation of a {@link User}
  *
@@ -37,4 +39,8 @@ public class UserDTO implements GenericDTO {
     @Getter
     @Setter
     private AccountDTO account;
+
+    @Getter
+    @Setter
+    private List<String> roles;
 }
