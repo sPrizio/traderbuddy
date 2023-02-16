@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +33,28 @@ public class SystemControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+
+    //  ----------------- getEntryTags -----------------
+
+    @Test
+    public void test_getEntryTags_success() throws Exception {
+
+        this.mockMvc.perform(get("/api/v1/system/entry-tags"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getResultTags -----------------
+
+    @Test
+    public void test_getResultTags_success() throws Exception {
+
+        this.mockMvc.perform(get("/api/v1/system/result-tags"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
 
 
     //  ----------------- postContact -----------------

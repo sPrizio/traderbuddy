@@ -3,7 +3,6 @@ package com.traderbuddyv2.api.controllers.trade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.constants.ApiConstants;
-import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;

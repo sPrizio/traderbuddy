@@ -11,16 +11,20 @@ import lombok.Getter;
  * @version 1.0
  */
 public enum TradeEntryReason {
+    WEAKNESS("w", "Weakness", TradeDirection.BEARISH),
+    STRENGTH("str", "Strength", TradeDirection.BULLISH),
+    RESISTANCE("r", "Resistance", TradeDirection.BEARISH),
+    SUPPORT("s", "Support", TradeDirection.BULLISH),
     DOUBLE_TOP("dt", "Double Top", TradeDirection.BEARISH),
     DOUBLE_BOTTOM("db", "Double Bottom", TradeDirection.BULLISH),
-    MULTIPLE_TOP("mt", "Multiple Top", TradeDirection.BEARISH),
-    MULTIPLE_BOTTOM("mb", "Multiple Bottom", TradeDirection.BULLISH),
-    PULLBACK_DOWNTREND("p_bear", "Pullback (Downtrend)", TradeDirection.BEARISH),
-    PULLBACK_UPTREND("p_bull", "Pullback (Uptrend)", TradeDirection.BULLISH),
-    BREAKOUT_DOWNWARD("brk_bear", "Breakout (Downward)", TradeDirection.BEARISH),
-    BREAKOUT_UPWARD("brk_bull", "Breakout (Upward)", TradeDirection.BULLISH),
-    FAILED_BREAKOUT_UPWARD("f_brk_bull", "Failed Breakout (Upward)", TradeDirection.BEARISH),
-    FAILED_BREAKOUT_DOWNWARD("f_brk_bear", "Failed Breakout (Downward)", TradeDirection.BULLISH);
+    HEAD_AND_SHOULDERS("hs", "Head and Shoulders", TradeDirection.BEARISH),
+    INVERSE_HEAD_AND_SHOULDERS("ihs", "Inverse Head and Shoulders", TradeDirection.BULLISH),
+    PULLBACK_DOWNTREND("p_bear", "Downtrend Pullback", TradeDirection.BEARISH),
+    PULLBACK_UPTREND("p_bull", "Uptrend Pullback", TradeDirection.BULLISH),
+    BREAKOUT_DOWNWARD("brk_bear", "Downward Breakout", TradeDirection.BEARISH),
+    BREAKOUT_UPWARD("brk_bull", "Upward Breakout", TradeDirection.BULLISH),
+    FAILED_BREAKOUT_UPWARD("f_brk_bear", "Failed Upward Breakout", TradeDirection.BEARISH),
+    FAILED_BREAKOUT_DOWNWARD("f_brk_bull", "Failed Downward Breakout", TradeDirection.BULLISH);
 
     @Getter
     private final String code;

@@ -14,8 +14,6 @@ import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.swing.text.html.Option;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**

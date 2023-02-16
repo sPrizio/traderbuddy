@@ -2,9 +2,14 @@ package com.traderbuddyv2.api.controllers.system;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.wrapper.TradeReasonWrapper;
+import com.traderbuddyv2.api.models.records.wrapper.TradeResultWrapper;
+import com.traderbuddyv2.core.enums.trade.tag.TradeEntryReason;
+import com.traderbuddyv2.core.enums.trade.tag.TradeResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +28,29 @@ public class SystemController extends AbstractApiController {
 
 
     //  METHODS
+
+    //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Obtains all {@link TradeEntryReason}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @GetMapping("/entry-tags")
+    public StandardJsonResponse getEntryTags() {
+        return new StandardJsonResponse(true, Arrays.stream(TradeEntryReason.values()).map(TradeReasonWrapper::new).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Obtains all {@link TradeResult}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @GetMapping("/result-tags")
+    public StandardJsonResponse getResultTags() {
+        return new StandardJsonResponse(true, Arrays.stream(TradeResult.values()).map(TradeResultWrapper::new).toList(), StringUtils.EMPTY);
+    }
+
 
     //  ----------------- POST REQUESTS -----------------
 
