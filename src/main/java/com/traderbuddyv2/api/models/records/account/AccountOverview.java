@@ -1,4 +1,4 @@
-package com.traderbuddyv2.api.models.records;
+package com.traderbuddyv2.api.models.records.account;
 
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.core.models.entities.account.Account;

@@ -1,7 +1,7 @@
 package com.traderbuddyv2.importing.services;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
@@ -215,8 +215,8 @@ public class CMCTradesImportService implements ImportService {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
-        trade.setResultOfTrade(StringUtils.EMPTY);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
+        trade.setResultsOfTrade(List.of());
         trade.setProduct(wrapper.product());
         trade.setTradeType(tradeType);
         trade.setClosePrice(0.0);
@@ -225,7 +225,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setLotSize(wrapper.units());
         trade.setNetProfit(0.0);
         trade.setOpenPrice(wrapper.price());
-        trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setReasonsForEntry(List.of());
         trade.setRelevant(true);
         trade.setProcessed(false);
 
@@ -243,8 +243,8 @@ public class CMCTradesImportService implements ImportService {
         Trade trade = new Trade();
 
         trade.setTradeId(wrapper.orderNumber());
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
-        trade.setResultOfTrade(StringUtils.EMPTY);
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
+        trade.setResultsOfTrade(List.of());
         trade.setTradeType(TradeType.PROMOTIONAL_PAYMENT);
         trade.setClosePrice(0.0);
         trade.setTradeCloseTime(wrapper.dateTime());
@@ -252,7 +252,7 @@ public class CMCTradesImportService implements ImportService {
         trade.setLotSize(0.0);
         trade.setNetProfit(wrapper.amount());
         trade.setOpenPrice(0.0);
-        trade.setReasonForEntrance(StringUtils.EMPTY);
+        trade.setReasonsForEntry(List.of());
         trade.setRelevant(true);
 
         return trade;

@@ -1,4 +1,4 @@
-package com.traderbuddyv2.core.enums.trades;
+package com.traderbuddyv2.core.enums.trade.info;
 
 /**
  * Enum representing the type of trade that can be taken

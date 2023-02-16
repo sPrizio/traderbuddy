@@ -1,4 +1,4 @@
-package com.traderbuddyv2.api.models.records;
+package com.traderbuddyv2.api.models.records.json;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

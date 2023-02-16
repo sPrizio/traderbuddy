@@ -1,6 +1,6 @@
 package com.traderbuddyv2.core.repositories.trade;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import org.springframework.data.domain.Page;

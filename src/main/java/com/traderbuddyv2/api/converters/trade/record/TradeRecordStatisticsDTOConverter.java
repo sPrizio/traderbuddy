@@ -2,7 +2,7 @@ package com.traderbuddyv2.api.converters.trade.record;
 
 import com.traderbuddyv2.api.converters.GenericDTOConverter;
 import com.traderbuddyv2.api.models.dto.trade.record.TradeRecordStatisticsDTO;
-import com.traderbuddyv2.api.models.records.IntradayEquityCurvePoint;
+import com.traderbuddyv2.api.models.records.misc.IntradayEquityCurvePoint;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;

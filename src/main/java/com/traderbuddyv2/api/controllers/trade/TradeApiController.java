@@ -2,10 +2,10 @@ package com.traderbuddyv2.api.controllers.trade;
 
 import com.traderbuddyv2.api.converters.trade.TradeDTOConverter;
 import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -164,13 +164,13 @@ public class TradeApiController {
     @PostMapping("/import-trades")
     public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file, final @RequestParam("delimiter") Character delimiter, final @RequestParam("tradePlatform") String platform) throws IOException {
 
-        if (!EnumUtils.isValidEnumIgnoreCase(TradingPlatform.class, platform)) {
+        if (!EnumUtils.isValidEnumIgnoreCase(TradePlatform.class, platform)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid trading platform or is not currently supported", platform));
         }
 
         validateImportFileExtension(file, "csv", "The given file %s was not a csv file", file.getOriginalFilename());
 
-        String result = this.genericImportService.importTrades(file.getInputStream(), delimiter, TradingPlatform.valueOf(platform.toUpperCase()));
+        String result = this.genericImportService.importTrades(file.getInputStream(), delimiter, TradePlatform.valueOf(platform.toUpperCase()));
         if (StringUtils.isEmpty(result)) {
             return new StandardJsonResponse(true, true, StringUtils.EMPTY);
         }

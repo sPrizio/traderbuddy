@@ -1,7 +1,7 @@
 package com.traderbuddyv2.api.controllers.system;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 

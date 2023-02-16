@@ -3,7 +3,7 @@ package com.traderbuddyv2.api.controllers.news;
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.news.MarketNewsDTOConverter;
 import com.traderbuddyv2.api.models.dto.news.MarketNewsDTO;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.models.entities.news.MarketNews;
 import com.traderbuddyv2.core.services.news.MarketNewsService;

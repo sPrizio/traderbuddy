@@ -1,6 +1,5 @@
 package com.traderbuddyv2.core.services.analysis;
 
-import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
@@ -11,6 +10,7 @@ import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformanc
 import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradeRecordPerformanceBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
+import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;

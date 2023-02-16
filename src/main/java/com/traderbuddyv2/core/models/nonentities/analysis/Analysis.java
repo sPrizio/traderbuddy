@@ -1,6 +1,6 @@
 package com.traderbuddyv2.core.models.nonentities.analysis;
 
-import com.traderbuddyv2.core.enums.trades.TradeType;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 
 import java.math.BigDecimal;

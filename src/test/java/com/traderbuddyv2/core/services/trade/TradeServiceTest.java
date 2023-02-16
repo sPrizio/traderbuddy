@@ -2,7 +2,7 @@ package com.traderbuddyv2.core.services.trade;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
-import com.traderbuddyv2.core.enums.trades.TradeType;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.NoResultFoundException;
 import com.traderbuddyv2.core.models.entities.account.Account;

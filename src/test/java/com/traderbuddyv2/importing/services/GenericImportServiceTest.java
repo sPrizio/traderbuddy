@@ -1,6 +1,6 @@
 package com.traderbuddyv2.importing.services;
 
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.importing.exceptions.TradeImportFailureException;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class GenericImportServiceTest {
     @Test
     public void test_importTrades_missingParamFile() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.genericImportService.importTrades(null, '|', TradingPlatform.CMC_MARKETS))
+                .isThrownBy(() -> this.genericImportService.importTrades(null, '|', TradePlatform.CMC_MARKETS))
                 .withMessage("import stream cannot be null");
     }
 
@@ -54,7 +54,7 @@ public class GenericImportServiceTest {
     public void test_importTrades_missingParamDelimiter() throws Exception {
         InputStream inputStream = TEST_FILE.getInputStream();
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.genericImportService.importTrades(inputStream, null, TradingPlatform.CMC_MARKETS))
+                .isThrownBy(() -> this.genericImportService.importTrades(inputStream, null, TradePlatform.CMC_MARKETS))
                 .withMessage("delimiter cannot be null");
     }
 
@@ -68,14 +68,14 @@ public class GenericImportServiceTest {
 
     @Test
     public void test_importTrades_failure_platformNotSupported() throws Exception {
-        assertThat(this.genericImportService.importTrades(TEST_FILE.getInputStream(), ',', TradingPlatform.UNDEFINED))
+        assertThat(this.genericImportService.importTrades(TEST_FILE.getInputStream(), ',', TradePlatform.UNDEFINED))
                 .isNotEmpty()
                 .isEqualTo("Trading platform UNDEFINED is not currently supported");
     }
 
     @Test
     public void test_importTrades_success_cmc() throws Exception {
-        assertThat(this.genericImportService.importTrades(TEST_FILE.getInputStream(), ',', TradingPlatform.CMC_MARKETS))
+        assertThat(this.genericImportService.importTrades(TEST_FILE.getInputStream(), ',', TradePlatform.CMC_MARKETS))
                 .isEmpty();
     }
 }

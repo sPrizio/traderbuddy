@@ -2,7 +2,7 @@ package com.traderbuddyv2.api.controllers.advice;
 
 import com.traderbuddyv2.api.constants.ApiConstants;
 import com.traderbuddyv2.api.exceptions.InvalidEnumException;
-import com.traderbuddyv2.api.models.records.StandardJsonResponse;
+import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;

@@ -1,7 +1,7 @@
 package com.traderbuddyv2.api.facades;
 
 import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
-import com.traderbuddyv2.api.models.records.AccountOverview;
+import com.traderbuddyv2.api.models.records.account.AccountOverview;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;

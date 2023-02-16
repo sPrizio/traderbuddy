@@ -3,12 +3,14 @@ package com.traderbuddyv2.api.controllers.trade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.constants.ApiConstants;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
+import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.services.GenericImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -77,10 +79,13 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
 
+    @MockBean
+    private TradeRecordService tradeRecordService;
+
     @Before
     public void setUp() {
         Mockito.when(this.genericImportService.importTrades(any(), anyChar(), any())).thenReturn(StringUtils.EMPTY);
-        Mockito.when(this.genericImportService.importTrades(any(), eq('|'), eq(TradingPlatform.UNDEFINED))).thenReturn("Error Message");
+        Mockito.when(this.genericImportService.importTrades(any(), eq('|'), eq(TradePlatform.UNDEFINED))).thenReturn("Error Message");
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY, true)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeService.findTradeByTradeId("testId1")).thenReturn(Optional.of(TEST_TRADE_1));
@@ -90,6 +95,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade())));
         Mockito.when(this.tradeService.findTradeRecap(anyString())).thenReturn(generateIntradayDto());
+        Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of());
     }
 
 

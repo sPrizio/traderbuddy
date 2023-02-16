@@ -3,7 +3,7 @@ package com.traderbuddyv2;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.api.models.dto.plans.DepositPlanDTO;
 import com.traderbuddyv2.api.models.dto.plans.WithdrawalPlanDTO;
-import com.traderbuddyv2.api.models.records.AccountOverview;
+import com.traderbuddyv2.api.models.records.account.AccountOverview;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.account.AccountType;
 import com.traderbuddyv2.core.enums.account.Broker;
@@ -11,8 +11,14 @@ import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
-import com.traderbuddyv2.core.enums.trades.TradeType;
-import com.traderbuddyv2.core.enums.trades.TradingPlatform;
+import com.traderbuddyv2.core.enums.security.UserRole;
+import com.traderbuddyv2.core.enums.system.Country;
+import com.traderbuddyv2.core.enums.system.Language;
+import com.traderbuddyv2.core.enums.system.PhoneType;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
+import com.traderbuddyv2.core.enums.trade.tag.TradeEntryReason;
+import com.traderbuddyv2.core.enums.trade.tag.TradeResult;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.levelling.rank.BaseRank;
@@ -27,6 +33,8 @@ import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.RetrospectiveEntry;
 import com.traderbuddyv2.core.models.entities.security.User;
+import com.traderbuddyv2.core.models.entities.security.UserLocale;
+import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -37,16 +45,12 @@ import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataEntryResponse;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataResponse;
-import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Parent-level testing class to provide testing assistance
@@ -61,8 +65,8 @@ public abstract class AbstractGenericTest {
         Trade trade = new Trade();
 
         trade.setTradeId("testId1");
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
-        trade.setResultOfTrade("Winner winner chicken dinner");
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
+        trade.setResultsOfTrade(List.of(TradeResult.EXCELLENT_CALL));
         trade.setTradeType(TradeType.BUY);
         trade.setClosePrice(13098.67);
         trade.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
@@ -70,7 +74,7 @@ public abstract class AbstractGenericTest {
         trade.setLotSize(0.75);
         trade.setNetProfit(14.85);
         trade.setOpenPrice(13083.41);
-        trade.setReasonForEntrance("I have my reasons");
+        trade.setReasonsForEntry(List.of(TradeEntryReason.DOUBLE_TOP));
         trade.setRelevant(true);
         trade.setProcessed(true);
         trade.setAccount(generateTestAccount());
@@ -83,8 +87,8 @@ public abstract class AbstractGenericTest {
         Trade trade = new Trade();
 
         trade.setTradeId("testId2");
-        trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
-        trade.setResultOfTrade("Loser like a real loser");
+        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
+        trade.setResultsOfTrade(List.of(TradeResult.FAILED_IDEA));
         trade.setTradeType(TradeType.SELL);
         trade.setClosePrice(13156.12);
         trade.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 10, 24, 36));
@@ -92,41 +96,11 @@ public abstract class AbstractGenericTest {
         trade.setLotSize(0.75);
         trade.setNetProfit(-4.50);
         trade.setOpenPrice(13160.09);
-        trade.setReasonForEntrance("I continue to have my reasons");
+        trade.setReasonsForEntry(List.of(TradeEntryReason.DOUBLE_BOTTOM));
         trade.setRelevant(true);
         trade.setProcessed(false);
 
         return trade;
-    }
-
-    public List<Trade> generateTrades(Integer count) {
-
-        Random random = new Random();
-        List<Trade> trades = new ArrayList<>();
-        LocalDateTime test = LocalDateTime.of(2022, 8, 24, 10, 0, 0);
-
-        while (trades.size() < count) {
-            Trade trade = new Trade();
-
-            trade.setTradeId("testId" + test.getDayOfYear());
-            trade.setTradingPlatform(TradingPlatform.CMC_MARKETS);
-            trade.setResultOfTrade(StringUtils.EMPTY);
-            trade.setTradeType(TradeType.BUY);
-            trade.setClosePrice(0.0);
-            trade.setTradeCloseTime(test.plusMinutes(7));
-            trade.setTradeOpenTime(test.plusMinutes(2));
-            trade.setLotSize(0.75);
-            trade.setNetProfit(BigDecimal.valueOf(random.nextDouble(15.0 + 10.0) - 10.0).setScale(2, RoundingMode.HALF_EVEN).doubleValue());
-            trade.setOpenPrice(0.0);
-            trade.setReasonForEntrance(StringUtils.EMPTY);
-            trade.setRelevant(true);
-
-            trades.add(trade);
-
-            test = test.plusDays(1);
-        }
-
-        return trades;
     }
 
     public TradeRecordStatistics generateTestTradeRecordStatistics() {
@@ -281,6 +255,9 @@ public abstract class AbstractGenericTest {
         user.setPassword("1234");
         user.setFirstName("Stephen");
         user.setLastName("Test");
+        user.setUserLocale(generateTestUserLocale());
+        user.setPhone(generateTestPhoneNumber());
+        user.setRoles(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER));
 
         return user;
     }
@@ -454,5 +431,28 @@ public abstract class AbstractGenericTest {
         marketNews.setSlots(new ArrayList<>(List.of(generateTestMarketNewsSlot())));
 
         return marketNews;
+    }
+
+    public UserLocale generateTestUserLocale() {
+
+        final UserLocale userLocale = new UserLocale();
+
+        userLocale.setCountry(Country.CANADA);
+        userLocale.setLanguages(List.of(Language.ENGLISH, Language.FRENCH));
+        userLocale.setTownCity("Montreal");
+        userLocale.setTimeZoneOffset("America/Toronto (GMT -05:00)");
+
+        return userLocale;
+    }
+
+    public PhoneNumber generateTestPhoneNumber() {
+
+        final PhoneNumber phoneNumber = new PhoneNumber();
+
+        phoneNumber.setPhoneType(PhoneType.MOBILE);
+        phoneNumber.setTelephoneNumber(1112223333);
+        phoneNumber.setCountryCode((short) 1);
+
+        return phoneNumber;
     }
 }

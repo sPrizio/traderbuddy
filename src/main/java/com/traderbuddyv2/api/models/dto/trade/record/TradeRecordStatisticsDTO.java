@@ -1,7 +1,7 @@
 package com.traderbuddyv2.api.models.dto.trade.record;
 
 import com.traderbuddyv2.api.models.dto.GenericDTO;
-import com.traderbuddyv2.api.models.records.IntradayEquityCurvePoint;
+import com.traderbuddyv2.api.models.records.misc.IntradayEquityCurvePoint;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import lombok.Getter;
 import lombok.Setter;

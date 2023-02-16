@@ -1,4 +1,4 @@
-package com.traderbuddyv2.api.models.records;
+package com.traderbuddyv2.api.models.records.misc;
 
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
