@@ -56,6 +56,10 @@ public class AccountDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private LocalDateTime lastTraded;
+
+    @Getter
+    @Setter
     private SkillDTO skill;
 
     @Getter
