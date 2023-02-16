@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.traderbuddyv2.core.enums.security.UserRole;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
+import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,6 +55,18 @@ public class User implements GenericEntity {
     @Column
     @JsonIgnore
     private String password;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userLocale_id")
+    private UserLocale userLocale;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "phone_id")
+    private PhoneNumber phone;
 
     @Getter
     @Setter

@@ -29,6 +29,10 @@ public class RankDTO implements GenericDTO, Comparable<RankDTO> {
     @Setter
     private String name;
 
+    @Getter
+    @Setter
+    private String className;
+
 
     //  METHODS
 

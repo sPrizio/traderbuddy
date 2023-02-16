@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testing class for {@link UserApiController}
  *
- * @author Stephen Prizio <a href="http://www.saprizio.com">www.saprizio.com</a>
+ * @author Stephen Prizio
  * @version 1.0
  */
 @SpringBootTest

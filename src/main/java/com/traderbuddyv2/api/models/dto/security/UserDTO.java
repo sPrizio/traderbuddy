@@ -2,6 +2,7 @@ package com.traderbuddyv2.api.models.dto.security;
 
 import com.traderbuddyv2.api.models.dto.GenericDTO;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
+import com.traderbuddyv2.api.models.dto.system.PhoneNumberDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.User;
@@ -35,6 +36,14 @@ public class UserDTO implements GenericDTO {
     @Getter
     @Setter
     private String email;
+
+    @Getter
+    @Setter
+    private UserLocaleDTO userLocale;
+
+    @Getter
+    @Setter
+    private PhoneNumberDTO phoneNumber;
 
     @Getter
     @Setter

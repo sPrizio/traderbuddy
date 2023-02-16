@@ -1,5 +1,7 @@
 package com.traderbuddyv2.core.enums.account;
 
+import lombok.Getter;
+
 /**
  * Enum representing the type of account. Here type of account represents the type of securities being traded
  *
@@ -7,8 +9,15 @@ package com.traderbuddyv2.core.enums.account;
  * @version 1.0
  */
 public enum AccountType {
-    SHARES,
-    OPTIONS,
-    CFD,
-    FOREX
+    SHARES("Shares"),
+    OPTIONS("Options"),
+    CFD("CFD"),
+    FOREX("Forex");
+
+    @Getter
+    private final String label;
+
+    AccountType(final String label) {
+        this.label = label;
+    }
 }
