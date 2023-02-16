@@ -4,7 +4,7 @@ import com.traderbuddyv2.api.converters.GenericDTOConverter;
 import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.api.converters.system.PhoneNumberDTOConverter;
 import com.traderbuddyv2.api.models.dto.security.UserDTO;
-import com.traderbuddyv2.api.models.dto.system.PhoneNumberDTO;
+import com.traderbuddyv2.core.enums.security.UserRole;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.springframework.stereotype.Component;
@@ -52,6 +52,7 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
         userDTO.setUserLocale(this.userLocaleDTOConverter.convert(entity.getUserLocale()));
         userDTO.setPhoneNumber(this.phoneNumberDTOConverter.convert(entity.getPhone()));
         userDTO.setAccount(this.accountDTOConverter.convert(entity.getAccount()));
+        userDTO.setRoles(entity.getRoles().stream().map(UserRole::getLabel).toList());
 
         return userDTO;
     }

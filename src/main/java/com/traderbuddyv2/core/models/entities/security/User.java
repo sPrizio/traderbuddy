@@ -1,6 +1,7 @@
 package com.traderbuddyv2.core.models.entities.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.traderbuddyv2.core.enums.security.UserRole;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
@@ -10,6 +11,7 @@ import lombok.ToString;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Class representation of a User
@@ -70,6 +72,11 @@ public class User implements GenericEntity {
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
     private Account account;
+
+    @Getter
+    @Setter
+    @ElementCollection
+    private List<UserRole> roles;
 
 
     //  METHODS
