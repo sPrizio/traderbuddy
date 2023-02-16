@@ -6,6 +6,7 @@ import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
+import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.*;
 
 /**
  * Testing class for {@link TradeDTOConverter}
@@ -39,11 +39,15 @@ public class TradeDTOConverterTest extends AbstractGenericTest {
     private MathService mathService;
 
     @MockBean
+    private TradeRecordService tradeRecordService;
+
+    @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Before
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+        Mockito.when(this.tradeRecordService.findRecentHistory(anyInt(), any())).thenReturn(List.of());
         Mockito.when(this.mathService.subtract(anyDouble(), anyDouble())).thenReturn(0.0);
     }
 

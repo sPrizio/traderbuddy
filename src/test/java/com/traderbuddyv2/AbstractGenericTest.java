@@ -12,6 +12,9 @@ import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
 import com.traderbuddyv2.core.enums.security.UserRole;
+import com.traderbuddyv2.core.enums.system.Country;
+import com.traderbuddyv2.core.enums.system.Language;
+import com.traderbuddyv2.core.enums.system.PhoneType;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.enums.trade.tag.TradeEntryReason;
@@ -30,6 +33,8 @@ import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.RetrospectiveEntry;
 import com.traderbuddyv2.core.models.entities.security.User;
+import com.traderbuddyv2.core.models.entities.security.UserLocale;
+import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -250,6 +255,8 @@ public abstract class AbstractGenericTest {
         user.setPassword("1234");
         user.setFirstName("Stephen");
         user.setLastName("Test");
+        user.setUserLocale(generateTestUserLocale());
+        user.setPhone(generateTestPhoneNumber());
         user.setRoles(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER));
 
         return user;
@@ -424,5 +431,28 @@ public abstract class AbstractGenericTest {
         marketNews.setSlots(new ArrayList<>(List.of(generateTestMarketNewsSlot())));
 
         return marketNews;
+    }
+
+    public UserLocale generateTestUserLocale() {
+
+        final UserLocale userLocale = new UserLocale();
+
+        userLocale.setCountry(Country.CANADA);
+        userLocale.setLanguages(List.of(Language.ENGLISH, Language.FRENCH));
+        userLocale.setTownCity("Montreal");
+        userLocale.setTimeZoneOffset("America/Toronto (GMT -05:00)");
+
+        return userLocale;
+    }
+
+    public PhoneNumber generateTestPhoneNumber() {
+
+        final PhoneNumber phoneNumber = new PhoneNumber();
+
+        phoneNumber.setPhoneType(PhoneType.MOBILE);
+        phoneNumber.setTelephoneNumber(1112223333);
+        phoneNumber.setCountryCode((short) 1);
+
+        return phoneNumber;
     }
 }
