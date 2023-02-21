@@ -47,6 +47,10 @@ public class UserDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private List<AccountDTO> accounts;
+
+    @Getter
+    @Setter
     private AccountDTO account;
 
     @Getter

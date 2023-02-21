@@ -51,6 +51,7 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
         userDTO.setLastName(entity.getLastName());
         userDTO.setUserLocale(this.userLocaleDTOConverter.convert(entity.getUserLocale()));
         userDTO.setPhoneNumber(this.phoneNumberDTOConverter.convert(entity.getPhone()));
+        userDTO.setAccounts(this.accountDTOConverter.convertAll(entity.getAccounts()));
         userDTO.setAccount(this.accountDTOConverter.convert(entity.getAccount()));
         userDTO.setRoles(entity.getRoles().stream().map(UserRole::getLabel).toList());
 

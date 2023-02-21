@@ -24,6 +24,10 @@ public class AccountDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private boolean defaultAccount;
+
+    @Getter
+    @Setter
     private LocalDateTime accountOpenTime;
 
     @Getter

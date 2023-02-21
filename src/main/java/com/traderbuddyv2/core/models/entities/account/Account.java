@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
+import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,11 @@ public class Account implements GenericEntity {
     @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Getter
+    @Setter
+    @Column
+    private boolean defaultAccount;
 
     @Getter
     @Setter
@@ -115,6 +121,11 @@ public class Account implements GenericEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "rank_id")
     private Rank rank;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User user;
 
 
     //  METHODS
