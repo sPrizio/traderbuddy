@@ -114,6 +114,18 @@ public class TradeRecordService {
     }
 
     /**
+     * Obtains a {@link List} of {@link TradeRecord}s ordered by their end dates in descending order for the given {@link AggregateInterval}
+     *
+     * @param count             query limit
+     * @param aggregateInterval {@link AggregateInterval}
+     * @return {@link List} of {@link TradeRecord}
+     */
+    public List<TradeRecord> findRecentHistory(final int count, final AggregateInterval aggregateInterval, final Account account) {
+        validateParameterIsNotNull(aggregateInterval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
+        return this.tradeRecordRepository.findRecentHistory(count == CoreConstants.MAX_RESULT_SIZE ? 1000 : count, aggregateInterval.ordinal(), account.getId());
+    }
+
+    /**
      * Obtains a {@link List} of {@link TradeRecord}s ordered by their start dates in ascending order that are within the given time span
      *
      * @param startDate         {@link LocalDate}

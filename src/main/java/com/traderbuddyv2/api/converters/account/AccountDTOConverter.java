@@ -67,7 +67,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setSkill(this.skillDTOConverter.convert(entity.getSkill()));
         accountDTO.setRank(this.rankDTOConverter.convert(entity.getRank()));
 
-        Optional<TradeRecord> tradeRecord = this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY).stream().findFirst();
+        Optional<TradeRecord> tradeRecord = this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY, entity).stream().findFirst();
         tradeRecord.ifPresent(rec -> accountDTO.setLastTraded(rec.getStartDate().atStartOfDay()));
 
         return accountDTO;

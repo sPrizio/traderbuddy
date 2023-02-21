@@ -144,6 +144,12 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
                 .isNotEmpty();
     }
 
+    @Test
+    public void test_findRecentHistory_extended_success() {
+        assertThat(this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY, generateTestAccount()))
+                .isNotEmpty();
+    }
+
 
     //  ----------------- findHistory -----------------
 
