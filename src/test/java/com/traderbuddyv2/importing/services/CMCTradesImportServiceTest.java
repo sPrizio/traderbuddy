@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.FileInputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -61,7 +62,7 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     public void setUp() {
         account = this.accountRepository.save(generateTestAccount());
         user = generateTestUser();
-        user.setAccount(account);
+        user.setAccounts(List.of(account));
         user = this.userRepository.save(user);
     }
 

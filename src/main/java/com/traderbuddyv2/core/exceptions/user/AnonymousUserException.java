@@ -1,4 +1,4 @@
-package com.traderbuddyv2.core.exceptions.system;
+package com.traderbuddyv2.core.exceptions.user;
 
 /**
  * Exception thrown when an anonymous user tries to operate in the app
