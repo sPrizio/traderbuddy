@@ -44,6 +44,14 @@ public class AccountDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private double dailyStopLimit;
+
+    @Getter
+    @Setter
+    private String dailyStopLimitType;
+
+    @Getter
+    @Setter
     private CurrencyDisplay currency;
 
     @Getter

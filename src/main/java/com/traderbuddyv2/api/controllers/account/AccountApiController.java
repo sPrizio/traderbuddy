@@ -12,6 +12,7 @@ import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
+import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -107,6 +108,20 @@ public class AccountApiController extends AbstractApiController {
     @GetMapping("/promo-payments")
     public StandardJsonResponse getPromotionalPayments() {
         return new StandardJsonResponse(true, new PromotionalPaymentTotals(this.accountService.getPromoPayments()), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link LossInfo}
+     *
+     * @param start start date
+     * @param end end date
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/loss-info")
+    public StandardJsonResponse getLossInfo(final @RequestParam("start") String start, final @RequestParam("end") String end) {
+        validate(start, end);
+        return new StandardJsonResponse(true, this.accountService.getLossInfo(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), StringUtils.EMPTY);
     }
 
 

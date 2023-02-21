@@ -150,6 +150,15 @@ public class AccountServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- getLossInfo -----------------
+
+    @Test
+    public void test_getLossInfo_success() {
+        assertThat(this.accountService.getLossInfo(LocalDate.MIN, LocalDate.MAX))
+                .isNotNull();
+    }
+
+
     //  ----------------- createAccountBalanceModification -----------------
 
     @Test

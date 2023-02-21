@@ -59,6 +59,8 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setName(entity.getName());
         accountDTO.setCurrency(new CurrencyDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));
         accountDTO.setAccountNumber(entity.getAccountNumber());
+        accountDTO.setDailyStopLimit(entity.getDailyStopLimit());
+        accountDTO.setDailyStopLimitType(entity.getDailyStopLimitType().getLabel());
         accountDTO.setAccountType(entity.getAccountType().getLabel());
         accountDTO.setBroker(entity.getBroker().getName());
         accountDTO.setSkill(this.skillDTOConverter.convert(entity.getSkill()));

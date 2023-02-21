@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.constants.ApiConstants;
 import com.traderbuddyv2.api.facades.AccountFacade;
+import com.traderbuddyv2.core.enums.account.StopLimitType;
+import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -63,6 +66,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountService.deleteAccountBalanceModification(anyString())).thenReturn(true);
         Mockito.when(this.accountService.createAccountBalanceModification(any())).thenReturn(generateTestAccountBalanceModification());
         Mockito.when(this.accountService.getPromoPayments()).thenReturn(List.of(generateTestBuyTrade()));
+        Mockito.when(this.accountService.getLossInfo(any(), any())).thenReturn(new LossInfo(StopLimitType.PIPS, 1.0, 1.0, 1.0, 1));
     }
 
 
@@ -116,6 +120,21 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/account/promo-payments"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.total", is(14.85)));
+    }
+
+
+    //  ----------------- getLossInfo -----------------
+
+    @Test
+    public void test_getLossInfo_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-08-24"));
+        map.put("end", List.of("2022-08-25"));
+
+        this.mockMvc.perform(get("/api/v1/account/loss-info").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.occurrences", is(1)));
     }
 
 

@@ -11,7 +11,9 @@ import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
+import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
+import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -39,6 +41,9 @@ public class AccountService {
 
     @Resource(name = "accountBalanceModificationRepository")
     private AccountBalanceModificationRepository accountBalanceModificationRepository;
+
+    @Resource(name = "mathService")
+    private MathService mathService;
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
@@ -89,6 +94,7 @@ public class AccountService {
 
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
         final List<AccountBalanceModification> modifications = this.accountBalanceModificationRepository.findAllByAccountOrderByDateTimeDesc(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
         return
@@ -157,6 +163,44 @@ public class AccountService {
      */
     public List<Trade> getPromoPayments() {
         return this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, true).stream().sorted(Comparator.comparing(Trade::getTradeOpenTime).reversed()).toList();
+    }
+
+    /**
+     * Returns a {@link LossInfo} for the given time span
+     *
+     * @param start start date
+     * @param end end date
+     * @return {@link LossInfo}
+     */
+    public LossInfo getLossInfo(final LocalDate start, final LocalDate end) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+
+        final Account account = this.traderBuddyUserDetailsService.getCurrentUser().getAccount();
+        final List<TradeRecord> tradeRecords =
+                this.tradeRecordService.findHistory(start, end, AggregateInterval.DAILY)
+                        .stream()
+                        .filter(tr -> tr.getStatistics() != null)
+                        .filter(tr -> tr.getStatistics().getPipsLost() > tr.getStatistics().getPipsEarned())
+                        .filter(tr -> this.mathService.subtract(tr.getStatistics().getPipsLost(), tr.getStatistics().getPipsEarned()) > account.getDailyStopLimit())
+                        .toList();
+
+        final TradeRecord monthlyRecord = this.tradeRecordService.findTradeRecordForStartDateAndEndDateAndInterval(start, end, AggregateInterval.MONTHLY).orElse(null);
+        if (monthlyRecord == null) {
+            return new LossInfo(account.getDailyStopLimitType(), account.getDailyStopLimit(), 0.0, 0.0, 0);
+        }
+
+        final double excess =
+                tradeRecords
+                        .stream()
+                        .map(TradeRecord::getStatistics)
+                        .mapToDouble(ts -> this.mathService.subtract(this.mathService.subtract(ts.getPipsLost(), ts.getPipsEarned()), account.getDailyStopLimit()))
+                        .sum();
+
+
+        return new LossInfo(account.getDailyStopLimitType(), account.getDailyStopLimit(), excess, this.mathService.add(excess, this.mathService.subtract(monthlyRecord.getStatistics().getPipsEarned(), monthlyRecord.getStatistics().getPipsLost())), tradeRecords.size());
     }
 
 
