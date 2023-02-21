@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  * API Controller for analysis operations
@@ -122,10 +123,11 @@ public class AnalysisApiController extends AbstractApiController {
     public StandardJsonResponse getWinningTradeBuckets(
             final @RequestParam("start") String start,
             final @RequestParam("end") String end,
-            final @RequestParam("bucketSize") int bucketSize) {
+            final @RequestParam("bucketSize") int bucketSize,
+            final @RequestParam("isLoser") boolean isLoser) {
 
         validate(start, end);
-        return new StandardJsonResponse(true, this.analysisService.getWinningDaysBreakdown((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), bucketSize), StringUtils.EMPTY);
+        return new StandardJsonResponse(true, this.analysisService.getWinningDaysBreakdown((LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), bucketSize, isLoser), StringUtils.EMPTY);
     }
 
     /**
@@ -140,5 +142,19 @@ public class AnalysisApiController extends AbstractApiController {
     public StandardJsonResponse getIrrelevantTrades(final @RequestParam("start") String start, final @RequestParam("end") String end) {
         validate(start, end);
         return new StandardJsonResponse(true, this.analysisService.getIrrelevantTrades(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), StringUtils.EMPTY);
+    }
+
+    /**
+     * Obtains week day performance metrics
+     *
+     * @param start start date
+     * @param end end date
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/weekday-performance")
+    public StandardJsonResponse getWeekdayPerformance(final @RequestParam("start") String start, final @RequestParam("end") String end) {
+        validate(start, end);
+        return new StandardJsonResponse(true, this.analysisService.getTradeDayBuckets(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))).entrySet(), StringUtils.EMPTY);
     }
 }

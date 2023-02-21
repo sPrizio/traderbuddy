@@ -1,6 +1,6 @@
 package com.traderbuddyv2.core.enums.analysis;
 
-import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
 import lombok.Getter;
 
 import java.util.Comparator;

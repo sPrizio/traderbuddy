@@ -38,7 +38,7 @@ import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
-import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.AverageTradePerformance;
 import com.traderbuddyv2.core.models.records.plan.ForecastEntry;
 import com.traderbuddyv2.core.models.records.rank.CurrentRank;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;

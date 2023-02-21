@@ -6,10 +6,11 @@ import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
-import com.traderbuddyv2.core.models.nonentities.analysis.AverageTradePerformance;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradeRecordPerformanceBucket;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeDateBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.AverageTradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -18,12 +19,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -160,7 +159,7 @@ public class AnalysisService {
      * @param bucketSize size of each bucket
      * @return {@link List} of {@link TradeRecordPerformanceBucket}
      */
-    public List<TradeRecordPerformanceBucket> getWinningDaysBreakdown(final LocalDate start, final LocalDate end, final int bucketSize) {
+    public List<TradeRecordPerformanceBucket> getWinningDaysBreakdown(final LocalDate start, final LocalDate end, final int bucketSize, final boolean isLoser) {
 
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
@@ -169,10 +168,22 @@ public class AnalysisService {
         List<TradeRecord> tradeRecords = this.tradeRecordService.findHistory(start, end, AggregateInterval.DAILY);
         List<Double> reducedRecords = tradeRecords.stream().map(TradeRecord::getStatistics).map(rec -> this.mathService.subtract(rec.getPipsEarned(), rec.getPipsLost())).toList();
 
-        double min = 0.0;
-        double compare1 = min;
-        double compare2 = min + bucketSize;
-        double max = reducedRecords.stream().mapToDouble(rec -> rec).max().orElse(0.0);
+        double min;
+        double compare1;
+        double compare2;
+        double max;
+
+        if (isLoser) {
+            min = reducedRecords.stream().mapToDouble(rec -> rec).min().orElse(0.0);
+            compare1 = min;
+            compare2 = min + bucketSize;
+            max = 0;
+        } else {
+            min = 0.0;
+            compare1 = min;
+            compare2 = min + bucketSize;
+            max = reducedRecords.stream().mapToDouble(rec -> rec).max().orElse(0.0);
+        }
 
         List<Double> compareRecords;
         while (compare1 < max) {
@@ -181,6 +192,14 @@ public class AnalysisService {
 
             compare1 += bucketSize;
             compare2 += bucketSize;
+
+            if (isLoser && compare2 > 0.0) {
+                compare2 = 0.0;
+            }
+        }
+
+        if (isLoser) {
+            Collections.reverse(buckets);
         }
 
         return buckets;
@@ -200,8 +219,55 @@ public class AnalysisService {
         return new IrrelevantTradeTotals(current, previous);
     }
 
+    /**
+     * Returns a {@link Map} of each business day and a {@link TradeDateBucket} for each day for the given time span
+     *
+     * @param start start
+     * @param end end
+     * @return {@link Map} of {@link DayOfWeek} - {@link TradeDateBucket}
+     */
+    public Map<DayOfWeek, TradeDateBucket> getTradeDayBuckets(final LocalDate start, final LocalDate end) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+
+        final List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(start.atStartOfDay(), end.atStartOfDay(), false);
+        final Map<DayOfWeek, TradeDateBucket> map = new EnumMap<>(DayOfWeek.class);
+
+        map.put(DayOfWeek.MONDAY, computeTradeDateBuckets(trades, DayOfWeek.MONDAY));
+        map.put(DayOfWeek.TUESDAY, computeTradeDateBuckets(trades, DayOfWeek.TUESDAY));
+        map.put(DayOfWeek.WEDNESDAY, computeTradeDateBuckets(trades, DayOfWeek.WEDNESDAY));
+        map.put(DayOfWeek.THURSDAY, computeTradeDateBuckets(trades, DayOfWeek.THURSDAY));
+        map.put(DayOfWeek.FRIDAY, computeTradeDateBuckets(trades, DayOfWeek.FRIDAY));
+
+        return map;
+    }
+
 
     //  HELPERS
+
+    /**
+     * Computes a {@link TradeDateBucket} for the given {@link List} of {@link Trade}s and {@link DayOfWeek}
+     *
+     * @param trades {@link List} of {@link Trade}s
+     * @param dayOfWeek {@link DayOfWeek}
+     * @return {@link TradeDateBucket}
+     */
+    private TradeDateBucket computeTradeDateBuckets(final List<Trade> trades, final DayOfWeek dayOfWeek) {
+
+        if (CollectionUtils.isEmpty(trades) || dayOfWeek == null || (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY)) {
+            return null;
+        }
+
+        final List<Trade> filtered =
+                trades
+                        .stream()
+                        .filter(t -> t.getTradeOpenTime().getDayOfWeek() == dayOfWeek)
+                        .toList();
+
+        return new TradeDateBucket(null, null, filtered);
+    }
 
     /**
      * Compares {@link Trade} close times to be within the bucket

@@ -19,8 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 
@@ -96,16 +95,16 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     @Test
     public void test_getWinningDaysBreakdown_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(null, LocalDate.MAX, 10))
+                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(null, LocalDate.MAX, 10, false))
                 .withMessage(CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, null, 10))
+                .isThrownBy(() -> this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, null, 10, false))
                 .withMessage(CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     public void test_getWinningDaysBreakdown_success() {
-        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50))
+        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50, false))
                 .size()
                 .isEqualTo(4);
     }
@@ -119,5 +118,14 @@ public class AnalysisServiceTest extends AbstractGenericTest {
                 .isNotNull()
                 .extracting("current")
                 .isNotNull();
+    }
+
+
+    //  ----------------- getTradeDayBuckets -----------------
+
+    @Test
+    public void test_getTradeDayBuckets_success() {
+        assertThat(this.analysisService.getTradeDayBuckets(LocalDate.of(2023, 2, 2), LocalDate.of(2023, 2, 18)))
+                .isNotEmpty();
     }
 }

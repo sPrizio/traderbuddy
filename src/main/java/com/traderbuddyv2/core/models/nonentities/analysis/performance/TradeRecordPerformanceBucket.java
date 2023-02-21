@@ -1,4 +1,4 @@
-package com.traderbuddyv2.core.models.nonentities.analysis;
+package com.traderbuddyv2.core.models.nonentities.analysis.performance;
 
 import lombok.Getter;
 

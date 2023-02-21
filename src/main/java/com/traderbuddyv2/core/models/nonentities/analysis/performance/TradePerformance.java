@@ -1,6 +1,7 @@
-package com.traderbuddyv2.core.models.nonentities.analysis;
+package com.traderbuddyv2.core.models.nonentities.analysis.performance;
 
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.models.nonentities.analysis.Analysis;
 import lombok.Getter;
 import lombok.Setter;
 

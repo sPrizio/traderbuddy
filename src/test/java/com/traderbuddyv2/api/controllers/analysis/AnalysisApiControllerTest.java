@@ -1,9 +1,9 @@
 package com.traderbuddyv2.api.controllers.analysis;
 
 import com.traderbuddyv2.AbstractGenericTest;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradePerformance;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradeRecordPerformanceBucket;
-import com.traderbuddyv2.core.models.nonentities.analysis.TradeTimeBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.analysis.AnalysisService;
 import org.hamcrest.Matchers;
@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
@@ -51,8 +52,9 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.analysisService.getTopTradePerformance(any(), any(), any(), anyBoolean(), anyInt())).thenReturn(List.of(new TradePerformance(generateTestBuyTrade())));
         Mockito.when(this.analysisService.getAverageTradePerformance(any(), any(), anyBoolean(), anyInt())).thenReturn(generateAverageTradePerformance());
         Mockito.when(this.analysisService.getTradeBuckets(any(), any(), any())).thenReturn(List.of(new TradeTimeBucket(LocalTime.MIN, LocalTime.MAX, List.of())));
-        Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt())).thenReturn(List.of(new TradeRecordPerformanceBucket(50, 100, 17)));
+        Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt(), anyBoolean())).thenReturn(List.of(new TradeRecordPerformanceBucket(50, 100, 17)));
         Mockito.when(this.analysisService.getIrrelevantTrades(any(), any())).thenReturn(new IrrelevantTradeTotals(List.of(generateTestBuyTrade(), generateTestSellTrade()), List.of()));
+        Mockito.when(this.analysisService.getTradeDayBuckets(any(), any())).thenReturn(Map.of());
     }
 
 
@@ -131,6 +133,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         map.put("start", List.of("2022-01-01"));
         map.put("end", List.of("2022-02-01"));
         map.put("bucketSize", List.of("50"));
+        map.put("isLoser", List.of("false"));
 
         this.mockMvc.perform(get("/api/v1/analysis/winning-buckets").params(map))
                 .andExpect(status().isOk())
@@ -150,5 +153,20 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/analysis/irrelevant-trades").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.current", Matchers.notNullValue()));
+    }
+
+
+    //  ----------------- getWeekdayPerformance -----------------
+
+    @Test
+    public void test_getWeekdayPerformance_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-01-01"));
+        map.put("end", List.of("2022-02-01"));
+
+        this.mockMvc.perform(get("/api/v1/analysis/weekday-performance").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", Matchers.notNullValue()));
     }
 }
