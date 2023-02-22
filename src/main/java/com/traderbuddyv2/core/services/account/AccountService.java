@@ -8,11 +8,13 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
+import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -42,6 +44,9 @@ public class AccountService {
     @Resource(name = "accountBalanceModificationRepository")
     private AccountBalanceModificationRepository accountBalanceModificationRepository;
 
+    @Resource(name = "accountRepository")
+    private AccountRepository accountRepository;
+
     @Resource(name = "mathService")
     private MathService mathService;
 
@@ -61,10 +66,20 @@ public class AccountService {
     //  METHODS
 
     /**
+     * Obtains an {@link Account} for the given account number
+     *
+     * @param accountNumber account number
+     * @return {@link Optional} of {@link Account}
+     */
+    public Optional<Account> findAccountByAccountNumber(final long accountNumber) {
+        return Optional.ofNullable(this.accountRepository.findAccountByAccountNumber(accountNumber));
+    }
+
+    /**
      * Returns a {@link List} of {@link EquityCurveEntry}
      *
-     * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
+     * @param start             {@link LocalDate}
+     * @param end               {@link LocalDate}
      * @param aggregateInterval {@link AggregateInterval}
      * @return {@link List} of {@link EquityCurveEntry}
      */
@@ -87,7 +102,7 @@ public class AccountService {
      * Returns a {@link List} of {@link AccountBalanceModification} that are processed for the given {@link Account}
      *
      * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
+     * @param end   {@link LocalDate}
      * @return {@link List} of {@link AccountBalanceModification}
      */
     public List<AccountBalanceModification> findAccountBalanceHistory(final LocalDate start, final LocalDate end) {
@@ -169,7 +184,7 @@ public class AccountService {
      * Returns a {@link LossInfo} for the given time span
      *
      * @param start start date
-     * @param end end date
+     * @param end   end date
      * @return {@link LossInfo}
      */
     public LossInfo getLossInfo(final LocalDate start, final LocalDate end) {
@@ -203,6 +218,34 @@ public class AccountService {
         return new LossInfo(account.getDailyStopLimitType(), account.getDailyStopLimit(), excess, this.mathService.add(excess, this.mathService.subtract(monthlyRecord.getStatistics().getPipsEarned(), monthlyRecord.getStatistics().getPipsLost())), tradeRecords.size());
     }
 
+    /**
+     * Sets a new default account
+     *
+     * @param accountNumber account number
+     * @return true if successful update
+     */
+    public boolean updateDefaultAccount(final long accountNumber) {
+
+        final User user = this.traderBuddyUserDetailsService.getCurrentUser();
+        final Optional<Account> account = findAccountByAccountNumber(accountNumber);
+
+        if (account.isEmpty()) {
+            return false;
+        }
+
+        user.getAccounts().forEach(acc -> {
+            acc.setDefaultAccount(false);
+            this.accountRepository.save(acc);
+        });
+
+        account.ifPresent(acc -> {
+            acc.setDefaultAccount(true);
+            this.accountRepository.save(acc);
+        });
+
+        return true;
+    }
+
 
     //  HELPERS
 
@@ -210,7 +253,7 @@ public class AccountService {
      * Applies changes to the given {@link AccountBalanceModification} with the given data
      *
      * @param modification {@link AccountBalanceModification}
-     * @param data {@link Map}
+     * @param data         {@link Map}
      * @return updated {@link AccountBalanceModification}
      */
     private AccountBalanceModification applyChanges(AccountBalanceModification modification, final Map<String, Object> data) {

@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
+import com.traderbuddyv2.core.repositories.account.AccountRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -16,6 +17,7 @@ import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +32,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 
 /**
  * Testing class for {@link AccountService}
@@ -42,6 +43,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class AccountServiceTest extends AbstractGenericTest {
+
+    @MockBean
+    private AccountRepository accountRepository;
 
     @MockBean
     private TradeRecordService tradeRecordService;
@@ -71,6 +75,17 @@ public class AccountServiceTest extends AbstractGenericTest {
         Mockito.when(this.accountBalanceModificationRepository.save(any())).thenReturn(generateTestAccountBalanceModification());
         Mockito.when(this.accountBalanceModificationRepository.findById(1L)).thenReturn(Optional.of(generateTestAccountBalanceModification()));
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, true)).thenReturn(List.of(generateTestBuyTrade()));
+        Mockito.when(this.accountRepository.findAccountByAccountNumber(1234L)).thenReturn(generateTestAccount());
+        Mockito.when(this.accountRepository.findAccountByAccountNumber(-1L)).thenReturn(null);
+    }
+
+
+    //  ----------------- findAccountByAccountNumber -----------------
+
+    @Test
+    public void test_findAccountByAccountNumber_success() {
+        assertThat(this.accountService.findAccountByAccountNumber(1234L))
+                .isNotEmpty();
     }
 
 
@@ -215,6 +230,21 @@ public class AccountServiceTest extends AbstractGenericTest {
     @Test
     public void test_deleteAccountBalanceModification_success() {
         assertThat(this.accountService.deleteAccountBalanceModification("test"))
+                .isTrue();
+    }
+
+
+    //  ----------------- updateDefaultAccount -----------------
+
+    @Test
+    public void test_updateDefaultAccount_success_false() {
+        assertThat(this.accountService.updateDefaultAccount(-1L))
+                .isFalse();
+    }
+
+    @Test
+    public void test_updateDefaultAccount_success() {
+        assertThat(this.accountService.updateDefaultAccount(1234L))
                 .isTrue();
     }
 }

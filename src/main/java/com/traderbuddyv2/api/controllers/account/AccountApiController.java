@@ -11,6 +11,7 @@ import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
@@ -122,6 +123,21 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse getLossInfo(final @RequestParam("start") String start, final @RequestParam("end") String end) {
         validate(start, end);
         return new StandardJsonResponse(true, this.accountService.getLossInfo(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), StringUtils.EMPTY);
+    }
+
+
+    //  ----------------- PUT REQUESTS -----------------
+
+    /**
+     * Updates a {@link User}s accounts and sets a new default
+     *
+     * @param accountNumber account number
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PutMapping("/switch-account")
+    public StandardJsonResponse putSwitchAccount(final @RequestParam("accountNumber") long accountNumber) {
+        return new StandardJsonResponse(true, this.accountService.updateDefaultAccount(accountNumber), StringUtils.EMPTY);
     }
 
 
