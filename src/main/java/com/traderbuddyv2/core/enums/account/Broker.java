@@ -9,7 +9,8 @@ import lombok.Getter;
  * @version 1.0
  */
 public enum Broker {
-    CMC_MARKETS("CMC Markets");
+    CMC_MARKETS("CMC Markets"),
+    NA("Demo");
 
     @Getter
     private final String name;

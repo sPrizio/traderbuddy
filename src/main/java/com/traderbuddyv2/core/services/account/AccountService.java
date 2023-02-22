@@ -233,10 +233,12 @@ public class AccountService {
             return false;
         }
 
+        final List<Account> modified = new ArrayList<>();
         user.getAccounts().forEach(acc -> {
             acc.setDefaultAccount(false);
-            this.accountRepository.save(acc);
+            modified.add(acc);
         });
+        this.accountRepository.saveAll(modified);
 
         account.ifPresent(acc -> {
             acc.setDefaultAccount(true);
