@@ -4,6 +4,8 @@ import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucketStatistics;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucketWrapper;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.analysis.AnalysisService;
 import org.hamcrest.Matchers;
@@ -52,7 +54,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.analysisService.getTopTradePerformance(any(), any(), any(), anyBoolean(), anyInt())).thenReturn(List.of(new TradePerformance(generateTestBuyTrade())));
         Mockito.when(this.analysisService.getAverageTradePerformance(any(), any(), anyBoolean(), anyInt())).thenReturn(generateAverageTradePerformance());
         Mockito.when(this.analysisService.getTradeBuckets(any(), any(), any())).thenReturn(List.of(new TradeTimeBucket(LocalTime.MIN, LocalTime.MAX, List.of())));
-        Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt(), anyBoolean())).thenReturn(List.of(new TradeRecordPerformanceBucket(50, 100, 17)));
+        Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt(), anyBoolean())).thenReturn(new TradeRecordPerformanceBucketWrapper(List.of(new TradeRecordPerformanceBucket(50, 100, 17)), new TradeRecordPerformanceBucketStatistics(0.0, 0)));
         Mockito.when(this.analysisService.getIrrelevantTrades(any(), any())).thenReturn(new IrrelevantTradeTotals(List.of(generateTestBuyTrade(), generateTestSellTrade()), List.of()));
         Mockito.when(this.analysisService.getTradeDayBuckets(any(), any())).thenReturn(Map.of());
     }
@@ -137,7 +139,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/analysis/winning-buckets").params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].count", Matchers.is(17)));
+                .andExpect(jsonPath("$.data.buckets[0].count", Matchers.is(17)));
     }
 
 

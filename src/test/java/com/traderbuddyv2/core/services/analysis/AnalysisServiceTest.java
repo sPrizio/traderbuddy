@@ -104,7 +104,7 @@ public class AnalysisServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getWinningDaysBreakdown_success() {
-        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50, false))
+        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50, false).buckets())
                 .size()
                 .isEqualTo(4);
     }
