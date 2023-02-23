@@ -30,7 +30,7 @@ public class Trade implements GenericEntity {
 
     @Getter
     @Setter
-    @Column(unique = true)
+    @Column
     private String tradeId;
 
     @Getter
