@@ -6,7 +6,6 @@ import com.traderbuddyv2.core.exceptions.account.NoDefaultAccountException;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
-import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -37,4 +37,16 @@ public class ImportValidatorTest {
                 .withMessage("This is an empty file test");
         file.delete();
     }
+
+
+    //  ----------------- validateAudioImportFileExtensions -----------------
+
+    @Test
+    public void test_validateAudioImportFileExtensions_success() {
+        MockMultipartFile testFile = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+
+        assertThatExceptionOfType(FileExtensionNotSupportedException.class)
+                .isThrownBy(() -> ImportValidator.validateAudioImportFileExtensions(testFile, "This is an error message"))
+                .withMessage("This is an error message");
+    }
 }

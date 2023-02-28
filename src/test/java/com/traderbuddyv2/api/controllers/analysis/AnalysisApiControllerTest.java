@@ -1,9 +1,9 @@
 package com.traderbuddyv2.api.controllers.analysis;
 
 import com.traderbuddyv2.AbstractGenericTest;
+import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
-import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucketStatistics;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucketWrapper;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;

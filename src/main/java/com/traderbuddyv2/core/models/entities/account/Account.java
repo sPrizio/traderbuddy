@@ -8,6 +8,7 @@ import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
+import com.traderbuddyv2.core.models.entities.retrospective.AudioRetrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
@@ -94,6 +95,11 @@ public class Account implements GenericEntity {
     @Setter
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Retrospective> retrospectives;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AudioRetrospective> audioRetrospectives;
 
     @Getter
     @Setter
