@@ -7,6 +7,7 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
+import com.traderbuddyv2.core.repositories.retrospective.AudioRetrospectiveRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -17,7 +18,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +41,9 @@ import static org.mockito.ArgumentMatchers.any;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class RetrospectiveServiceTest extends AbstractGenericTest {
+
+    @MockBean
+    private AudioRetrospectiveRepository audioRetrospectiveRepository;
 
     @MockBean
     private RetrospectiveRepository retrospectiveRepository;
@@ -61,6 +68,7 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveRepository.findTopByIntervalFrequencyAndAccountOrderByStartDateDesc(any(), any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid("test")).thenReturn(1L);
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
+        Mockito.when(this.audioRetrospectiveRepository.save(any())).thenReturn(null);
     }
 
 
@@ -293,5 +301,16 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
     public void test_deleteRetrospective_success() {
         assertThat(this.retrospectiveService.deleteRetrospective("test"))
                 .isTrue();
+    }
+
+
+    //  ----------------- saveAudio -----------------
+
+    @Test
+    public void test_saveAudio_success() {
+
+        MultipartFile mockFile = new MockMultipartFile("file", "hello.csv", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+        assertThat(this.retrospectiveService.saveAudio(LocalDate.MIN, LocalDate.MAX, AggregateInterval.MONTHLY, "Test", mockFile))
+                .isEmpty();
     }
 }

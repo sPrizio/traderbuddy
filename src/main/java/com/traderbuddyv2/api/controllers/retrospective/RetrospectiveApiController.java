@@ -10,6 +10,7 @@ import com.traderbuddyv2.core.services.retrospective.RetrospectiveService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateIfAnyResult;
 import static com.traderbuddyv2.core.validation.GenericValidator.validateJsonIntegrity;
+import static com.traderbuddyv2.importing.validation.ImportValidator.validateAudioImportFileExtensions;
 
 
 /**
@@ -153,6 +155,35 @@ public class RetrospectiveApiController extends AbstractApiController {
     public StandardJsonResponse postCreateRetrospective(final @RequestBody Map<String, Object> requestBody) {
         validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
         return new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(this.retrospectiveService.createRetrospective(requestBody)), StringUtils.EMPTY);
+    }
+
+    /**
+     * Uploads a audio file
+     *
+     * @param start    start date
+     * @param end      end date
+     * @param interval {@link AggregateInterval}
+     * @param file     {@link MultipartFile}
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PostMapping("/upload-audio")
+    public StandardJsonResponse postUploadAudio(
+            final @RequestParam("start") String start,
+            final @RequestParam("end") String end,
+            final @RequestParam("interval") String interval,
+            final @RequestParam("name") String name,
+            final @RequestParam("file") MultipartFile file) {
+
+        validate(start, end, interval);
+        validateAudioImportFileExtensions(file, "The given file %s was not a supported audio file format", file.getOriginalFilename());
+
+        String result = this.retrospectiveService.saveAudio(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), AggregateInterval.valueOf(interval), name, file);
+        if (StringUtils.isEmpty(result)) {
+            return new StandardJsonResponse(true, result, StringUtils.EMPTY);
+        }
+
+        return new StandardJsonResponse(false, null, String.format("An error occurred while saving your audio file. %s", result));
     }
 
 

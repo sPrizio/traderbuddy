@@ -24,7 +24,7 @@ public class FileSystemUtils {
      * @param file {@link MultipartFile}
      * @return url
      */
-    public static String getFileUrl(final MultipartFile file, final boolean absolute) {
+    public static String getAudioFileUrl(final MultipartFile file, final boolean absolute) {
 
         if (absolute) {
             return FileSystems.getDefault().getPath("src/main/resources/audio/").toAbsolutePath() + "\\" + file.getOriginalFilename();

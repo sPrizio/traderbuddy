@@ -6,16 +6,22 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.exceptions.validation.NoResultFoundException;
+import com.traderbuddyv2.core.models.entities.retrospective.AudioRetrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.RetrospectiveEntry;
+import com.traderbuddyv2.core.repositories.retrospective.AudioRetrospectiveRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveEntryRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.core.util.FileSystemUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -33,6 +39,9 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
  */
 @Component("retrospectiveService")
 public class RetrospectiveService {
+
+    @Resource(name = "audioRetrospectiveRepository")
+    private AudioRetrospectiveRepository audioRetrospectiveRepository;
 
     @Resource(name = "retrospectiveEntryRepository")
     private RetrospectiveEntryRepository retrospectiveEntryRepository;
@@ -53,7 +62,7 @@ public class RetrospectiveService {
      * Returns all {@link Retrospective}s within the given date span
      *
      * @param start {@link LocalDate} inclusive
-     * @param end {@link LocalDate} exclusive
+     * @param end   {@link LocalDate} exclusive
      * @return {@link List} of {@link Retrospective}s
      */
     public List<Retrospective> findAllRetrospectivesWithinDate(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
@@ -73,8 +82,8 @@ public class RetrospectiveService {
     /**
      * Returns a {@link Retrospective} for the given start date, end date and interval
      *
-     * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
+     * @param start    {@link LocalDate}
+     * @param end      {@link LocalDate}
      * @param interval {@link AggregateInterval}
      * @return {@link Optional} {@link Retrospective}
      */
@@ -166,7 +175,7 @@ public class RetrospectiveService {
     /**
      * Updates an existing {@link Retrospective} with the given {@link Map} of data. Update methods are designed to be idempotent.
      *
-     * @param uid uid
+     * @param uid  uid
      * @param data {@link Map}
      * @return modified {@link Retrospective}
      */
@@ -217,6 +226,37 @@ public class RetrospectiveService {
         return false;
     }
 
+    /**
+     * Saves an {@link AudioRetrospective} from the given {@link MultipartFile}
+     *
+     * @param start             start date
+     * @param end               end date
+     * @param aggregateInterval {@link AggregateInterval}
+     * @param name              name of file
+     * @param file              {@link MultipartFile}
+     * @return empty message if true
+     */
+    public String saveAudio(final LocalDate start, final LocalDate end, final AggregateInterval aggregateInterval, final String name, final MultipartFile file) {
+
+        final AudioRetrospective audioRetrospective = new AudioRetrospective();
+
+        audioRetrospective.setStartDate(start);
+        audioRetrospective.setEndDate(end);
+        audioRetrospective.setIntervalFrequency(aggregateInterval);
+        audioRetrospective.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        audioRetrospective.setName(name);
+        audioRetrospective.setUrl(FileSystemUtils.getAudioFileUrl(file, false));
+
+        try {
+            file.transferTo(new File(FileSystemUtils.getContentRoot(true) + "\\audio\\" + file.getOriginalFilename()));
+            this.audioRetrospectiveRepository.save(audioRetrospective);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+        return StringUtils.EMPTY;
+    }
+
 
     //  HELPERS
 
@@ -224,7 +264,7 @@ public class RetrospectiveService {
      * Applies changes to the given {@link Retrospective} with the given data
      *
      * @param retrospective {@link Retrospective}
-     * @param data {@link Map}
+     * @param data          {@link Map}
      * @return updated {@link Retrospective}
      */
     private Retrospective applyChanges(Retrospective retrospective, final Map<String, Object> data) {

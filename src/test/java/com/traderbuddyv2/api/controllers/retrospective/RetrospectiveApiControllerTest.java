@@ -18,10 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,6 +68,9 @@ public class RetrospectiveApiControllerTest extends AbstractGenericTest {
     @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @Before
     public void setUp() {
         Mockito.when(this.retrospectiveService.findAllRetrospectivesWithinDate(any(), any(), any())).thenReturn(generateRetrospectives());
@@ -83,6 +89,7 @@ public class RetrospectiveApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
         Mockito.when(this.tradeRecordService.findTradeRecordForStartDateAndEndDateAndInterval(any(), any(), any())).thenReturn(Optional.empty());
+        Mockito.when(this.retrospectiveService.saveAudio(any(), any(), any(), any(), any())).thenReturn("");
     }
 
 
@@ -330,6 +337,25 @@ public class RetrospectiveApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(post("/api/v1/retrospective/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.startDate", is("2022-09-05")));
+    }
+
+
+    //  ----------------- postUploadAudio -----------------
+
+    @Test
+    public void test_postUploadAudio_success() throws Exception {
+
+        final MockMultipartFile file = new MockMultipartFile("file", "hello.mp3", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("start", List.of("2023-02-01"));
+        params.put("end", List.of("2023-03-01"));
+        params.put("interval", List.of("MONTHLY"));
+        params.put("name", List.of("Test"));
+
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/retrospective/upload-audio").file(file).params(params))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
     }
 
 
