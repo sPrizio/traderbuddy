@@ -12,7 +12,8 @@ public enum AccountType {
     SHARES("Shares"),
     OPTIONS("Options"),
     CFD("CFD"),
-    FOREX("Forex");
+    FOREX("Forex"),
+    DEMO("Demo");
 
     @Getter
     private final String label;

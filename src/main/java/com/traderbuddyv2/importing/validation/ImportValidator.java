@@ -48,4 +48,17 @@ public class ImportValidator {
             throw new FileExtensionNotSupportedException(String.format(message, values));
         }
     }
+
+    /**
+     * Validates that the given {@link MultipartFile}'s extensions matches a supported one
+     *
+     * @param file    {@link MultipartFile}
+     * @param message error message
+     * @param values  error message values
+     */
+    public static void validateAudioImportFileExtensions(final MultipartFile file, final String message, final Object... values) {
+        if (!CoreConstants.SUPPORTED_AUDIO_FORMATS.contains(FilenameUtils.getExtension(file.getOriginalFilename()))) {
+            throw new FileExtensionNotSupportedException(String.format(message, values));
+        }
+    }
 }

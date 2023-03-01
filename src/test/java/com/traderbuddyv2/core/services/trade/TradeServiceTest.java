@@ -65,7 +65,7 @@ public class TradeServiceTest extends AbstractGenericTest {
 
         final Account testAccount = generateTestAccount();
         final User testUser = generateTestUser();
-        testUser.setAccount(testAccount);
+        testUser.setAccounts(List.of(testAccount));
 
         Mockito.when(this.tradeRepository.findAllByTradeTypeAndAccountOrderByTradeOpenTimeAsc(TradeType.BUY, testAccount)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST1.plusYears(1).toLocalDate().atStartOfDay(), testAccount)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));

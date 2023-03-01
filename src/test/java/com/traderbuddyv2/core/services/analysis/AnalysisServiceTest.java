@@ -19,7 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 
@@ -104,7 +105,7 @@ public class AnalysisServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getWinningDaysBreakdown_success() {
-        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50, false))
+        assertThat(this.analysisService.getWinningDaysBreakdown(LocalDate.MIN, LocalDate.MAX, 50, false).buckets())
                 .size()
                 .isEqualTo(4);
     }

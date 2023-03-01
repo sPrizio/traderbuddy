@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Class representation of statistics for a {@link TradeRecord}
@@ -110,4 +112,16 @@ public class TradeRecordStatistics implements GenericEntity {
     @Setter
     @OneToOne(mappedBy = "statistics", cascade = CascadeType.ALL)
     private TradeRecord tradeRecord;
+
+
+    //  HELPERS
+
+    /**
+     * Returns net pips
+     *
+     * @return pips earned - pips lost
+     */
+    public double getNetPips() {
+        return BigDecimal.valueOf(this.getPipsEarned()).subtract(BigDecimal.valueOf(this.getPipsLost())).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+    }
 }

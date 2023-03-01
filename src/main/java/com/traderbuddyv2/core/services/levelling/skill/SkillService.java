@@ -63,7 +63,7 @@ public class SkillService {
             skill.setStepIncrement(CoreConstants.DEFAULT_SKILL_STEP_INCREMENT);
         }
 
-        int pointsFromRecord = this.mathService.getInteger(this.mathService.subtract(tradeRecord.getStatistics().getPipsEarned(), tradeRecord.getStatistics().getPipsLost()));
+        int pointsFromRecord = this.mathService.getInteger(tradeRecord.getStatistics().getNetPips());
         int totalPoints = this.mathService.getInteger(this.mathService.add(getTotalPoints(skill), pointsFromRecord));
 
         skill.setLevel(totalPoints / skill.getStepIncrement());

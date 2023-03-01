@@ -70,7 +70,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
         tradeRecordStatisticsDTO.setPercentageProfit(entity.getPercentageProfit());
         tradeRecordStatisticsDTO.setPipsEarned(entity.getPipsEarned());
         tradeRecordStatisticsDTO.setPipsLost(entity.getPipsLost());
-        tradeRecordStatisticsDTO.setNetPips(this.mathService.subtract(entity.getPipsEarned(), entity.getPipsLost()));
+        tradeRecordStatisticsDTO.setNetPips(this.mathService.getDouble(entity.getNetPips()));
 
         if (entity.getPipsLost() == 0.0) {
             tradeRecordStatisticsDTO.setProfitability(this.mathService.getDouble(entity.getPipsEarned()));
@@ -80,6 +80,7 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
 
         computeDeltas(tradeRecordStatisticsDTO, entity);
         computePoints(tradeRecordStatisticsDTO, entity);
+        computeSessions(tradeRecordStatisticsDTO, entity.getTradeRecord());
 
         return tradeRecordStatisticsDTO;
     }
@@ -147,5 +148,23 @@ public class TradeRecordStatisticsDTOConverter implements GenericDTOConverter<Tr
         } else {
             return Math.abs(this.mathService.subtract(trade.getOpenPrice(), trade.getClosePrice())) * -1.0;
         }
+    }
+
+    /**
+     * Computes the number of trade sessions for the given {@link TradeRecord}
+     *
+     * @param tradeRecordStatisticsDTO {@link TradeRecordStatisticsDTO}
+     * @param tradeRecord {@link TradeRecord}
+     */
+    private void computeSessions(final TradeRecordStatisticsDTO tradeRecordStatisticsDTO, final TradeRecord tradeRecord) {
+
+        if (tradeRecord.getAggregateInterval().equals(AggregateInterval.DAILY)) {
+            tradeRecordStatisticsDTO.setTradeSessions(1);
+            return;
+        }
+
+        tradeRecordStatisticsDTO.setTradeSessions(
+                this.tradeRecordService.findHistory(tradeRecord.getStartDate(), tradeRecord.getEndDate().plusDays(1), AggregateInterval.DAILY).size()
+        );
     }
 }

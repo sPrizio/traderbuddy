@@ -6,11 +6,10 @@ import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
+import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
 import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeDateBucket;
-import com.traderbuddyv2.core.models.nonentities.analysis.performance.AverageTradePerformance;
-import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
-import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
+import com.traderbuddyv2.core.models.nonentities.analysis.performance.*;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -159,14 +158,14 @@ public class AnalysisService {
      * @param bucketSize size of each bucket
      * @return {@link List} of {@link TradeRecordPerformanceBucket}
      */
-    public List<TradeRecordPerformanceBucket> getWinningDaysBreakdown(final LocalDate start, final LocalDate end, final int bucketSize, final boolean isLoser) {
+    public TradeRecordPerformanceBucketWrapper getWinningDaysBreakdown(final LocalDate start, final LocalDate end, final int bucketSize, final boolean isLoser) {
 
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
 
         List<TradeRecordPerformanceBucket> buckets = new ArrayList<>();
         List<TradeRecord> tradeRecords = this.tradeRecordService.findHistory(start, end, AggregateInterval.DAILY);
-        List<Double> reducedRecords = tradeRecords.stream().map(TradeRecord::getStatistics).map(rec -> this.mathService.subtract(rec.getPipsEarned(), rec.getPipsLost())).toList();
+        List<Double> reducedRecords = tradeRecords.stream().map(TradeRecord::getStatistics).map(TradeRecordStatistics::getNetPips).toList();
 
         double min;
         double compare1;
@@ -202,7 +201,12 @@ public class AnalysisService {
             Collections.reverse(buckets);
         }
 
-        return buckets;
+        double winningAverage = this.mathService.getDouble(tradeRecords.stream().mapToDouble(tr -> tr.getStatistics().getNetPips()).filter(d -> d >= 0.0).average().orElse(0.0));
+        double losingAverage = this.mathService.getDouble(tradeRecords.stream().mapToDouble(tr -> tr.getStatistics().getNetPips()).filter(d -> d < 0.0).average().orElse(0.0));
+        int winCount = this.mathService.getInteger(tradeRecords.stream().filter(tr -> tr.getStatistics().getNetPips() >= 0.0).count());
+        int loseCount = this.mathService.getInteger(tradeRecords.stream().filter(tr -> tr.getStatistics().getNetPips() < 0.0).count());
+
+        return new TradeRecordPerformanceBucketWrapper(buckets, new TradeRecordPerformanceBucketStatistics(isLoser ? losingAverage : winningAverage, isLoser ? loseCount : winCount));
     }
 
     /**

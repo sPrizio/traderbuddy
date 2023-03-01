@@ -4,6 +4,7 @@ import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.List;
 
 /**
  * Constants used for the core package
@@ -67,6 +68,11 @@ public class CoreConstants {
      * All {@link Skill}s will start with a default step increment of 100
      */
     public static final int DEFAULT_SKILL_STEP_INCREMENT = 100;
+
+    /**
+     * All supported audio formats by the system
+     */
+    public static final List<String> SUPPORTED_AUDIO_FORMATS = List.of("mp3", "aac", "wav");
 
     /**
      * Global Phone number regex

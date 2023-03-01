@@ -20,7 +20,7 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
-@Table(name = "trades")
+@Table(name = "trades", uniqueConstraints = @UniqueConstraint(name = "UniqueTradeIdAndAccount", columnNames = {"trade_id", "account_id"}))
 public class Trade implements GenericEntity {
 
     @Id
@@ -30,7 +30,7 @@ public class Trade implements GenericEntity {
 
     @Getter
     @Setter
-    @Column(unique = true)
+    @Column(name = "trade_id")
     private String tradeId;
 
     @Getter

@@ -204,6 +204,7 @@ public abstract class AbstractGenericTest {
         Account account = new Account();
 
         account.setId(-1L);
+        account.setDefaultAccount(true);
         account.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
         account.setBalance(1000.0);
         account.setActive(true);
@@ -248,7 +249,7 @@ public abstract class AbstractGenericTest {
     public User generateTestUser() {
         User user = new User();
 
-        user.setAccount(generateTestAccount());
+        user.setAccounts(List.of(generateTestAccount()));
         user.setEmail("test@email.com");
         user.setUsername("s.prizio");
         user.setPassword("1234");

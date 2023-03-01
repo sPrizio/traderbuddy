@@ -11,7 +11,6 @@ import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,8 +27,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,6 +65,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountService.createAccountBalanceModification(any())).thenReturn(generateTestAccountBalanceModification());
         Mockito.when(this.accountService.getPromoPayments()).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountService.getLossInfo(any(), any())).thenReturn(new LossInfo(StopLimitType.PIPS, 1.0, 1.0, 1.0, 1));
+        Mockito.when(this.accountService.updateDefaultAccount(anyLong())).thenReturn(true);
     }
 
 
@@ -135,6 +134,20 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/account/loss-info").params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.occurrences", is(1)));
+    }
+
+
+    //  ----------------- putSwitchAccount -----------------
+
+    @Test
+    public void test_putSwitchAccount_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("accountNumber", List.of("1234"));
+
+        this.mockMvc.perform(put("/api/v1/account/switch-account").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", is(true)));
     }
 
 

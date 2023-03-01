@@ -12,4 +12,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AccountRepository extends PagingAndSortingRepository<Account, Long> {
+
+    /**
+     * Obtains an {@link Account} for the given account number
+     *
+     * @param accountNumber account number
+     * @return {@link Account}
+     */
+    Account findAccountByAccountNumber(final long accountNumber);
 }

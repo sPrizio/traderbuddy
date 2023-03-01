@@ -53,6 +53,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         AccountDTO accountDTO = new AccountDTO();
 
         accountDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
+        accountDTO.setDefaultAccount(entity.isDefaultAccount());
         accountDTO.setAccountOpenTime(entity.getAccountOpenTime());
         accountDTO.setActive(entity.isActive());
         accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
@@ -66,7 +67,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setSkill(this.skillDTOConverter.convert(entity.getSkill()));
         accountDTO.setRank(this.rankDTOConverter.convert(entity.getRank()));
 
-        Optional<TradeRecord> tradeRecord = this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY).stream().findFirst();
+        Optional<TradeRecord> tradeRecord = this.tradeRecordService.findRecentHistory(1, AggregateInterval.DAILY, entity).stream().findFirst();
         tradeRecord.ifPresent(rec -> accountDTO.setLastTraded(rec.getStartDate().atStartOfDay()));
 
         return accountDTO;
