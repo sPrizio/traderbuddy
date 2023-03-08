@@ -80,6 +80,27 @@ public class RetrospectiveService {
     }
 
     /**
+     * Returns all {@link AudioRetrospective}s within the given date span
+     *
+     * @param start {@link LocalDate} inclusive
+     * @param end   {@link LocalDate} exclusive
+     * @return {@link List} of {@link AudioRetrospective}s
+     */
+    public List<AudioRetrospective> findAllAudioRetrospectivesWithinDate(final LocalDate start, final LocalDate end, final AggregateInterval interval) {
+
+        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(interval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
+
+        if (interval.equals(AggregateInterval.WEEKLY)) {
+            return this.audioRetrospectiveRepository.findAllRetrospectivesWithinDate(start.minusWeeks(1), end.plusWeeks(1), interval, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        }
+
+        return this.audioRetrospectiveRepository.findAllRetrospectivesWithinDate(start, end, interval, this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+    }
+
+    /**
      * Returns a {@link Retrospective} for the given start date, end date and interval
      *
      * @param start    {@link LocalDate}
@@ -245,7 +266,7 @@ public class RetrospectiveService {
         audioRetrospective.setIntervalFrequency(aggregateInterval);
         audioRetrospective.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
         audioRetrospective.setName(name);
-        audioRetrospective.setUrl(FileSystemUtils.getAudioFileUrl(file, false));
+        audioRetrospective.setUrl("\\audio\\" + file.getOriginalFilename());
 
         try {
             file.transferTo(new File(FileSystemUtils.getContentRoot(true) + "\\audio\\" + file.getOriginalFilename()));

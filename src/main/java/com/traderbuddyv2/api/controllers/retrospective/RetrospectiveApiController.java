@@ -1,10 +1,12 @@
 package com.traderbuddyv2.api.controllers.retrospective;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
+import com.traderbuddyv2.api.converters.retrospective.AudioRetrospectiveDTOConverter;
 import com.traderbuddyv2.api.converters.retrospective.RetrospectiveDTOConverter;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.models.entities.retrospective.AudioRetrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.services.retrospective.RetrospectiveService;
 import org.apache.commons.lang3.EnumUtils;
@@ -36,6 +38,9 @@ import static com.traderbuddyv2.importing.validation.ImportValidator.validateAud
 public class RetrospectiveApiController extends AbstractApiController {
 
     private static final List<String> REQUIRED_JSON_VALUES = List.of("retrospective");
+
+    @Resource(name = "audioRetrospectiveDTOConverter")
+    private AudioRetrospectiveDTOConverter audioRetrospectiveDTOConverter;
 
     @Resource(name = "retrospectiveDTOConverter")
     private RetrospectiveDTOConverter retrospectiveDTOConverter;
@@ -139,6 +144,29 @@ public class RetrospectiveApiController extends AbstractApiController {
                 retrospective
                         .map(value -> new StandardJsonResponse(true, this.retrospectiveDTOConverter.convert(value), StringUtils.EMPTY))
                         .orElseGet(() -> new StandardJsonResponse(false, null, String.format("No recent retrospectives were found for interval : %s", interval)));
+    }
+
+    /**
+     * Returns a {@link List} of {@link AudioRetrospective}
+     *
+     * @param start start date
+     * @param end end date
+     * @param interval {@link AggregateInterval}
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/get-audio-retros")
+    public StandardJsonResponse getAudioRetrospectives(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
+        validate(start, end, interval);
+        return new StandardJsonResponse(
+                true,
+                this.audioRetrospectiveDTOConverter.convertAll(this.retrospectiveService.findAllAudioRetrospectivesWithinDate(
+                        LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)),
+                        LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)),
+                        AggregateInterval.valueOf(interval)
+                )),
+                StringUtils.EMPTY
+        );
     }
 
 

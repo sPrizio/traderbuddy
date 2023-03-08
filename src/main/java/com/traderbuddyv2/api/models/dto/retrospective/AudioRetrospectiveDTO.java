@@ -34,9 +34,10 @@ public class AudioRetrospectiveDTO implements GenericDTO {
 
     @Getter
     @Setter
-    public String url;
+    public AggregateInterval aggregateInterval;
 
     @Getter
     @Setter
-    public AggregateInterval aggregateInterval;
+    public byte[] data;
+
 }
