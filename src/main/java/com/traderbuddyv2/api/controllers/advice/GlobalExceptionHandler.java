@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLSyntaxErrorException;
 import java.time.DateTimeException;
 
@@ -62,6 +63,7 @@ public class GlobalExceptionHandler {
             EntityCreationException.class,
             EntityModificationException.class,
             ExpiredJwtException.class,
+            FileNotFoundException.class,
             GenericSystemException.class,
             IllegalArgumentException.class,
             SQLSyntaxErrorException.class
