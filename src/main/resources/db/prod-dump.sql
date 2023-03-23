@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `account` (
 -- Dumping data for table trader_buddy.account: ~3 rows (approximately)
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
 REPLACE INTO `account` (`id`, `account_id`, `account_open_time`, `active`, `balance`, `trading_plan_id`, `user_id`, `skills_id`, `rank_id`, `name`, `account_number`, `currency`, `account_type`, `broker`, `daily_stop_limit`, `daily_stop_limit_type`, `default_account`) VALUES
-	(1, '1', '2022-10-25 22:18:39.000000', b'1', 2041.15, NULL, 5, 1, 56, 'CMC Markets Live CFD', 25123700, 5, 2, 0, 55, 1, b'1'),
+	(1, '1', '2022-10-25 22:18:39.000000', b'1', 2076.58, NULL, 5, 1, 10, 'CMC Markets Live CFD', 25123700, 5, 2, 0, 55, 1, b'1'),
 	(2, '2', '2023-02-21 14:30:04.000000', b'1', -7580.22, NULL, 5, 2, NULL, 'CMC Markets Live CFD', 24873710, 5, 2, 0, 55, 1, b'0'),
 	(3, '3', '2023-02-21 23:12:14.000000', b'1', 0, NULL, 5, NULL, NULL, 'Demo Account', 25061804, 5, 4, 1, 0, 1, b'0');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS `account_balance_modifications` (
   PRIMARY KEY (`id`),
   KEY `FKdifbvxvm6eissuh3at4i60uw7` (`account_id`),
   CONSTRAINT `FKdifbvxvm6eissuh3at4i60uw7` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.account_balance_modifications: ~4 rows (approximately)
+-- Dumping data for table trader_buddy.account_balance_modifications: ~14 rows (approximately)
 /*!40000 ALTER TABLE `account_balance_modifications` DISABLE KEYS */;
 REPLACE INTO `account_balance_modifications` (`id`, `amount`, `date_time`, `modification_type`, `account_id`, `processed`, `description`) VALUES
 	(14, 350, '2022-09-01 00:00:01.000000', 2, 1, b'1', 'Monthly deposit'),
@@ -83,7 +83,8 @@ REPLACE INTO `account_balance_modifications` (`id`, `amount`, `date_time`, `modi
 	(23, -209.7, '2023-01-25 00:00:01.000000', 1, 1, b'1', 'Reset balance to 3000'),
 	(26, -10000, '2023-02-22 00:00:01.000000', 1, 2, b'1', 'Disregard Demo Startup'),
 	(27, -6632, '2023-02-22 00:00:01.000000', 1, 2, b'1', 'Disregard Write-Offs'),
-	(28, 91.09, '2023-03-02 00:00:01.000000', 0, 1, b'1', 'CMC Trading Rebate');
+	(28, 91.09, '2023-03-02 00:00:01.000000', 0, 1, b'1', 'CMC Trading Rebate'),
+	(29, -3.45, '2023-03-23 00:00:01.000000', 1, 1, b'0', 'Account Correction (Limit Order Test)');
 /*!40000 ALTER TABLE `account_balance_modifications` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.account_trading_plan
@@ -202,9 +203,9 @@ CREATE TABLE IF NOT EXISTS `market_news` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.market_news: ~35 rows (approximately)
+-- Dumping data for table trader_buddy.market_news: ~40 rows (approximately)
 /*!40000 ALTER TABLE `market_news` DISABLE KEYS */;
 REPLACE INTO `market_news` (`id`, `date`) VALUES
 	(13, '2023-01-26'),
@@ -241,7 +242,12 @@ REPLACE INTO `market_news` (`id`, `date`) VALUES
 	(46, '2023-03-14'),
 	(47, '2023-03-15'),
 	(48, '2023-03-16'),
-	(49, '2023-03-17');
+	(49, '2023-03-17'),
+	(51, '2023-03-20'),
+	(52, '2023-03-21'),
+	(53, '2023-03-22'),
+	(55, '2023-03-23'),
+	(56, '2023-03-24');
 /*!40000 ALTER TABLE `market_news` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_entries
@@ -253,9 +259,9 @@ CREATE TABLE IF NOT EXISTS `market_news_entries` (
   PRIMARY KEY (`id`),
   KEY `FKjdd4wlxxdlnyipg8je835o13w` (`slot_id`),
   CONSTRAINT `FKjdd4wlxxdlnyipg8je835o13w` FOREIGN KEY (`slot_id`) REFERENCES `market_news_slots` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=168 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.market_news_entries: ~125 rows (approximately)
+-- Dumping data for table trader_buddy.market_news_entries: ~139 rows (approximately)
 /*!40000 ALTER TABLE `market_news_entries` DISABLE KEYS */;
 REPLACE INTO `market_news_entries` (`id`, `content`, `severity`, `slot_id`) VALUES
 	(29, 'GDP', 1, 18),
@@ -382,7 +388,21 @@ REPLACE INTO `market_news_entries` (`id`, `content`, `severity`, `slot_id`) VALU
 	(150, 'Industrial Production', 3, 139),
 	(151, 'Prelim UoM Consumer Sentiment', 1, 140),
 	(152, 'Prelim UoM Inflation Expectations', 2, 141),
-	(153, 'CB Leading Index', 3, 142);
+	(153, 'CB Leading Index', 3, 142),
+	(154, 'No news today.', 0, 143),
+	(155, 'Existing Home Sales', 2, 144),
+	(156, 'Crude Oil Inventories', 3, 145),
+	(157, 'FOMC Economic Projections', 1, 146),
+	(158, 'FOMC Statement', 1, 147),
+	(159, 'Federal Funds Rate', 1, 148),
+	(160, 'FOMC Press Conference', 1, 149),
+	(161, 'Unemployment Claims', 1, 150),
+	(162, 'Current Account', 3, 151),
+	(163, 'New Home Sales', 2, 152),
+	(164, 'Natural Gas Storage', 3, 153),
+	(165, 'Core Durable Goods Orders', 2, 154),
+	(166, 'Flash Manufacturing PMI', 1, 155),
+	(167, 'Flash Services PMI', 1, 156);
 /*!40000 ALTER TABLE `market_news_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_slots
@@ -393,9 +413,9 @@ CREATE TABLE IF NOT EXISTS `market_news_slots` (
   PRIMARY KEY (`id`),
   KEY `FKgx55cd7fhbmhyfm2jig419vpp` (`news_id`),
   CONSTRAINT `FKgx55cd7fhbmhyfm2jig419vpp` FOREIGN KEY (`news_id`) REFERENCES `market_news` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.market_news_slots: ~125 rows (approximately)
+-- Dumping data for table trader_buddy.market_news_slots: ~139 rows (approximately)
 /*!40000 ALTER TABLE `market_news_slots` DISABLE KEYS */;
 REPLACE INTO `market_news_slots` (`id`, `time`, `news_id`) VALUES
 	(18, '08:30:00', 13),
@@ -522,7 +542,21 @@ REPLACE INTO `market_news_slots` (`id`, `time`, `news_id`) VALUES
 	(139, '09:15:00', 49),
 	(140, '10:00:00', 49),
 	(141, '10:00:00', 49),
-	(142, '10:00:00', 49);
+	(142, '10:00:00', 49),
+	(143, '12:34:00', 51),
+	(144, '10:00:00', 52),
+	(145, '10:30:00', 53),
+	(146, '14:00:00', 53),
+	(147, '14:00:00', 53),
+	(148, '14:00:00', 53),
+	(149, '14:30:00', 53),
+	(150, '08:30:00', 55),
+	(151, '08:30:00', 55),
+	(152, '10:00:00', 55),
+	(153, '10:30:00', 55),
+	(154, '08:30:00', 56),
+	(155, '09:45:00', 56),
+	(156, '09:45:00', 56);
 /*!40000 ALTER TABLE `market_news_slots` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.phone_numbers
@@ -851,7 +885,7 @@ CREATE TABLE IF NOT EXISTS `skills` (
 -- Dumping data for table trader_buddy.skills: ~2 rows (approximately)
 /*!40000 ALTER TABLE `skills` DISABLE KEYS */;
 REPLACE INTO `skills` (`id`, `delta`, `last_updated`, `level`, `points`, `step_increment`, `remaining`, `previous_level`, `previous_points`) VALUES
-	(1, 48, '2023-03-17 10:25:15.504769', 2, 81, 100, 19, NULL, NULL),
+	(1, 10, '2023-03-22 14:43:41.878762', 4, 23, 100, 77, NULL, NULL),
 	(2, -127, '2023-03-17 10:39:06.568654', -40, -32, 100, 132, NULL, NULL);
 /*!40000 ALTER TABLE `skills` ENABLE KEYS */;
 
@@ -878,9 +912,9 @@ CREATE TABLE IF NOT EXISTS `trades` (
   UNIQUE KEY `UniqueTradeIdAndAccount` (`trade_id`,`account_id`),
   KEY `FKhrx1ya4wn13vvty5h2t85970t` (`account_id`),
   CONSTRAINT `FKhrx1ya4wn13vvty5h2t85970t` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8163 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8271 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trades: ~7,805 rows (approximately)
+-- Dumping data for table trader_buddy.trades: ~7,835 rows (approximately)
 /*!40000 ALTER TABLE `trades` DISABLE KEYS */;
 REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_price`, `reason_for_entrance`, `result_of_trade`, `trade_close_time`, `trade_id`, `trade_open_time`, `trade_type`, `trading_platform`, `product`, `relevant`, `processed`, `account_id`, `trade_platform`) VALUES
 	(1, 12584.97, 0.5, 1.2, 12586.84, '', '', '2022-07-21 15:32:00', 'O5-75-5DXQFJ', '2022-07-21 15:32:00', 1, 0, 'US NDAQ 100 - Cash', b'0', b'0', 1, NULL),
@@ -8675,7 +8709,115 @@ REPLACE INTO `trades` (`id`, `close_price`, `lot_size`, `net_profit`, `open_pric
 	(8159, 12143.97, 0.1, -1.55, 12132.8, NULL, NULL, '2023-03-08 10:07:41', 'O1-BZ-76SJ3L', '2023-03-08 10:07:13', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 2, 0),
 	(8160, 12265.75, 0.2, -1.32, 12270.5, NULL, NULL, '2023-03-16 10:34:01', 'O1-BZ-77RWDC', '2023-03-16 10:32:42', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 2, 0),
 	(8161, 12655.88, 1, -16.21, 12644.13, NULL, NULL, '2023-03-17 10:01:34', 'O1-BZ-77W0YE', '2023-03-17 10:01:20', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 2, 0),
-	(8162, 11847.25, 0.2, -2.11, 11854.88, NULL, NULL, '2023-03-13 09:50:09', 'O1-BZ-778GRT', '2023-03-13 09:50:07', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 2, 0);
+	(8162, 11847.25, 0.2, -2.11, 11854.88, NULL, NULL, '2023-03-13 09:50:09', 'O1-BZ-778GRT', '2023-03-13 09:50:07', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 2, 0),
+	(8163, 12463.73, 0.1, -3.18, 12486.88, NULL, NULL, '2023-03-20 09:34:28', 'O1-BZ-77ZNQE', '2023-03-20 09:34:13', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8164, 12455.77, 0.2, 1.77, 12449.25, NULL, NULL, '2023-03-20 09:51:35', 'O1-BZ-77ZSCP', '2023-03-20 09:51:14', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8165, 12438.83, 0.2, -2.46, 12447.8, NULL, NULL, '2023-03-20 09:51:01', 'O1-BZ-77ZS7D', '2023-03-20 09:50:37', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8166, 12453.5, 0.2, 2.21, 12445.38, NULL, NULL, '2023-03-20 09:38:32', 'O1-BZ-77ZPMH', '2023-03-20 09:38:02', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8167, 12452, 0.2, 0.41, 12453.5, NULL, NULL, '2023-03-20 09:36:33', 'O1-BZ-77ZNZV', '2023-03-20 09:35:09', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8168, 12472.75, 0.2, 5.31, 12492.25, NULL, NULL, '2023-03-20 09:31:24', 'O1-BZ-77ZMNK', '2023-03-20 09:31:07', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8169, 12406.38, 0.1, 3.35, 12431, NULL, NULL, '2023-03-20 09:48:29', 'O1-BZ-77ZRMN', '2023-03-20 09:48:12', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8170, 12443.5, 0.1, 4.12, 12473.75, NULL, NULL, '2023-03-20 09:43:12', 'O1-BZ-77ZQ66', '2023-03-20 09:40:38', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8171, 12443.5, 0.1, 3.08, 12466.13, NULL, NULL, '2023-03-20 09:43:12', 'O1-BZ-77ZQK1', '2023-03-20 09:42:25', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8172, 12405.75, 0.1, 2.01, 12420.5, NULL, NULL, '2023-03-20 09:48:33', 'O1-BZ-77ZRP3', '2023-03-20 09:48:22', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8173, 12454.5, 0.2, -2.85, 12464.88, NULL, NULL, '2023-03-20 09:34:58', 'O1-BZ-77ZNWG', '2023-03-20 09:34:44', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8174, 12503.88, 0.2, -3.41, 12491.5, NULL, NULL, '2023-03-20 09:30:43', 'O1-BZ-77ZMH9', '2023-03-20 09:30:31', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8175, 12431.08, 0.1, 0.13, 12432, NULL, NULL, '2023-03-20 09:46:48', 'O1-BZ-77ZRBL', '2023-03-20 09:46:21', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8176, 12665.75, 0.1, -1.24, 12656.75, NULL, NULL, '2023-03-21 09:42:40', 'O1-BZ-782ECS', '2023-03-21 09:41:59', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8177, 12659.88, 0.2, -0.89, 12656.63, NULL, NULL, '2023-03-21 09:41:10', 'O1-BZ-782E5E', '2023-03-21 09:40:24', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8178, 12668.75, 0.1, 0.48, 12672.25, NULL, NULL, '2023-03-21 09:36:14', 'O1-BZ-782DET', '2023-03-21 09:35:30', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8179, 12669.25, 0.1, 0.27, 12667.25, NULL, NULL, '2023-03-21 09:55:07', 'O1-BZ-782FXC', '2023-03-21 09:54:14', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8180, 12668.75, 0.1, 0.88, 12675.25, NULL, NULL, '2023-03-21 09:36:14', 'O1-BZ-782D85', '2023-03-21 09:34:39', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8181, 12655.5, 0.2, -2.2, 12663.5, NULL, NULL, '2023-03-21 09:45:14', 'O1-BZ-782EKV', '2023-03-21 09:43:41', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8182, 12656.13, 0.2, 4.25, 12671.75, NULL, NULL, '2023-03-21 10:06:03', 'O1-BZ-782HZ2', '2023-03-21 10:05:14', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8183, 12669.25, 0.2, 2.48, 12660.13, NULL, NULL, '2023-03-21 09:55:07', 'O1-BZ-782FQY', '2023-03-21 09:52:46', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8184, 12634.25, 0.1, 2.79, 12654.75, NULL, NULL, '2023-03-21 09:48:47', 'O1-BZ-782ETX', '2023-03-21 09:45:28', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8185, 12638, 0.2, 5.64, 12658.75, NULL, NULL, '2023-03-21 09:48:50', 'O1-BZ-782F02', '2023-03-21 09:46:25', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8186, 12655.5, 0.1, -1.56, 12666.88, NULL, NULL, '2023-03-21 09:45:14', 'O1-BZ-782EG9', '2023-03-21 09:42:46', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8187, 12676.75, 0.2, 3.19, 12665, NULL, NULL, '2023-03-21 09:32:29', 'O1-BZ-782CCG', '2023-03-21 09:30:43', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8188, 12817.83, 0.1, 0.15, 12818.95, NULL, NULL, '2023-03-22 14:17:06', 'O1-BZ-785MD1', '2023-03-22 14:16:07', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8189, 12788.12, 0.2, 0.08, 12787.84, NULL, NULL, '2023-03-22 10:40:39', 'O1-BZ-784ZTW', '2023-03-22 10:35:31', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8190, 12846.43, 0.2, 0.12, 12846.86, NULL, NULL, '2023-03-22 14:10:49', 'O1-BZ-785KTG', '2023-03-22 14:10:17', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8191, 12884.15, 0.2, 1.68, 12890.33, NULL, NULL, '2023-03-22 14:07:10', 'O1-BZ-785JRF', '2023-03-22 14:06:54', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8192, 12816.79, 0.1, -1.71, 12804.35, NULL, NULL, '2023-03-22 14:17:04', 'O1-BZ-785MGY', '2023-03-22 14:16:34', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8193, 12738.34, 0.2, -0.23, 12737.5, NULL, NULL, '2023-03-22 10:15:32', 'O1-BZ-784XDM', '2023-03-22 10:13:57', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8194, 12757.2, 0.2, -3.24, 12745.45, NULL, NULL, '2023-03-22 10:00:39', 'O1-BZ-784VLX', '2023-03-22 09:56:21', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8195, 12743.25, 0.2, 1.09, 12739.25, NULL, NULL, '2023-03-22 09:37:52', 'O1-BZ-784SBR', '2023-03-22 09:37:03', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8196, 12746.88, 0.2, 1.77, 12740.38, NULL, NULL, '2023-03-22 10:18:31', 'O1-BZ-784XHT', '2023-03-22 10:15:39', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8197, 12750.5, 0.2, 0.62, 12752.77, NULL, NULL, '2023-03-22 10:06:36', 'O1-BZ-784WC1', '2023-03-22 10:03:45', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8198, 12780.36, 0.4, 6.39, 12768.65, NULL, NULL, '2023-03-22 14:36:54', 'O1-BZ-785S3G', '2023-03-22 14:36:47', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8199, 12853.4, 0.2, 3.65, 12839.99, NULL, NULL, '2023-03-22 14:41:26', 'O1-BZ-785TB6', '2023-03-22 14:40:04', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8200, 12775.75, 0.4, -0.62, 12776.87, NULL, NULL, '2023-03-22 11:11:38', 'O1-BZ-7852BX', '2023-03-22 11:05:03', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8201, 12747.37, 0.4, -4.69, 12755.87, NULL, NULL, '2023-03-22 14:36:39', 'O1-BZ-785RZ4', '2023-03-22 14:36:27', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8202, 12741.75, 0.2, -3.65, 12728.5, NULL, NULL, '2023-03-22 09:44:39', 'O1-BZ-784T3J', '2023-03-22 09:43:07', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8203, 12811.51, 0.2, 0.68, 12809.03, NULL, NULL, '2023-03-22 14:15:25', 'O1-BZ-785M34', '2023-03-22 14:15:10', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8204, 12781.37, 0.2, -2.12, 12789.05, NULL, NULL, '2023-03-22 10:47:14', 'O1-BZ-7850NR', '2023-03-22 10:46:01', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8205, 12783.53, 0.2, -2.4, 12792.25, NULL, NULL, '2023-03-22 10:45:04', 'O1-BZ-7850K1', '2023-03-22 10:44:16', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8206, 12747.25, 0.2, -2.08, 12754.81, NULL, NULL, '2023-03-22 10:09:27', 'O1-BZ-784WS1', '2023-03-22 10:08:01', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8207, 12765.5, 0.2, 1.64, 12759.5, NULL, NULL, '2023-03-22 10:22:21', 'O1-BZ-784XYZ', '2023-03-22 10:20:40', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8208, 12740.45, 0.2, -2.66, 12730.81, NULL, NULL, '2023-03-22 09:48:03', 'O1-BZ-784TN4', '2023-03-22 09:47:23', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8209, 12742.37, 0.2, 0.75, 12745.11, NULL, NULL, '2023-03-22 10:13:12', 'O1-BZ-784X58', '2023-03-22 10:11:50', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8210, 12742.37, 0.2, 0, 12742.38, NULL, NULL, '2023-03-22 10:13:12', 'O1-BZ-784X4W', '2023-03-22 10:11:44', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8211, 12744.25, 0.2, 0.99, 12740.62, NULL, NULL, '2023-03-22 09:49:46', 'O1-BZ-784TQY', '2023-03-22 09:48:09', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8212, 12853.4, 0.2, 1.18, 12849.05, NULL, NULL, '2023-03-22 14:41:26', 'O1-BZ-785TNX', '2023-03-22 14:41:00', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8213, 12800.66, 0.2, 0.38, 12802.07, NULL, NULL, '2023-03-22 14:14:23', 'O1-BZ-785LSF', '2023-03-22 14:14:06', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8214, 12851.43, 0.2, 0.57, 12849.33, NULL, NULL, '2023-03-22 14:19:47', 'O1-BZ-785N2G', '2023-03-22 14:19:28', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8215, 12782.38, 0.2, -1.76, 12788.75, NULL, NULL, '2023-03-22 10:45:06', 'O1-BZ-7850CV', '2023-03-22 10:41:26', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8216, 12823.31, 0.2, 0.35, 12822.03, NULL, NULL, '2023-03-22 14:18:35', 'O1-BZ-785MMG', '2023-03-22 14:17:18', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8217, 12850.89, 0.1, -0.87, 12857.24, NULL, NULL, '2023-03-22 14:30:42', 'O1-BZ-785PW1', '2023-03-22 14:29:27', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8218, 12829.51, 0.2, 4.49, 12813.06, NULL, NULL, '2023-03-22 14:03:31', 'O1-BZ-785H24', '2023-03-22 14:03:02', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8219, 12738.34, 0.2, -0.92, 12735, NULL, NULL, '2023-03-22 10:15:32', 'O1-BZ-784XDV', '2023-03-22 10:14:03', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8220, 12775.75, 0.4, -3.65, 12782.37, NULL, NULL, '2023-03-22 11:11:38', 'O1-BZ-78526P', '2023-03-22 11:03:15', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8221, 12776.42, 0.2, -3.09, 12787.63, NULL, NULL, '2023-03-22 10:52:01', 'O1-BZ-7850WT', '2023-03-22 10:48:16', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8222, 12730.71, 0.2, -2.8, 12740.88, NULL, NULL, '2023-03-22 09:47:12', 'O1-BZ-784T8P', '2023-03-22 09:44:45', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8223, 12777.58, 0.2, 0.23, 12776.75, NULL, NULL, '2023-03-22 11:00:55', 'O1-BZ-7851EB', '2023-03-22 10:52:43', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8224, 12742.5, 0.2, -1.34, 12737.63, NULL, NULL, '2023-03-22 09:41:31', 'O1-BZ-784SSM', '2023-03-22 09:40:23', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8225, 12822.16, 0.2, -3.4, 12834.53, NULL, NULL, '2023-03-22 14:39:14', 'O1-BZ-785SY8', '2023-03-22 14:38:46', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8226, 12853.9, 0.4, 2.17, 12857.88, NULL, NULL, '2023-03-22 14:10:03', 'O1-BZ-785KDL', '2023-03-22 14:08:42', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8227, 12884.15, 0.1, 2.32, 12901.21, NULL, NULL, '2023-03-22 14:07:10', 'O1-BZ-785JJS', '2023-03-22 14:06:26', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8228, 12750.5, 0.2, -0.38, 12749.12, NULL, NULL, '2023-03-22 10:06:36', 'O1-BZ-784W6Q', '2023-03-22 10:02:28', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8229, 12779.36, 0.4, -2.5, 12774.82, NULL, NULL, '2023-03-22 11:02:57', 'O1-BZ-785235', '2023-03-22 11:01:46', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8230, 12748.65, 0.2, -2.66, 12758.29, NULL, NULL, '2023-03-22 14:36:18', 'O1-BZ-785RVY', '2023-03-22 14:36:16', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8231, 12775.75, 0.4, -3.31, 12781.75, NULL, NULL, '2023-03-22 11:11:38', 'O1-BZ-78526Y', '2023-03-22 11:03:21', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8232, 12894.02, 0.2, 1.84, 12887.25, NULL, NULL, '2023-03-22 14:42:06', 'O1-BZ-785V5V', '2023-03-22 14:42:01', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8233, 12823.07, 0.2, 0.41, 12821.57, NULL, NULL, '2023-03-22 14:38:29', 'O1-BZ-785SPS', '2023-03-22 14:38:06', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8234, 12775.63, 0.2, -2.42, 12784.43, NULL, NULL, '2023-03-22 11:00:55', 'O1-BZ-7851QV', '2023-03-22 10:56:04', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8235, 12745.64, 0.2, -0.69, 12748.13, NULL, NULL, '2023-03-22 10:11:35', 'O1-BZ-784X11', '2023-03-22 10:10:24', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8236, 12845.59, 0.2, -1.27, 12850.19, NULL, NULL, '2023-03-22 14:28:39', 'O1-BZ-785PKV', '2023-03-22 14:27:57', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8237, 12834.42, 0.1, -1.91, 12848.31, NULL, NULL, '2023-03-22 14:11:31', 'O1-BZ-785KZJ', '2023-03-22 14:10:59', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8238, 12839.19, 0.1, 1.27, 12829.88, NULL, NULL, '2023-03-22 14:21:49', 'O1-BZ-785NH7', '2023-03-22 14:21:09', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8239, 12838.33, 0.1, -1.16, 12829.91, NULL, NULL, '2023-03-22 14:27:06', 'O1-BZ-785PCV', '2023-03-22 14:26:46', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8240, 12844.76, 0.2, 0.36, 12846.07, NULL, NULL, '2023-03-22 14:20:25', 'O1-BZ-785N7M', '2023-03-22 14:20:03', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8241, 12742.5, 0.1, 0.34, 12745, NULL, NULL, '2023-03-22 09:41:31', 'O1-BZ-784SQC', '2023-03-22 09:39:58', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8242, 12780.39, 0.2, -2.17, 12788.25, NULL, NULL, '2023-03-22 10:47:17', 'O1-BZ-7850MD', '2023-03-22 10:45:22', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8243, 12765.5, 0.2, 3.24, 12753.62, NULL, NULL, '2023-03-22 10:22:21', 'O1-BZ-784XWE', '2023-03-22 10:20:03', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8244, 12735.75, 0.2, -1.53, 12741.29, NULL, NULL, '2023-03-22 10:13:43', 'O1-BZ-784XBP', '2023-03-22 10:13:27', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8245, 12758, 0.2, -3.38, 12745.75, NULL, NULL, '2023-03-22 10:00:52', 'O1-BZ-784VFW', '2023-03-22 09:54:17', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8246, 12745.64, 0.2, -1.2, 12750, NULL, NULL, '2023-03-22 10:11:35', 'O1-BZ-784X1D', '2023-03-22 10:10:30', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8247, 12744.25, 0.2, 2.25, 12736.01, NULL, NULL, '2023-03-22 09:49:46', 'O1-BZ-784TRK', '2023-03-22 09:48:19', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8248, 12730.71, 0.2, -2.05, 12738.13, NULL, NULL, '2023-03-22 09:47:12', 'O1-BZ-784T9R', '2023-03-22 09:45:02', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8249, 12824.73, 0.2, 1.05, 12828.59, NULL, NULL, '2023-03-22 14:33:17', 'O1-BZ-785QV5', '2023-03-22 14:33:02', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8250, 12891.86, 0.1, -2.51, 12873.62, NULL, NULL, '2023-03-22 14:06:05', 'O1-BZ-785J2X', '2023-03-22 14:05:28', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8251, 12792.13, 0.4, 2.93, 12797.5, NULL, NULL, '2023-03-22 10:33:00', 'O1-BZ-784Z9N', '2023-03-22 10:31:18', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8252, 12758.75, 0.2, 4.29, 12774.46, NULL, NULL, '2023-03-22 11:13:17', 'O1-BZ-7852TT', '2023-03-22 11:11:51', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8253, 12743.25, 0.2, 3.33, 12731.05, NULL, NULL, '2023-03-22 09:37:52', 'O1-BZ-784S88', '2023-03-22 09:36:27', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8254, 12824.73, 0.1, 4.69, 12859.15, NULL, NULL, '2023-03-22 14:33:17', 'O1-BZ-785QN2', '2023-03-22 14:32:24', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8255, 12746.88, 0.2, 1.27, 12742.24, NULL, NULL, '2023-03-22 10:18:31', 'O1-BZ-784XJG', '2023-03-22 10:15:49', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8256, 12821.85, 0.2, -1.02, 12818.13, NULL, NULL, '2023-03-22 14:39:53', 'O1-BZ-785T6Z', '2023-03-22 14:39:36', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8257, 12776.62, 0.2, -2.09, 12784.21, NULL, NULL, '2023-03-22 10:52:01', 'O1-BZ-7850VD', '2023-03-22 10:47:50', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8258, 12835.74, 0.4, 1.06, 12837.68, NULL, NULL, '2023-03-22 14:31:07', 'O1-BZ-785Q6C', '2023-03-22 14:31:00', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8259, 12758.75, 0.6, 11.54, 12772.85, NULL, NULL, '2023-03-22 11:13:17', 'O1-BZ-7852VC', '2023-03-22 11:12:06', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8260, 12877.1, 0.4, 9.96, 12858.83, NULL, NULL, '2023-03-22 14:31:39', 'O1-BZ-785QBR', '2023-03-22 14:31:27', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8261, 12747.25, 0.2, -0.86, 12750.37, NULL, NULL, '2023-03-22 10:09:27', 'O1-BZ-784WN9', '2023-03-22 10:06:48', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8262, 12821.16, 0.1, -3.01, 12843.05, NULL, NULL, '2023-03-22 14:13:20', 'O1-BZ-785L95', '2023-03-22 14:12:18', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8263, 12845.32, 0.4, 4.7, 12853.94, NULL, NULL, '2023-03-22 14:01:08', 'O1-BZ-785G1T', '2023-03-22 14:00:57', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8264, 12746, 0.2, -0.28, 12745, NULL, NULL, '2023-03-22 10:10:14', 'O1-BZ-784WYK', '2023-03-22 10:09:36', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8265, 12821.65, 0.1, 0.3, 12823.86, NULL, NULL, '2023-03-22 14:24:40', 'O1-BZ-785NTQ', '2023-03-22 14:23:17', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8266, 12794.06, 0.1, 2.91, 12815.39, NULL, NULL, '2023-03-22 14:35:40', 'O1-BZ-785RDC', '2023-03-22 14:35:08', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8267, 12746, 0.2, -1.45, 12740.75, NULL, NULL, '2023-03-22 10:10:14', 'O1-BZ-784WZ3', '2023-03-22 10:09:44', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8268, 12894.02, 0.1, 4.11, 12863.81, NULL, NULL, '2023-03-22 14:42:06', 'O1-BZ-785TY8', '2023-03-22 14:41:39', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8269, 12845.64, 0.2, -3.43, 12858.12, NULL, NULL, '2023-03-22 14:40:33', 'O1-BZ-785THL', '2023-03-22 14:40:30', 0, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0),
+	(8270, 12728.99, 0.2, 0.21, 12729.75, NULL, NULL, '2023-03-22 09:36:15', 'O1-BZ-784S4X', '2023-03-22 09:35:45', 1, NULL, 'US NDAQ 100 - Cash', b'1', b'1', 1, 0);
 /*!40000 ALTER TABLE `trades` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_reasons_for_entry
@@ -8705,13 +8847,13 @@ CREATE TABLE IF NOT EXISTS `trade_records` (
   KEY `FKi5sk7nqeg33tum7hvh9oj2tm5` (`statistics_id`),
   CONSTRAINT `FKi5sk7nqeg33tum7hvh9oj2tm5` FOREIGN KEY (`statistics_id`) REFERENCES `trade_records_statistics` (`id`),
   CONSTRAINT `FKlt8dfxccamqy5gcglyv6jqjo3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4314 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4318 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records: ~400 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records: ~404 rows (approximately)
 /*!40000 ALTER TABLE `trade_records` DISABLE KEYS */;
 REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`, `start_date`, `account_id`, `statistics_id`, `target`) VALUES
 	(3914, 3, 3000, '2023-01-01', '2022-01-01', 1, 4172, 37.5),
-	(3915, 3, 2041.15, '2024-01-01', '2023-01-01', 1, 4173, 24.38),
+	(3915, 3, 2076.58, '2024-01-01', '2023-01-01', 1, 4173, 25.96),
 	(3916, 2, 1437.29, '2022-09-01', '2022-08-01', 1, 4174, 17.97),
 	(3917, 2, 2430.34, '2022-10-01', '2022-09-01', 1, 4175, 30.38),
 	(3918, 2, 3645.34, '2022-11-01', '2022-10-01', 1, 4176, 45.57),
@@ -8719,7 +8861,7 @@ REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`,
 	(3920, 2, 3000, '2023-01-01', '2022-12-01', 1, 4178, 37.5),
 	(3921, 2, 2788.77, '2023-02-01', '2023-01-01', 1, 4179, 34.86),
 	(3922, 2, 1859.28, '2023-03-01', '2023-02-01', 1, 4180, 23.24),
-	(3923, 2, 2041.15, '2023-04-01', '2023-03-01', 1, 4181, 24.38),
+	(3923, 2, 2076.58, '2023-04-01', '2023-03-01', 1, 4181, 25.96),
 	(3924, 1, 1075.47, '2022-08-08', '2022-08-01', 1, 4182, 13.44),
 	(3925, 1, 1163.7, '2022-08-15', '2022-08-08', 1, 4183, 14.55),
 	(3926, 1, 1254.07, '2022-08-22', '2022-08-15', 1, 4184, 15.68),
@@ -9109,7 +9251,11 @@ REPLACE INTO `trade_records` (`id`, `aggregate_interval`, `balance`, `end_date`,
 	(4310, 0, -7128.93, '2023-03-15', '2023-03-14', 2, 4568, 0),
 	(4311, 0, -7115.83, '2023-03-16', '2023-03-15', 2, 4569, 0),
 	(4312, 0, -7397.47, '2023-03-17', '2023-03-16', 2, 4570, 0),
-	(4313, 0, -7580.22, '2023-03-18', '2023-03-17', 2, 4571, 0);
+	(4313, 0, -7580.22, '2023-03-18', '2023-03-17', 2, 4571, 0),
+	(4314, 1, 2076.58, '2023-03-27', '2023-03-20', 1, 4572, 25.96),
+	(4315, 0, 1960.55, '2023-03-21', '2023-03-20', 1, 4573, 24.51),
+	(4316, 0, 1974.64, '2023-03-22', '2023-03-21', 1, 4574, 24.68),
+	(4317, 0, 1985.49, '2023-03-23', '2023-03-22', 1, 4575, 24.82);
 /*!40000 ALTER TABLE `trade_records` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_records_statistics
@@ -9133,13 +9279,13 @@ CREATE TABLE IF NOT EXISTS `trade_records_statistics` (
   `pips_earned` double DEFAULT NULL,
   `pips_lost` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4572 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4576 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trade_records_statistics: ~400 rows (approximately)
+-- Dumping data for table trader_buddy.trade_records_statistics: ~404 rows (approximately)
 /*!40000 ALTER TABLE `trade_records_statistics` DISABLE KEYS */;
 REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_loss_size`, `average_win_amount`, `average_win_size`, `largest_loss_amount`, `largest_loss_size`, `largest_win_amount`, `largest_win_size`, `net_profit`, `number_of_losing_trades`, `number_of_trades`, `number_of_winning_trades`, `percentage_profit`, `trading_rate`, `win_percentage`, `pips_earned`, `pips_lost`) VALUES
 	(4172, -21.39, 1.93, 21.86, 1.86, -288.79, 3, 135.63, 1.7, 2327.62, 710, 1511, 801, 77.59, 16.79, 53, 7577.76, 6176.15),
-	(4173, -13, 1.08, 10.56, 1.04, -128.71, 1.7, 125.7, 1.8, -907.94, 676, 1422, 746, -46.56, 28.44, 52, 6173.69, 6467.75),
+	(4173, -12.27, 1.01, 9.95, 0.98, -128.71, 1.7, 125.7, 1.8, -872.51, 724, 1530, 806, -42.02, 28.87, 53, 6715.61, 6867.54),
 	(4174, -7.47, 0.71, 8.91, 0.67, -21.88, 0.5, 36.8, 0.68, 437.29, 75, 187, 112, 30.42, 8.13, 60, 1105.36, 623.92),
 	(4175, -14.11, 1.04, 18.68, 1.07, -105.18, 1.15, 99.99, 1.15, 643.05, 108, 224, 116, 26.46, 12.44, 52, 1557.48, 1124.63),
 	(4176, -18.83, 1.44, 17.86, 1.54, -137.85, 1.7, 135.63, 1.7, 865, 103, 260, 157, 23.73, 15.29, 60, 1473.02, 1027.82),
@@ -9147,7 +9293,7 @@ REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_l
 	(4178, -22.46, 1.9, 21.06, 2.06, -133.59, 3, 109.95, 3, 246.12, 140, 301, 161, 8.2, 23.15, 53, 1253.11, 1254.74),
 	(4179, -8.22, 0.57, 6.09, 0.48, -33.99, 1.6, 55.76, 1.6, -69.23, 159, 362, 203, -2.48, 19.05, 56, 1954.32, 1857.99),
 	(4180, -19.16, 1.66, 15.82, 1.66, -128.71, 1.7, 125.7, 1.8, -929.49, 372, 764, 392, -49.99, 38.2, 51, 2794, 3194.61),
-	(4181, -2.42, 0.18, 2.93, 0.21, -19.85, 1.2, 40.96, 1.2, 90.78, 145, 296, 151, 4.66, 26.91, 51, 1425.37, 1415.15),
+	(4181, -2.35, 0.18, 2.74, 0.21, -19.85, 1.2, 40.96, 1.2, 126.21, 193, 404, 211, 6.08, 28.86, 52, 1967.29, 1814.94),
 	(4182, -9.72, 0.57, 4.55, 0.57, -14.18, 0.6, 15.32, 0.6, 75.47, 3, 26, 23, 7.02, 5.2, 88, 142.28, 38.83),
 	(4183, -10.28, 0.64, 8.05, 0.63, -21.88, 0.5, 28.06, 0.65, 88.23, 11, 36, 25, 7.58, 7.2, 69, 247.3, 142.21),
 	(4184, -7.52, 0.66, 10.31, 0.65, -16.9, 0.69, 36.8, 0.68, 90.37, 25, 52, 27, 7.21, 10.4, 52, 311.78, 215.45),
@@ -9537,7 +9683,11 @@ REPLACE INTO `trade_records_statistics` (`id`, `average_loss_amount`, `average_l
 	(4568, -4.4, 0.3, 4.25, 0.3, -9.06, 0.3, 8.73, 0.3, -35.03, 35, 63, 28, 0.49, 63, 44, 291.37, 373.7),
 	(4569, -3.07, 0.2, 3.63, 0.2, -3.67, 0.2, 6.13, 0.2, 13.1, 4, 11, 7, -0.18, 11, 64, 92.63, 44.38),
 	(4570, -10.32, 0.3, 6.9, 0.31, -48.03, 0.2, 43.16, 1.2, -281.64, 42, 64, 22, 3.81, 59, 34, 306, 1313.16),
-	(4571, -15.74, 1.03, 7.53, 1, -20.9, 1.1, 21.54, 1, -182.75, 14, 19, 5, 2.41, 19, 26, 27.53, 154.94);
+	(4571, -15.74, 1.03, 7.53, 1, -20.9, 1.1, 21.54, 1, -182.75, 14, 19, 5, 2.41, 19, 26, 27.53, 154.94),
+	(4572, -2.09, 0.2, 2.27, 0.2, -4.69, 0.4, 11.54, 0.6, 35.43, 48, 108, 60, 1.71, 36, 56, 541.92, 399.79),
+	(4573, -2.98, 0.18, 2.49, 0.14, -3.41, 0.2, 5.31, 0.2, 10.49, 4, 13, 9, 0.54, 13, 69, 128.81, 54.88),
+	(4574, -1.47, 0.15, 2.5, 0.15, -2.2, 0.2, 5.64, 0.2, 14.09, 4, 12, 8, 0.71, 12, 67, 89.74, 31.63),
+	(4575, -2.06, 0.21, 2.17, 0.22, -4.69, 0.4, 11.54, 0.6, 10.85, 40, 83, 43, 0.55, 83, 52, 323.37, 313.28);
 /*!40000 ALTER TABLE `trade_records_statistics` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.trade_results_of_trade
@@ -9578,7 +9728,7 @@ CREATE TABLE IF NOT EXISTS `trading_plans` (
   CONSTRAINT `FKruni9vofdno2ve4uit2w6d3ep` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.trading_plans: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.trading_plans: ~2 rows (approximately)
 /*!40000 ALTER TABLE `trading_plans` DISABLE KEYS */;
 REPLACE INTO `trading_plans` (`id`, `active`, `compound_frequency`, `end_date`, `name`, `profit_target`, `start_date`, `starting_balance`, `status`, `deposit_plan_id`, `withdrawal_plan_id`, `account_id`, `absolute`, `aggregate_interval`) VALUES
 	(2, b'1', 1, '2025-08-01', 'My Trading Plan', 1.25, '2022-08-01', 1000, 1, 1, NULL, 1, b'0', 0),
@@ -9634,7 +9784,7 @@ CREATE TABLE IF NOT EXISTS `user_locale_languages` (
   CONSTRAINT `FKd14i3qhxjotd6oinujfodqjtf` FOREIGN KEY (`user_locale_id`) REFERENCES `user_locales` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.user_locale_languages: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.user_locale_languages: ~3 rows (approximately)
 /*!40000 ALTER TABLE `user_locale_languages` DISABLE KEYS */;
 REPLACE INTO `user_locale_languages` (`user_locale_id`, `languages`) VALUES
 	(1, 0),
@@ -9650,7 +9800,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
   CONSTRAINT `FKhfh9dx7w3ubf1co1vdev94g3f` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.user_roles: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.user_roles: ~2 rows (approximately)
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
 REPLACE INTO `user_roles` (`user_id`, `roles`) VALUES
 	(5, 0),
