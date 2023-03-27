@@ -33,7 +33,7 @@ public class IntradayHistoricalDataTranslator implements GenericTranslator<Intra
             intradayHistoricalDataDTO.setDate(response.date());
             intradayHistoricalDataDTO.setProduct(response.name());
             intradayHistoricalDataDTO.setSymbol(response.symbol());
-            intradayHistoricalDataDTO.setOffset(ZonedDateTime.now(ZoneId.of("America/New_York")).getOffset().getTotalSeconds() / 3600); // HARDCODED TO EASTERN TIME FOR NOW
+            intradayHistoricalDataDTO.setOffset(ZonedDateTime.of(response.date().atStartOfDay(), ZoneId.of("America/New_York")).getOffset().getTotalSeconds() / 3600); // HARDCODED TO EASTERN TIME FOR NOW
             intradayHistoricalDataDTO.setEntries(this.intradayHistoricalDataEntryTranslator.translateAll(response.entries()));
 
             return intradayHistoricalDataDTO;
