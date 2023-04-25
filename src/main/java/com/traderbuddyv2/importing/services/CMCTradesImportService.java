@@ -40,6 +40,8 @@ import java.util.Objects;
 public class CMCTradesImportService implements ImportService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CMCTradesImportService.class);
+    private static final List<String> BUY_SIGNALS = List.of("Buy Trade");
+    private static final List<String> SELL_SIGNALS = List.of("Sell Trade");
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
@@ -108,12 +110,12 @@ public class CMCTradesImportService implements ImportService {
             final Account account = this.traderBuddyUserDetailsService.getCurrentUser().getAccount();
             this.tradeRepository.findAllByAccount(account).forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
 
-            List<CMCTradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().contains("Buy Trade")).toList();
-            List<CMCTradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().contains("Sell Trade")).toList();
+            List<CMCTradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
+            List<CMCTradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
             List<CMCTradeWrapper> closeTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Close Trade")).toList();
             List<CMCTradeWrapper> stopLosses = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Stop Loss")).toList();
             List<CMCTradeWrapper> takeProfits = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Take Profit")).toList();
-            List<CMCTradeWrapper> promotionalPayments = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().equals("Promotional Payment")).toList();
+            List<CMCTradeWrapper> promotionalPayments = trades.stream().filter(trade -> !existingTrades.containsKey(trade.orderNumber())).filter(trade -> trade.type().contains("Promotional Payment")).toList();
 
             buyTrades.forEach(trade -> tradeMap.put(trade.orderNumber(), createNewTrade(trade, TradeType.BUY)));
             sellTrades.forEach(trade -> tradeMap.put(trade.orderNumber(), createNewTrade(trade, TradeType.SELL)));
@@ -272,5 +274,17 @@ public class CMCTradesImportService implements ImportService {
         matched.setNetProfit(wrapper.amount());
 
         return matched;
+    }
+
+    /**
+     * Determines whether the given trade should be considered
+     *
+     * @param trade trade name
+     * @param tradeType {@link TradeType}
+     * @return true if matches keywords
+     */
+    private boolean matchTradeType(final String trade, final TradeType tradeType) {
+        final List<String> matchers = tradeType.equals(TradeType.BUY) ? BUY_SIGNALS : SELL_SIGNALS;
+        return matchers.stream().anyMatch(trade::contains);
     }
 }
