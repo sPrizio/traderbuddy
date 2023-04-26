@@ -58,7 +58,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     @Before
     public void setUp() {
         Mockito.when(this.accountFacade.getAccountOverview()).thenReturn(generateAccountOverview());
-        Mockito.when(this.accountService.getEquityCurve(any(), any(), any())).thenReturn(List.of());
+        Mockito.when(this.accountService.getEquityCurve(any(), anyInt())).thenReturn(List.of());
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.accountService.findAccountBalanceHistory(any(), any())).thenReturn(List.of(generateTestAccountBalanceModification()));
         Mockito.when(this.accountService.deleteAccountBalanceModification(anyString())).thenReturn(true);
@@ -86,9 +86,8 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void test_getAccountEquityCurve_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-08-24"));
-        map.put("end", List.of("2022-08-25"));
         map.put("interval", List.of("DAILY"));
+        map.put("count", List.of("1"));
 
         this.mockMvc.perform(get("/api/v1/account/equity-curve").params(map))
                 .andExpect(status().isOk())

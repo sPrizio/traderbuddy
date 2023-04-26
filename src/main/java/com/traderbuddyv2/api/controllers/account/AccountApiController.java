@@ -9,12 +9,14 @@ import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.api.models.records.misc.PromotionalPaymentTotals;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,16 +70,18 @@ public class AccountApiController extends AbstractApiController {
     /**
      * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link EquityCurveEntry}s
      *
-     * @param start {@link LocalDate}
-     * @param end {@link LocalDate}
      * @param interval {@link AggregateInterval}
+     * @param count number of results to return
      * @return {@link StandardJsonResponse}
      */
     @ResponseBody
     @GetMapping("/equity-curve")
-    public StandardJsonResponse getAccountEquityCurve(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval) {
-        validate(start, end, interval);
-        return new StandardJsonResponse(true, this.accountService.getEquityCurve(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), AggregateInterval.valueOf(interval)), StringUtils.EMPTY);
+    public StandardJsonResponse getAccountEquityCurve(final @RequestParam("interval") String interval, final @RequestParam("count") int count) {
+
+        if (!EnumUtils.isValidEnumIgnoreCase(AggregateInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid aggregate interval", interval));
+        }
+        return new StandardJsonResponse(true, this.accountService.getEquityCurve(AggregateInterval.valueOf(interval), count), StringUtils.EMPTY);
     }
 
     /**

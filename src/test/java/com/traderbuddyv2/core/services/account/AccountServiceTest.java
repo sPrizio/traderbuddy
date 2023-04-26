@@ -94,25 +94,13 @@ public class AccountServiceTest extends AbstractGenericTest {
     @Test
     public void test_getEquityCurve_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.accountService.getEquityCurve(null, LocalDate.MAX, AggregateInterval.MONTHLY))
-                .withMessage(CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
-
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.accountService.getEquityCurve(LocalDate.MIN, null, AggregateInterval.MONTHLY))
-                .withMessage(CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
-
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.accountService.getEquityCurve(LocalDate.MIN, LocalDate.MAX, null))
+                .isThrownBy(() -> this.accountService.getEquityCurve(null, 1))
                 .withMessage(CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
-
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.accountService.getEquityCurve(LocalDate.MAX, LocalDate.MIN, AggregateInterval.MONTHLY))
-                .withMessage(CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
     public void test_getEquityCurve_success() {
-        assertThat(this.accountService.getEquityCurve(LocalDate.MIN, LocalDate.MAX, AggregateInterval.DAILY))
+        assertThat(this.accountService.getEquityCurve(AggregateInterval.DAILY, 1))
                 .isNotEmpty();
     }
 

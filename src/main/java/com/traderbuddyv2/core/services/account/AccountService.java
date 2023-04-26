@@ -78,19 +78,15 @@ public class AccountService {
     /**
      * Returns a {@link List} of {@link EquityCurveEntry}
      *
-     * @param start             {@link LocalDate}
-     * @param end               {@link LocalDate}
      * @param aggregateInterval {@link AggregateInterval}
+     * @param count number of results to return
      * @return {@link List} of {@link EquityCurveEntry}
      */
-    public List<EquityCurveEntry> getEquityCurve(final LocalDate start, final LocalDate end, final AggregateInterval aggregateInterval) {
+    public List<EquityCurveEntry> getEquityCurve(final AggregateInterval aggregateInterval, final int count) {
 
-        validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
-        validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(aggregateInterval, CoreConstants.Validation.INTERVAL_CANNOT_BE_NULL);
-        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.MUTUALLY_EXCLUSIVE_DATES);
 
-        final List<TradeRecord> tradeRecords = this.tradeRecordService.findHistory(start, end, aggregateInterval);
+        final List<TradeRecord> tradeRecords = this.tradeRecordService.findRecentHistory(count, aggregateInterval);
         if (CollectionUtils.isNotEmpty(tradeRecords)) {
             return tradeRecords.stream().map(rec -> new EquityCurveEntry(rec.getStartDate(), rec.getBalance())).toList();
         }
