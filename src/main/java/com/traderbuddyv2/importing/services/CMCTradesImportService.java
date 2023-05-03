@@ -175,7 +175,11 @@ public class CMCTradesImportService implements ImportService {
                 input[1] = input[1] + ".";
                 return LocalDateTime.parse(String.join(" ", input), DateTimeFormatter.ofPattern("dd MMM yyyy H:mm:ss"));
             } catch (Exception ex) {
-                throw new DateTimeException(e.getMessage(), e);
+                try {
+                    return LocalDateTime.parse(string, DateTimeFormatter.ofPattern("dd MMMM yyyy H:mm:ss"));
+                } catch (Exception exe) {
+                    throw new DateTimeException(e.getMessage(), e);
+                }
             }
         }
     }
