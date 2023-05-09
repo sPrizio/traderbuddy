@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.enums.account;
 
+import com.traderbuddyv2.core.enums.system.Parity;
 import lombok.Getter;
 
 /**
@@ -9,16 +10,20 @@ import lombok.Getter;
  * @version 1.0
  */
 public enum AccountBalanceModificationType {
-    ONE_TIME_DEPOSIT("One-time Deposit"),
-    ONE_TIME_WITHDRAWAL("One-time Withdrawal"),
-    RECURRING_DEPOSIT("Recurring Deposit"),
-    RECURRING_WITHDRAWAL("Recurring Withdrawal");
+    ONE_TIME_DEPOSIT("One-time Deposit", Parity.POSITIVE),
+    ONE_TIME_WITHDRAWAL("One-time Withdrawal", Parity.NEGATIVE),
+    RECURRING_DEPOSIT("Recurring Deposit", Parity.POSITIVE),
+    RECURRING_WITHDRAWAL("Recurring Withdrawal", Parity.NEGATIVE);
 
     @Getter
     private final String description;
 
-    AccountBalanceModificationType(final String description) {
+    @Getter
+    private final Parity parity;
+
+    AccountBalanceModificationType(final String description, final Parity parity) {
         this.description = description;
+        this.parity = parity;
     }
 
     /**

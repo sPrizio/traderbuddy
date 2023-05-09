@@ -3,6 +3,7 @@ package com.traderbuddyv2.core.services.account;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.system.Parity;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
@@ -257,11 +258,12 @@ public class AccountService {
     private AccountBalanceModification applyChanges(AccountBalanceModification modification, final Map<String, Object> data) {
 
         Map<String, Object> mod = (Map<String, Object>) data.get("modification");
+        double amount = Double.parseDouble(mod.get("amount").toString());
 
         modification.setDateTime(LocalDate.parse(mod.get("dateTime").toString(), DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)).atStartOfDay().plusSeconds(1));
-        modification.setAmount(Double.parseDouble(mod.get("amount").toString()));
         modification.setModificationType(AccountBalanceModificationType.getForOrdinal(Integer.parseInt(mod.get("type").toString())));
         modification.setDescription(mod.get("description").toString());
+        modification.setAmount(modification.getModificationType().getParity().equals(Parity.NEGATIVE) ? (amount * -1.0) : amount);
         modification.setProcessed(false);
         modification.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
 
