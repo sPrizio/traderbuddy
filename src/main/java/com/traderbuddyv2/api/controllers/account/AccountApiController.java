@@ -9,7 +9,6 @@ import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.api.models.records.misc.PromotionalPaymentTotals;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
-import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.security.User;
