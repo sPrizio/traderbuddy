@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.converters;
 import com.traderbuddyv2.api.models.dto.GenericDTO;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public interface GenericDTOConverter<E, D extends GenericDTO> {
      * @param entities {@link List} of {@link E}
      * @return {@link List} of {@link D}
      */
-    default List<D> convertAll(final List<E> entities) {
+    default List<D> convertAll(final Collection<E> entities) {
         return new ArrayList<>(entities.stream().map(this::convert).toList());
     }
 }

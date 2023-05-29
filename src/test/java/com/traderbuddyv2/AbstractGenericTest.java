@@ -42,6 +42,7 @@ import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataDTO;
 import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryDTO;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataEntryResponse;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataResponse;
+import com.traderbuddyv2.integration.models.response.forexfactory.CalendarNewsEntryResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -454,5 +455,9 @@ public abstract class AbstractGenericTest {
         phoneNumber.setCountryCode((short) 1);
 
         return phoneNumber;
+    }
+
+    public CalendarNewsEntryResponse generateCalendarNewsEntryResponse() {
+        return new CalendarNewsEntryResponse("Currenct Account", "CAD", "2023-05-30T08:30:00-04:00", "Low", "-9.9B", "-10.6B");
     }
 }

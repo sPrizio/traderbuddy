@@ -3,6 +3,7 @@ package com.traderbuddyv2.integration.translators;
 import com.traderbuddyv2.integration.models.dto.GenericIntegrationDTO;
 import com.traderbuddyv2.integration.models.response.GenericIntegrationResponse;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public interface GenericTranslator<R extends GenericIntegrationResponse, D exten
      * @param responses {@link List} of {@link R}
      * @return {@link List} of {@link D}
      */
-    default List<D> translateAll(final List<R> responses) {
+    default List<D> translateAll(final Collection<R> responses) {
         return responses.stream().map(this::translate).toList();
     }
 }

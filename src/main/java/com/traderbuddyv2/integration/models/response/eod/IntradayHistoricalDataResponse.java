@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * Class representation of a collection of historical intraday data from EOD
  *
+ * @param date date
+ * @param symbol stock ticket
+ * @param name name of symbole
+ * @param entries {@link List} of {@link IntradayHistoricalDataEntryResponse}
  * @author Stephen Prizio
  * @version 1.0
  */

@@ -4,8 +4,16 @@ import com.traderbuddyv2.integration.models.response.GenericIntegrationResponse;
 import lombok.Getter;
 
 /**
- * Class representation of a intraday historical data from EOD
+ * Class representation of an intraday historical data from EOD
  *
+ * @param timestamp timestamp
+ * @param gmtoffset time zone offset
+ * @param datetime date & time
+ * @param open open price
+ * @param high high price
+ * @param low low price
+ * @param close close price
+ * @param volume volume for time period
  * @author Stephen Prizio
  * @version 1.0
  */

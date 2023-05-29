@@ -14,7 +14,8 @@ public enum MarketNewsSeverity {
     NONE("None", 0),
     DANGEROUS("Dangerous", 1),
     MODERATE("Moderate", 2),
-    LOW("Low", 3);
+    LOW("Low", 3),
+    HOLIDAY("Holiday", -1);
 
     @Getter
     private final String description;
@@ -38,6 +39,22 @@ public enum MarketNewsSeverity {
             case 1 -> DANGEROUS;
             case 2 -> MODERATE;
             case 3 -> LOW;
+            default -> NONE;
+        };
+    }
+
+    /**
+     * Converts a description into a {@link MarketNewsSeverity}
+     *
+     * @param description description
+     * @return {@link MarketNewsSeverity}
+     */
+    public static MarketNewsSeverity getFromDescription(final String description) {
+        return switch (description) {
+            case "Low" -> LOW;
+            case "Medium" -> MODERATE;
+            case "High" -> DANGEROUS;
+            case "HOLIDAY" -> HOLIDAY;
             default -> NONE;
         };
     }
