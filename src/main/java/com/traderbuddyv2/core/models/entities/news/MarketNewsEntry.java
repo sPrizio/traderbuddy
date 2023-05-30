@@ -1,6 +1,7 @@
 package com.traderbuddyv2.core.models.entities.news;
 
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
+import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,21 @@ public class MarketNewsEntry implements GenericEntity, Comparable<MarketNewsEntr
     @Setter
     @Column
     private MarketNewsSeverity severity;
+
+    @Getter
+    @Setter
+    @Column
+    private Country country;
+
+    @Getter
+    @Setter
+    @Column
+    private String forecast;
+
+    @Getter
+    @Setter
+    @Column
+    private String previous;
 
     @Getter
     @Setter

@@ -13,6 +13,10 @@ import com.traderbuddyv2.core.repositories.news.MarketNewsEntryRepository;
 import com.traderbuddyv2.core.repositories.news.MarketNewsRepository;
 import com.traderbuddyv2.core.repositories.news.MarketNewsSlotRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
+import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayDTO;
+import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
+import com.traderbuddyv2.integration.services.forexfactory.ForexFactoryIntegrationService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +24,7 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -35,6 +36,9 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
  */
 @Component("marketNewsService")
 public class MarketNewsService {
+
+    @Resource(name = "forexFactoryIntegrationService")
+    private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
     @Resource(name = "marketNewsRepository")
     private MarketNewsRepository marketNewsRepository;
@@ -141,6 +145,63 @@ public class MarketNewsService {
         }
 
         return false;
+    }
+
+    /**
+     * Pulls in market news data from Forex Factory
+     *
+     * @return true if no errors occurred
+     */
+    public boolean fetchMarketNews() {
+
+        final List<CalendarNewsDayDTO> news = this.forexFactoryIntegrationService.getCurrentWeekNews();
+        if (CollectionUtils.isEmpty(news)) {
+            return false;
+        }
+
+        news.stream().filter(n -> CollectionUtils.isNotEmpty(n.getEntries())).forEach(day -> {
+            final MarketNews marketNews = this.marketNewsRepository.save(new MarketNews());
+            final Map<LocalTime, List<CalendarNewsDayEntryDTO>> map = new HashMap<>();
+            final List<MarketNewsSlot> marketNewsSlots = new ArrayList<>();
+
+            day.getEntries().forEach(entryDTO -> {
+                final List<CalendarNewsDayEntryDTO> entryDTOS;
+                if (map.containsKey(entryDTO.getTime())) {
+                    entryDTOS = new ArrayList<>(map.get(entryDTO.getTime()));
+                } else {
+                    entryDTOS = new ArrayList<>();
+                }
+
+                map.put(entryDTO.getTime(), entryDTOS);
+            });
+
+            map.forEach((key, value) -> {
+                final MarketNewsSlot marketNewsSlot = this.marketNewsSlotRepository.save(new MarketNewsSlot());
+                marketNewsSlot.setNews(marketNews);
+                marketNewsSlot.setTime(key);
+
+                final List<MarketNewsEntry> marketNewsEntries = new ArrayList<>();
+                value.forEach(val -> {
+                    final MarketNewsEntry marketNewsEntry = this.marketNewsEntryRepository.save(new MarketNewsEntry());
+                    marketNewsEntry.setSlot(marketNewsSlot);
+                    marketNewsEntry.setCountry(val.getCountry());
+                    marketNewsEntry.setPrevious(val.getPrevious());
+                    marketNewsEntry.setForecast(val.getForecast());
+                    marketNewsEntry.setSeverity(val.getImpact());
+                    marketNewsEntry.setContent(val.getTitle());
+                    this.marketNewsEntryRepository.save(marketNewsEntry);
+                });
+
+                marketNewsSlot.setEntries(marketNewsEntries);
+                marketNewsSlots.add(this.marketNewsSlotRepository.save(marketNewsSlot));
+            });
+
+            marketNews.setDate(day.getDate());
+            marketNews.setSlots(marketNewsSlots);
+            this.marketNewsRepository.save(marketNews);
+        });
+
+        return true;
     }
 
 

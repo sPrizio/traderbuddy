@@ -8,6 +8,7 @@ import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;
 import com.traderbuddyv2.core.exceptions.validation.*;
 import com.traderbuddyv2.importing.exceptions.FileExtensionNotSupportedException;
+import com.traderbuddyv2.integration.exceptions.IntegrationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ public class GlobalExceptionHandler {
             FileNotFoundException.class,
             GenericSystemException.class,
             IllegalArgumentException.class,
+            IntegrationException.class,
             SQLSyntaxErrorException.class
     })
     public StandardJsonResponse handleServerError(final Exception exception) {

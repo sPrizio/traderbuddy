@@ -136,6 +136,25 @@ public class MarketNewsApiControllerTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- postFetchNews -----------------
+
+    @Test
+    public void test_postFetchNews_failure() throws Exception {
+        Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(false);
+        this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(false)));
+    }
+
+    @Test
+    public void test_postFetchNews_success() throws Exception {
+        Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(true);
+        this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
     //  ----------------- putUpdateNews -----------------
 
     @Test

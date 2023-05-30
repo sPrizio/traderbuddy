@@ -2,6 +2,8 @@ package com.traderbuddyv2.core.services.news;
 
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
+import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
+import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
@@ -9,6 +11,9 @@ import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException
 import com.traderbuddyv2.core.repositories.news.MarketNewsRepository;
 import com.traderbuddyv2.core.repositories.news.MarketNewsSlotRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
+import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayDTO;
+import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
+import com.traderbuddyv2.integration.services.forexfactory.ForexFactoryIntegrationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +54,9 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
 
     @MockBean
     private UniqueIdentifierService uniqueIdentifierService;
+
+    @MockBean
+    private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
     @Before
     public void setUp() {
@@ -218,6 +226,36 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     @Test
     public void test_deleteMarketNews_success() {
         assertThat(this.marketNewsService.deleteMarketNews("test"))
+                .isTrue();
+    }
+
+
+    //  ----------------- fetchMarketNews -----------------
+
+    @Test
+    public void test_fetchMarketNews_failure() {
+        Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(List.of());
+        assertThat(this.marketNewsService.fetchMarketNews())
+                .isFalse();
+    }
+
+    @Test
+    public void test_fetchMarketNews_success() {
+
+        final CalendarNewsDayEntryDTO entryDTO = new CalendarNewsDayEntryDTO();
+        entryDTO.setTitle("Test");
+        entryDTO.setTime(LocalTime.MIN);
+        entryDTO.setImpact(MarketNewsSeverity.DANGEROUS);
+        entryDTO.setCountry(Country.CANADA);
+        entryDTO.setForecast("-2.5%");
+        entryDTO.setPrevious("-2.9%");
+
+        final CalendarNewsDayDTO dto = new CalendarNewsDayDTO();
+        dto.setDate(LocalDate.MIN);
+        dto.setEntries(List.of(entryDTO));
+
+        Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(List.of(dto));
+        assertThat(this.marketNewsService.fetchMarketNews())
                 .isTrue();
     }
 }

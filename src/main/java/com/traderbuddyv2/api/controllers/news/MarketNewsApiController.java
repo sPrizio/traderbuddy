@@ -76,6 +76,23 @@ public class MarketNewsApiController extends AbstractApiController {
         return new StandardJsonResponse(true, this.marketNewsDTOConverter.convert(this.marketNewsService.createMarketNews(requestBody)), StringUtils.EMPTY);
     }
 
+    /**
+     * Fetches the market news and updates the system
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PostMapping("/fetch-news")
+    public StandardJsonResponse postFetchNews() {
+
+        final boolean result = this.marketNewsService.fetchMarketNews();
+        if (result) {
+            return new StandardJsonResponse(true, null, StringUtils.EMPTY);
+        }
+
+        return new StandardJsonResponse(false, null, "There was an error while updating the current market news. Please try again later");
+    }
+
 
     //  ----------------- PUT REQUESTS -----------------
 
