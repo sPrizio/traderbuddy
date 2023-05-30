@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.nio.file.FileSystems;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
@@ -21,7 +23,7 @@ public class FileSystemUtilsTest {
     @Test
     public void test_getAudioFileUrl_absolute_success() {
         assertThat(FileSystemUtils.getAudioFileUrl(new MockMultipartFile("file", "hello.aac", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes()), true))
-                .isEqualTo("C:\\Users\\Stephen\\IdeaProjects\\traderbuddy\\src\\main\\resources\\audio\\hello.aac");
+                .isEqualTo(FileSystems.getDefault().getPath("").toAbsolutePath() + "\\src\\main\\resources\\audio\\hello.aac");
     }
 
     @Test
@@ -36,7 +38,7 @@ public class FileSystemUtilsTest {
     @Test
     public void test_getContentRoot_absolute_success() {
         assertThat(FileSystemUtils.getContentRoot(true))
-                .isEqualTo("C:\\Users\\Stephen\\IdeaProjects\\traderbuddy\\src\\main\\resources");
+                .isEqualTo(FileSystems.getDefault().getPath("").toAbsolutePath() + "\\src\\main\\resources");
     }
 
     @Test
