@@ -1,7 +1,6 @@
 package com.traderbuddyv2.integration.services.forexfactory;
 
 import com.traderbuddyv2.integration.client.forexfactory.ForexFactoryIntegrationClient;
-import com.traderbuddyv2.integration.exceptions.IntegrationException;
 import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import com.traderbuddyv2.integration.translators.forexfactory.CalendarNewsDayEntryTranslator;
 import org.junit.Before;
@@ -15,9 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * Converter that converts {@link MarketNews} into {@link MarketNewsDTO}s

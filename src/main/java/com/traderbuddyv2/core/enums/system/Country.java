@@ -1,7 +1,6 @@
 package com.traderbuddyv2.core.enums.system;
 
 import com.traderbuddyv2.core.enums.account.Currency;
-import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
