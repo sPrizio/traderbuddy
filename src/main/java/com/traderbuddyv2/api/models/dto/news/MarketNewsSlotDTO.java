@@ -27,6 +27,10 @@ public class MarketNewsSlotDTO implements GenericDTO, Comparable<MarketNewsSlotD
     @Setter
     private List<MarketNewsEntryDTO> entries;
 
+    @Getter
+    @Setter
+    private boolean active;
+
 
     //  METHODS
 

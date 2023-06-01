@@ -26,7 +26,7 @@ public class MarketNews implements GenericEntity, Comparable<MarketNews> {
 
     @Getter
     @Setter
-    @Column
+    @Column(unique = true)
     private LocalDate date;
 
     @Getter

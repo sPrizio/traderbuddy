@@ -71,6 +71,17 @@ public class MarketNewsService {
     }
 
     /**
+     * Returns an {@link Optional} {@link MarketNews} for the given date
+     *
+     * @param date {@link LocalDate}
+     * @return {@link Optional} {@link MarketNews}
+     */
+    public Optional<MarketNews> findMarketNewsForDate(final LocalDate date) {
+        validateParameterIsNotNull(date, CoreConstants.Validation.DATE_CANNOT_BE_NULL);
+        return Optional.ofNullable(this.marketNewsRepository.findMarketNewsByDate(date));
+    }
+
+    /**
      * Returns a {@link MarketNews} for the given uid
      *
      * @param uid uid
@@ -160,9 +171,11 @@ public class MarketNewsService {
         }
 
         news.stream().filter(n -> CollectionUtils.isNotEmpty(n.getEntries())).forEach(day -> {
-            final MarketNews marketNews = this.marketNewsRepository.save(new MarketNews());
+            final MarketNews marketNews = this.marketNewsRepository.save(getNews(day.getDate()));
             final Map<LocalTime, List<CalendarNewsDayEntryDTO>> map = new HashMap<>();
             final List<MarketNewsSlot> marketNewsSlots = new ArrayList<>();
+
+
 
             day.getEntries().forEach(entryDTO -> {
                 final List<CalendarNewsDayEntryDTO> entryDTOS;
@@ -172,17 +185,18 @@ public class MarketNewsService {
                     entryDTOS = new ArrayList<>();
                 }
 
+                entryDTOS.add(entryDTO);
                 map.put(entryDTO.getTime(), entryDTOS);
             });
 
             map.forEach((key, value) -> {
-                final MarketNewsSlot marketNewsSlot = this.marketNewsSlotRepository.save(new MarketNewsSlot());
+                final MarketNewsSlot marketNewsSlot = this.marketNewsSlotRepository.save(getSlot(marketNews, key));
                 marketNewsSlot.setNews(marketNews);
                 marketNewsSlot.setTime(key);
 
                 final List<MarketNewsEntry> marketNewsEntries = new ArrayList<>();
                 value.forEach(val -> {
-                    final MarketNewsEntry marketNewsEntry = this.marketNewsEntryRepository.save(new MarketNewsEntry());
+                    final MarketNewsEntry marketNewsEntry = this.marketNewsEntryRepository.save(getEntry(marketNewsSlot, val.getTitle()));
                     marketNewsEntry.setSlot(marketNewsSlot);
                     marketNewsEntry.setCountry(val.getCountry());
                     marketNewsEntry.setPrevious(val.getPrevious());
@@ -190,6 +204,7 @@ public class MarketNewsService {
                     marketNewsEntry.setSeverity(val.getImpact());
                     marketNewsEntry.setContent(val.getTitle());
                     this.marketNewsEntryRepository.save(marketNewsEntry);
+                    marketNewsEntries.add(marketNewsEntry);
                 });
 
                 marketNewsSlot.setEntries(marketNewsEntries);
@@ -275,5 +290,49 @@ public class MarketNewsService {
         }
 
         return this.marketNewsRepository.save(marketNews);
+    }
+
+    /**
+     * Looks up a {@link MarketNews} for the given date or returns a new instance
+     *
+     * @param localDate date
+     * @return {@link MarketNews}
+     */
+    private MarketNews getNews(final LocalDate localDate) {
+        final Optional<MarketNews> news = findMarketNewsForDate(localDate);
+        return news.orElseGet(MarketNews::new);
+    }
+
+    /**
+     * Looks up a {@link MarketNewsSlot} for the given {@link MarketNews} and {@link LocalTime}
+     * or returns a new instance
+     *
+     * @param news {@link MarketNews}
+     * @param time {@link LocalTime}
+     * @return {@link MarketNewsSlot}
+     */
+    private MarketNewsSlot getSlot(final MarketNews news, final LocalTime time) {
+
+        if (news == null || CollectionUtils.isEmpty(news.getSlots())) {
+            return new MarketNewsSlot();
+        }
+
+        return news.getSlots().stream().filter(slot -> slot.getTime().equals(time)).findFirst().orElse(new MarketNewsSlot());
+    }
+
+    /**
+     * Looks up a {@link MarketNewsEntry} for the given {@link MarketNewsSlot} and title
+     *
+     * @param slot {@link MarketNewsSlot}
+     * @param title content
+     * @return {@link MarketNewsEntry}
+     */
+    private MarketNewsEntry getEntry(final MarketNewsSlot slot, final String title) {
+
+        if (slot == null || CollectionUtils.isEmpty(slot.getEntries())) {
+            return new MarketNewsEntry();
+        }
+
+        return slot.getEntries().stream().filter(entry -> entry.getContent().equals(title)).findFirst().orElse(new MarketNewsEntry());
     }
 }

@@ -410,6 +410,7 @@ public abstract class AbstractGenericTest {
 
         marketNewsEntry.setContent("Test News Entry");
         marketNewsEntry.setSeverity(MarketNewsSeverity.DANGEROUS);
+        marketNewsEntry.setCountry(Country.CANADA);
 
         return marketNewsEntry;
     }

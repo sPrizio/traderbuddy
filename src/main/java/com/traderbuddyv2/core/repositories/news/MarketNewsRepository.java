@@ -26,4 +26,12 @@ public interface MarketNewsRepository extends PagingAndSortingRepository<MarketN
      */
     @Query("SELECT n FROM MarketNews n WHERE n.date >= ?1 AND n.date < ?2 ORDER BY n.date ASC")
     List<MarketNews> findNewsWithinInterval(final LocalDate start, final LocalDate end);
+
+    /**
+     * Returns a {@link MarketNews} by its date which is assumed to be unique
+     *
+     * @param date {@link LocalDate}
+     * @return {@link MarketNews}
+     */
+    MarketNews findMarketNewsByDate(final LocalDate date);
 }

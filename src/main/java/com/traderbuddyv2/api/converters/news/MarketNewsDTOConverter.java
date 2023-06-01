@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Converter that converts {@link MarketNews} into {@link MarketNewsDTO}s
@@ -42,6 +44,11 @@ public class MarketNewsDTOConverter implements GenericDTOConverter<MarketNews, M
         marketNewsDTO.setActive(entity.getDate().isEqual(LocalDate.now()));
         marketNewsDTO.setFuture(entity.getDate().isAfter(LocalDate.now()));
         marketNewsDTO.setSlots(this.marketNewsSlotDTOConverter.convertAll(entity.getSlots()));
+
+        final LocalDateTime now = LocalDateTime.now();
+        if (now.toLocalDate().isEqual(entity.getDate())) {
+            marketNewsDTO.getSlots().stream().filter(slot -> slot.getTime().isAfter(now.toLocalTime())).findFirst().ifPresent(slot -> slot.setActive(true));
+        }
 
         return marketNewsDTO;
     }

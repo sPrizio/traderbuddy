@@ -94,6 +94,8 @@ public class CoreConstants {
 
         public static final String END_DATE_CANNOT_BE_NULL = "end date cannot be null";
 
+        public static final String DATE_CANNOT_BE_NULL = "date cannot be null";
+
         public static final String TRADE_RECORD_CANNOT_BE_NULL = "trade record cannot be null";
 
         public static final String UID_CANNOT_BE_NULL = "uid cannot be null";

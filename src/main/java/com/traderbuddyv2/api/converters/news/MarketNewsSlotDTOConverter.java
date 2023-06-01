@@ -7,6 +7,7 @@ import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalTime;
 
 /**
  * Converter that converts {@link MarketNewsSlot}s into {@link MarketNewsSlotDTO}s
@@ -38,6 +39,7 @@ public class MarketNewsSlotDTOConverter implements GenericDTOConverter<MarketNew
         marketNewsSlotDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         marketNewsSlotDTO.setTime(entity.getTime());
         marketNewsSlotDTO.setEntries(this.marketNewsEntryDTOConverter.convertAll(entity.getEntries()));
+        marketNewsSlotDTO.setActive(false);
 
         return marketNewsSlotDTO;
     }

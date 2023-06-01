@@ -54,7 +54,7 @@ public enum MarketNewsSeverity {
             case "Low" -> LOW;
             case "Medium" -> MODERATE;
             case "High" -> DANGEROUS;
-            case "HOLIDAY" -> HOLIDAY;
+            case "Holiday" -> HOLIDAY;
             default -> NONE;
         };
     }

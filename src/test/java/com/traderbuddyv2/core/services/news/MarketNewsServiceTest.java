@@ -63,6 +63,7 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
         Mockito.when(this.marketNewsRepository.findNewsWithinInterval(any(), any())).thenReturn(List.of(generateMarketNews()));
         Mockito.when(this.marketNewsRepository.findById(1L)).thenReturn(Optional.of(generateMarketNews()));
         Mockito.when(this.marketNewsRepository.save(any())).thenReturn(generateMarketNews());
+        Mockito.when(this.marketNewsRepository.findMarketNewsByDate(any())).thenReturn(generateMarketNews());
         Mockito.when(this.marketNewsSlotRepository.save(any())).thenReturn(generateTestMarketNewsSlot());
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid("test")).thenReturn(1L);
     }
@@ -85,6 +86,25 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
         assertThat(this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX))
                 .isNotNull()
                 .first()
+                .extracting("date")
+                .isEqualTo(LocalDate.of(2023, 1, 19));
+    }
+
+
+    //  ----------------- findMarketNewsForDate -----------------
+
+    @Test
+    public void test_findMarketNewsForDate_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketNewsService.findMarketNewsForDate(null))
+                .withMessage(CoreConstants.Validation.DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    public void test_findMarketNewsForDate_success() {
+        assertThat(this.marketNewsService.findMarketNewsForDate(LocalDate.MIN))
+                .isNotNull()
+                .get()
                 .extracting("date")
                 .isEqualTo(LocalDate.of(2023, 1, 19));
     }

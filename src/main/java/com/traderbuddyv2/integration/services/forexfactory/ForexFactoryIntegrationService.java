@@ -55,7 +55,7 @@ public class ForexFactoryIntegrationService implements GenericIntegrationService
 
         try {
             final CalendarNewsEntryResponse[] entries = this.objectMapper.readValue(response, CalendarNewsEntryResponse[].class);
-            final Map<LocalDate, TreeSet<CalendarNewsEntryResponse>> map = generateDataMap(entries);
+            final Map<LocalDate, List<CalendarNewsEntryResponse>> map = generateDataMap(entries);
             final List<CalendarNewsDayDTO> news = new ArrayList<>();
 
             map.forEach((key, value) -> {
@@ -75,26 +75,26 @@ public class ForexFactoryIntegrationService implements GenericIntegrationService
     //  HELPERS
 
     /**
-     * Generates a {@link Map} of key-value pairs of {@link String} and {@link TreeSet} {@link CalendarNewsEntryResponse}s for the given list of {@link CalendarNewsEntryResponse}
+     * Generates a {@link Map} of key-value pairs of {@link String} and {@link List} {@link CalendarNewsEntryResponse}s for the given list of {@link CalendarNewsEntryResponse}
      * The idea is to create a map of week days and populate each week day with all news entries for that day
      *
      * @param entries array of {@link CalendarNewsEntryResponse}
      * @return {@link Map}
      */
-    private Map<LocalDate, TreeSet<CalendarNewsEntryResponse>> generateDataMap(final CalendarNewsEntryResponse[] entries) {
+    private Map<LocalDate, List<CalendarNewsEntryResponse>> generateDataMap(final CalendarNewsEntryResponse[] entries) {
 
-        final Map<LocalDate, TreeSet<CalendarNewsEntryResponse>> map = new HashMap<>();
+        final Map<LocalDate, List<CalendarNewsEntryResponse>> map = new HashMap<>();
         if (entries != null) {
             for (CalendarNewsEntryResponse data : entries) {
-                final TreeSet<CalendarNewsEntryResponse> set;
+                final List<CalendarNewsEntryResponse> list;
                 if (map.containsKey(getDateTime(data.date()).toLocalDate())) {
-                    set = new TreeSet<>(map.get(getDateTime(data.date()).toLocalDate()));
+                    list = new ArrayList<>(map.get(getDateTime(data.date()).toLocalDate()));
                 } else {
-                    set = new TreeSet<>();
+                    list = new ArrayList<>();
                 }
 
-                set.add(data);
-                map.put(getDateTime(data.date()).toLocalDate(), set);
+                list.add(data);
+                map.put(getDateTime(data.date()).toLocalDate(), list.stream().sorted(Comparator.comparing(CalendarNewsEntryResponse::date)).toList());
             }
         }
 
