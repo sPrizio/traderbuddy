@@ -18,6 +18,7 @@ import com.traderbuddyv2.integration.models.dto.forexfactory.CalendarNewsDayEntr
 import com.traderbuddyv2.integration.services.forexfactory.ForexFactoryIntegrationService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -59,15 +60,29 @@ public class MarketNewsService {
      * Returns a {@link List} of {@link MarketNews} within the given start & end dates
      *
      * @param start {@link LocalDate} start
-     * @param end {@link LocalDate} ned
+     * @param end {@link LocalDate} end
+     * @param locales locales / currencies
      * @return {@link List} of {@link MarketNews}
      */
-    public List<MarketNews> findNewsWithinInterval(final LocalDate start, final LocalDate end) {
+    public List<MarketNews> findNewsWithinInterval(final LocalDate start, final LocalDate end, final String locales) {
 
         validateParameterIsNotNull(start, CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
 
-        return this.marketNewsRepository.findNewsWithinInterval(start, end);
+        final List<MarketNews> marketNews = this.marketNewsRepository.findNewsWithinInterval(start, end);
+        if (StringUtils.isEmpty(locales)) {
+            return marketNews;
+        }
+
+        marketNews.forEach(n -> {
+            final List<MarketNewsSlot> slots = n.getSlots();
+            slots.forEach(s -> {
+                final List<MarketNewsEntry> entries = s.getEntries().stream().filter(e -> locales.contains(e.getCountry().getCurrency().getIsoCode())).toList();
+                s.setEntries(entries);
+            });
+        });
+
+        return marketNews.stream().filter(n -> !n.getSlots().isEmpty()).toList();
     }
 
     /**

@@ -1,0 +1,12 @@
+- Integration with MT4 for trade imports
+- Create new account flow that should set up all required data (account, user, trading plan, user locale)
+- Market news page which shows all news (can be filtered by country / currency)
+- Locale functionality. User can pick their country for time, language and filters for news to show entries that only pertain to their choices
+- Retrospectives page
+- Audio Retrospectives (page and creating / storing)
+- Summary card need to have font-size decreased on mobile views beyond 495px. Possible horizontal overflow axis container
+- User bar needs rework on mobile
+    -> the profile menu will move into the side nav menu
+    -> the good morning text will appear above the level
+- Consider only showing current day for market news on the overview page
+- UI coloring for odd days in market news card (ISSUE)

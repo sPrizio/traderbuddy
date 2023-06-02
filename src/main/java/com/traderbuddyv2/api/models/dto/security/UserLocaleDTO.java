@@ -33,5 +33,9 @@ public class UserLocaleDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private List<String> currencies;
+
+    @Getter
+    @Setter
     private String timeZoneOffset;
 }

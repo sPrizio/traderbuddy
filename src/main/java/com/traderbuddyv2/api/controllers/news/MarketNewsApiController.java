@@ -51,11 +51,11 @@ public class MarketNewsApiController extends AbstractApiController {
      */
     @ResponseBody
     @GetMapping("/for-interval")
-    public StandardJsonResponse getNewsForInterval(final @RequestParam("start") String start, final @RequestParam("end") String end) {
+    public StandardJsonResponse getNewsForInterval(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam(value = "locales", required = false) String locales) {
         validate(start, end);
         return new StandardJsonResponse(
                 true,
-                this.marketNewsDTOConverter.convertAll(this.marketNewsService.findNewsWithinInterval(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)))),
+                this.marketNewsDTOConverter.convertAll(this.marketNewsService.findNewsWithinInterval(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), locales)),
                 StringUtils.EMPTY
         );
     }

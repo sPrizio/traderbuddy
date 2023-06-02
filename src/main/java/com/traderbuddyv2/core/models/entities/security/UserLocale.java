@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.models.entities.security;
 
+import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.enums.system.Language;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
@@ -39,6 +40,12 @@ public class UserLocale implements GenericEntity {
     @Column
     @ElementCollection
     private List<Language> languages;
+
+    @Getter
+    @Setter
+    @Column
+    @ElementCollection
+    private List<Currency> currencies;
 
     @Getter
     @Setter

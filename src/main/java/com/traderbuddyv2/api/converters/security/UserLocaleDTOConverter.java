@@ -1,5 +1,6 @@
 package com.traderbuddyv2.api.converters.security;
 
+import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.api.converters.GenericDTOConverter;
 import com.traderbuddyv2.api.models.dto.security.UserLocaleDTO;
 import com.traderbuddyv2.core.enums.system.Language;
@@ -35,6 +36,7 @@ public class UserLocaleDTOConverter implements GenericDTOConverter<UserLocale, U
 
         userLocaleDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         userLocaleDTO.setLanguages(entity.getLanguages().stream().map(Language::getLabel).toList());
+        userLocaleDTO.setCurrencies(entity.getCurrencies().stream().map(Currency::getIsoCode).toList());
         userLocaleDTO.setCountry(entity.getCountry().getLabel());
         userLocaleDTO.setTownCity(entity.getTownCity());
         userLocaleDTO.setTimeZoneOffset(entity.getTimeZoneOffset());

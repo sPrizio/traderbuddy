@@ -74,16 +74,16 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     @Test
     public void test_findNewsWithinInterval_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(null, LocalDate.MAX))
+                .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(null, LocalDate.MAX, ""))
                 .withMessage(CoreConstants.Validation.START_DATE_CANNOT_BE_NULL);
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, null))
+                .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, null, ""))
                 .withMessage(CoreConstants.Validation.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     public void test_findNewsWithinInterval_success() {
-        assertThat(this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX))
+        assertThat(this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX, ""))
                 .isNotNull()
                 .first()
                 .extracting("date")
