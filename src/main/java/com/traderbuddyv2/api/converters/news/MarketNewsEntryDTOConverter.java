@@ -37,6 +37,8 @@ public class MarketNewsEntryDTOConverter implements GenericDTOConverter<MarketNe
         marketNewsEntryDTO.setSeverity(entity.getSeverity().getDescription());
         marketNewsEntryDTO.setSeverityLevel(entity.getSeverity().getLevel());
         marketNewsEntryDTO.setCountry(entity.getCountry().getCurrency().getIsoCode());
+        marketNewsEntryDTO.setForecast(entity.getForecast());
+        marketNewsEntryDTO.setPrevious(entity.getPrevious());
 
         return marketNewsEntryDTO;
     }

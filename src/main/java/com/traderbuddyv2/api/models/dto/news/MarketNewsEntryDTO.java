@@ -33,6 +33,14 @@ public class MarketNewsEntryDTO implements GenericDTO, Comparable<MarketNewsEntr
     @Setter
     private String country;
 
+    @Getter
+    @Setter
+    private String forecast;
+
+    @Getter
+    @Setter
+    private String previous;
+
 
     //  METHODS
 

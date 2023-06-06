@@ -1,12 +1,14 @@
 package com.traderbuddyv2.api.converters.news;
 
 import com.traderbuddyv2.api.converters.GenericDTOConverter;
+import com.traderbuddyv2.api.models.dto.news.MarketNewsEntryDTO;
 import com.traderbuddyv2.api.models.dto.news.MarketNewsSlotDTO;
 import com.traderbuddyv2.core.models.entities.news.MarketNewsSlot;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 
 /**
  * Converter that converts {@link MarketNewsSlot}s into {@link MarketNewsSlotDTO}s
@@ -37,7 +39,7 @@ public class MarketNewsSlotDTOConverter implements GenericDTOConverter<MarketNew
 
         marketNewsSlotDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
         marketNewsSlotDTO.setTime(entity.getTime());
-        marketNewsSlotDTO.setEntries(this.marketNewsEntryDTOConverter.convertAll(entity.getEntries()));
+        marketNewsSlotDTO.setEntries(this.marketNewsEntryDTOConverter.convertAll(entity.getEntries()).stream().sorted(Comparator.comparing(MarketNewsEntryDTO::getSeverityLevel)).toList());
         marketNewsSlotDTO.setActive(false);
 
         return marketNewsSlotDTO;
