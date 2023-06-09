@@ -5,7 +5,6 @@ import com.traderbuddyv2.api.models.dto.trade.TradeDTO;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
-import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.*;
-import static com.traderbuddyv2.importing.validation.ImportValidator.validateImportFileExtension;
 
 /**
  * Api controller for {@link Trade}
@@ -157,20 +155,13 @@ public class TradeApiController {
      * File upload endpoint to obtain import files to import {@link Trade}s into the system. The system will only accept CSV files
      *
      * @param file {@link MultipartFile}
-     * @param platform trading platform (must be supported by this application)
      * @return {@link StandardJsonResponse}
      */
     @ResponseBody
     @PostMapping("/import-trades")
-    public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file, final @RequestParam("delimiter") Character delimiter, final @RequestParam("tradePlatform") String platform) throws IOException {
+    public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file) throws IOException {
 
-        if (!EnumUtils.isValidEnumIgnoreCase(TradePlatform.class, platform)) {
-            return new StandardJsonResponse(false, null, String.format("%s is not a valid trading platform or is not currently supported", platform));
-        }
-
-        validateImportFileExtension(file, "csv", "The given file %s was not a csv file", file.getOriginalFilename());
-
-        String result = this.genericImportService.importTrades(file.getInputStream(), delimiter, TradePlatform.valueOf(platform.toUpperCase()));
+        String result = this.genericImportService.importTrades(file.getInputStream());
         if (StringUtils.isEmpty(result)) {
             return new StandardJsonResponse(true, true, StringUtils.EMPTY);
         }

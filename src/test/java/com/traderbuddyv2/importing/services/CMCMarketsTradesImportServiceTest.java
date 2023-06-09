@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 /**
- * Testing class for {@link CMCTradesImportService}
+ * Testing class for {@link CMCMarketsTradesImportService}
  *
  * @author Stephen Prizio
  * @version 1.0
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class CMCTradesImportServiceTest extends AbstractGenericTest {
+public class CMCMarketsTradesImportServiceTest extends AbstractGenericTest {
 
     private User user;
     private Account account;
@@ -49,8 +49,8 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
 
-    @Resource(name = "cmcTradesImportService")
-    private CMCTradesImportService cmcTradesImportService;
+    @Resource(name = "cmcMarketsTradesImportService")
+    private CMCMarketsTradesImportService cmcMarketsTradesImportService;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -83,7 +83,7 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     @Transactional
     public void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
-                .isThrownBy(() -> this.cmcTradesImportService.importTrades("src/main/resources/testing/NotFound.csv", ';'))
+                .isThrownBy(() -> this.cmcMarketsTradesImportService.importTrades("src/main/resources/testing/NotFound.csv", ';'))
                 .withMessageContaining("The import process failed with reason");
     }
 
@@ -93,7 +93,7 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void test_importTrades_success() {
 
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
+        this.cmcMarketsTradesImportService.importTrades("classpath:testing/History.csv", ';');
 
         assertThat(this.tradeRepository.findAll())
                 .hasSize(3)
@@ -111,8 +111,8 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void testImportTrades_success_unchanged() {
 
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
-        this.cmcTradesImportService.importTrades("classpath:testing/History.csv", ';');
+        this.cmcMarketsTradesImportService.importTrades("classpath:testing/History.csv", ';');
+        this.cmcMarketsTradesImportService.importTrades("classpath:testing/History.csv", ';');
 
         assertThat(this.tradeRepository.findAll())
                 .hasSize(3);
@@ -124,7 +124,7 @@ public class CMCTradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void test_importTrades_success_inputStream() throws Exception {
 
-        this.cmcTradesImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/History.csv")), ';');
+        this.cmcMarketsTradesImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/History.csv")), ';');
 
         assertThat(this.tradeRepository.findAll())
                 .hasSize(3)

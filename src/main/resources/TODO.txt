@@ -8,5 +8,3 @@
 - User bar needs rework on mobile
     -> the profile menu will move into the side nav menu
     -> the good morning text will appear above the level
-- Consider only showing current day for market news on the overview page
-- UI coloring for odd days in market news card (ISSUE)

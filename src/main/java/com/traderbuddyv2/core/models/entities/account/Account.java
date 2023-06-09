@@ -4,6 +4,7 @@ import com.traderbuddyv2.core.enums.account.AccountType;
 import com.traderbuddyv2.core.enums.account.Broker;
 import com.traderbuddyv2.core.enums.account.Currency;
 import com.traderbuddyv2.core.enums.account.StopLimitType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.levelling.rank.Rank;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
@@ -90,6 +91,11 @@ public class Account implements GenericEntity {
     @Setter
     @Column
     private AccountType accountType;
+
+    @Getter
+    @Setter
+    @Column
+    private TradePlatform tradePlatform;
 
     @Getter
     @Setter

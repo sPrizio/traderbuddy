@@ -31,15 +31,15 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Service-layer for importing trades into the system
+ * Service-layer for importing trades into the system from CMC Markets
  *
  * @author Stephen Prizio
  * @version 1.0
  */
-@Component("cmcTradesImportService")
-public class CMCTradesImportService implements ImportService {
+@Component("cmcMarketsTradesImportService")
+public class CMCMarketsTradesImportService implements ImportService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CMCTradesImportService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CMCMarketsTradesImportService.class);
     private static final List<String> BUY_SIGNALS = List.of("Buy Trade");
     private static final List<String> SELL_SIGNALS = List.of("Sell Trade");
 
@@ -95,6 +95,7 @@ public class CMCTradesImportService implements ImportService {
      * @param delimiter unit delimiter
      */
     private void importFile(final BufferedReader bufferedReader, final Character delimiter) {
+
         try (bufferedReader) {
             List<CMCTradeWrapper> trades =
                     bufferedReader

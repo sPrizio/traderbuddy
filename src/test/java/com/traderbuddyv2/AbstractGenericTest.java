@@ -5,6 +5,7 @@ import com.traderbuddyv2.api.models.dto.plans.DepositPlanDTO;
 import com.traderbuddyv2.api.models.dto.plans.WithdrawalPlanDTO;
 import com.traderbuddyv2.api.models.records.account.AccountOverview;
 import com.traderbuddyv2.core.enums.account.*;
+import com.traderbuddyv2.core.enums.account.Broker;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
@@ -220,6 +221,7 @@ public abstract class AbstractGenericTest {
         account.setBroker(Broker.CMC_MARKETS);
         account.setSkill(generateTestSkill());
         account.setRank(generateTestRank());
+        account.setTradePlatform(TradePlatform.CMC_MARKETS);
 
         return account;
     }
@@ -443,6 +445,7 @@ public abstract class AbstractGenericTest {
         userLocale.setLanguages(List.of(Language.ENGLISH, Language.FRENCH));
         userLocale.setTownCity("Montreal");
         userLocale.setTimeZoneOffset("America/Toronto (GMT -05:00)");
+        userLocale.setCurrencies(List.of(Currency.CANADIAN_DOLLAR));
 
         return userLocale;
     }

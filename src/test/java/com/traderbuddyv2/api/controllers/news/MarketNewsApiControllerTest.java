@@ -52,7 +52,7 @@ public class MarketNewsApiControllerTest extends AbstractGenericTest {
     @Before
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), anyString())).thenReturn(List.of(generateMarketNews()));
+        Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), any())).thenReturn(List.of(generateMarketNews()));
         Mockito.when(this.marketNewsService.createMarketNews(anyMap())).thenReturn(generateMarketNews());
         Mockito.when(this.marketNewsService.updateMarketNews(anyString(), anyMap())).thenReturn(generateMarketNews());
         Mockito.when(this.marketNewsService.deleteMarketNews(anyString())).thenReturn(true);
@@ -79,6 +79,7 @@ public class MarketNewsApiControllerTest extends AbstractGenericTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2023-01-16"));
         map.put("end", List.of("2023-01-21"));
+        map.put("locales", List.of());
 
         this.mockMvc.perform(get("/api/v1/news/for-interval").params(map))
                 .andExpect(status().isOk())

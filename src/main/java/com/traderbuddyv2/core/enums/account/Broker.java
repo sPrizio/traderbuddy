@@ -10,6 +10,7 @@ import lombok.Getter;
  */
 public enum Broker {
     CMC_MARKETS("CMC Markets"),
+    FTMO("FTMO"),
     NA("Demo");
 
     @Getter
