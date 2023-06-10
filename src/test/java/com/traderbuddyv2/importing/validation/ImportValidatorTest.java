@@ -17,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 public class ImportValidatorTest {
 
+    final String[] formats = new String[]{".csv"};
+
 
     //  ----------------- validateImportFileExtension -----------------
 
@@ -25,7 +27,7 @@ public class ImportValidatorTest {
         MockMultipartFile testFile = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
 
         assertThatExceptionOfType(FileExtensionNotSupportedException.class)
-                .isThrownBy(() -> ImportValidator.validateImportFileExtension(testFile, "csv", "This is an empty multipart file test"))
+                .isThrownBy(() -> ImportValidator.validateImportFileExtension(testFile, formats, "This is an empty multipart file test"))
                 .withMessage("This is an empty multipart file test");
     }
 
@@ -33,7 +35,7 @@ public class ImportValidatorTest {
     public void test_validateImportFileExtension_success() {
         File file = new File("test.txt");
         assertThatExceptionOfType(FileExtensionNotSupportedException.class)
-                .isThrownBy(() -> ImportValidator.validateImportFileExtension(file, "csv", "This is an empty file test"))
+                .isThrownBy(() -> ImportValidator.validateImportFileExtension(file, formats, "This is an empty file test"))
                 .withMessage("This is an empty file test");
         file.delete();
     }

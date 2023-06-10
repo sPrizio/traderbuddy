@@ -1,6 +1,13 @@
 package com.traderbuddyv2.importing.services;
 
+import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
+import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.repositories.account.AccountRepository;
+import com.traderbuddyv2.core.repositories.trade.TradeRepository;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
+import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.ImportService;
 import com.traderbuddyv2.importing.exceptions.TradeImportFailureException;
 import com.traderbuddyv2.importing.records.MetaTrade4TradeWrapper;
@@ -10,11 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -33,6 +40,18 @@ public class MetaTrader4TradesImportService implements ImportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4TradesImportService.class);
     private static final List<String> BUY_SIGNALS = List.of("buy");
     private static final List<String> SELL_SIGNALS = List.of("sell");
+
+    @Resource(name = "accountRepository")
+    private AccountRepository accountRepository;
+
+    @Resource(name = "traderBuddyUserDetailsService")
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
+    @Resource(name = "tradeRecordService")
+    private TradeRecordService tradeRecordService;
+
+    @Resource(name = "tradeRepository")
+    private TradeRepository tradeRepository;
 
 
     //  METHODS
@@ -87,15 +106,32 @@ public class MetaTrader4TradesImportService implements ImportService {
                             .sorted(Comparator.comparing(MetaTrade4TradeWrapper::getOpenTime))
                             .toList();
 
-            Map<String, Trade> tradeMap = new HashMap<>();
-            Map<String, Trade> existingTrades = new HashMap<>();
+            final Account account = this.traderBuddyUserDetailsService.getCurrentUser().getAccount();
+            final Map<String, Trade> tradeMap = new HashMap<>();
+            final Map<String, Trade> existingTrades = new HashMap<>();
 
+            this.tradeRepository.findAllByAccount(account).forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
+            final List<MetaTrade4TradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
+            final List<MetaTrade4TradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
+
+            buyTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.BUY)));
+            sellTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.SELL)));
+
+            tradeMap.values().forEach(account::addTrade);
+            this.accountRepository.save(account);
+            this.tradeRecordService.processTrades();
         } catch (Exception e) {
             LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
             throw new TradeImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()), e);
         }
     }
 
+    /**
+     * Obtains trade content from the file content
+     *
+     * @param string file content
+     * @return {@link List} of trade content strings
+     */
     private List<String> getContent(final String string) {
 
         final int ticketIndex = string.indexOf("Ticket");
@@ -125,6 +161,12 @@ public class MetaTrader4TradesImportService implements ImportService {
         return entries;
     }
 
+    /**
+     * Generates a {@link MetaTrade4TradeWrapper} from the given string
+     *
+     * @param string input value
+     * @return {@link MetaTrade4TradeWrapper}
+     */
     private MetaTrade4TradeWrapper generateWrapper(final String string) {
 
         if (StringUtils.isEmpty(string)) {
@@ -161,5 +203,48 @@ public class MetaTrader4TradesImportService implements ImportService {
                 Double.parseDouble(data.get(9)),
                 Double.parseDouble(data.get(13))
         );
+    }
+
+    /**
+     * Determines whether the given trade should be considered
+     *
+     * @param trade trade name
+     * @param tradeType {@link TradeType}
+     * @return true if matches keywords
+     */
+    private boolean matchTradeType(final String trade, final TradeType tradeType) {
+        final List<String> matchers = tradeType.equals(TradeType.BUY) ? BUY_SIGNALS : SELL_SIGNALS;
+        return matchers.stream().anyMatch(trade::contains);
+    }
+
+    /**
+     * Creates a new {@link Trade} from a {@link MetaTrade4TradeWrapper}
+     *
+     * @param wrapper {@link MetaTrade4TradeWrapper}
+     * @param tradeType {@link TradeType}
+     * @return {@link Trade}
+     */
+    private Trade createNewTrade(final MetaTrade4TradeWrapper wrapper, final TradeType tradeType) {
+
+        Trade trade = new Trade();
+
+        trade.setTradeId(wrapper.ticketNumber());
+        trade.setTradePlatform(TradePlatform.METATRADER4);
+        trade.setResultsOfTrade(List.of());
+        trade.setProduct(wrapper.item());
+        trade.setTradeType(tradeType);
+        trade.setClosePrice(wrapper.closePrice());
+        trade.setTradeCloseTime(wrapper.closeTime());
+        trade.setTradeOpenTime(wrapper.openTime());
+        trade.setLotSize(wrapper.size());
+        trade.setNetProfit(wrapper.profit());
+        trade.setOpenPrice(wrapper.openPrice());
+        trade.setReasonsForEntry(List.of());
+        trade.setStopLoss(wrapper.stopLoss());
+        trade.setTakeProfit(wrapper.takeProfit());
+        trade.setRelevant(true);
+        trade.setProcessed(false);
+
+        return trade;
     }
 }

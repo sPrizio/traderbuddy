@@ -7,6 +7,7 @@ import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.exceptions.system.GenericSystemException;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import com.traderbuddyv2.importing.services.GenericImportService;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.*;
+import static com.traderbuddyv2.importing.validation.ImportValidator.validateImportFileExtension;
 
 /**
  * Api controller for {@link Trade}
@@ -50,6 +52,9 @@ public class TradeApiController {
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
+
+    @Resource(name = "traderBuddyUserDetailsService")
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
 
     //  METHODS
@@ -160,6 +165,8 @@ public class TradeApiController {
     @ResponseBody
     @PostMapping("/import-trades")
     public StandardJsonResponse postImportTrades(final @RequestParam("file") MultipartFile file) throws IOException {
+
+        validateImportFileExtension(file, this.traderBuddyUserDetailsService.getCurrentUser().getAccount().getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());
 
         String result = this.genericImportService.importTrades(file.getInputStream());
         if (StringUtils.isEmpty(result)) {

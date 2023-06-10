@@ -91,6 +91,16 @@ public class Trade implements GenericEntity {
     @Getter
     @Setter
     @Column
+    private double stopLoss;
+
+    @Getter
+    @Setter
+    @Column
+    private double takeProfit;
+
+    @Getter
+    @Setter
+    @Column
     private boolean relevant = true;
 
     @Getter

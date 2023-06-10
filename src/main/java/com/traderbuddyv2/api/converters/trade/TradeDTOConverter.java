@@ -58,6 +58,8 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
         tradeDTO.setReasonForEntrance(entity.getReasonsForEntry().stream().map(TradeReasonWrapper::new).toList());
         tradeDTO.setRelevant(entity.isRelevant());
         tradeDTO.setProcessed(entity.isProcessed());
+        tradeDTO.setStopLoss(entity.getStopLoss());
+        tradeDTO.setTakeProfit(entity.getTakeProfit());
         tradeDTO.setAccount(this.accountDTOConverter.convert(entity.getAccount()));
 
 

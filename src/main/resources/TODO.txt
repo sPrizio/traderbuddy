@@ -8,3 +8,7 @@
 - User bar needs rework on mobile
     -> the profile menu will move into the side nav menu
     -> the good morning text will appear above the level
+- Market news component should have display state for showing the weekend (No news on the weekend)
+- Rank card should have formatted numbers for display
+- Trade times need to be converted to user's timezone (from the backend if the platform is MetaTrader, convert to user's timezone based on their locale)
+- Profitability per 5 minutes needs to have data for the timezone (check backend for this)

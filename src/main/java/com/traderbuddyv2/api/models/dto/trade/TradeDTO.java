@@ -10,6 +10,7 @@ import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -76,6 +77,14 @@ public class TradeDTO implements GenericDTO {
     @Getter
     @Setter
     private List<TradeResultWrapper> resultOfTrade;
+
+    @Getter
+    @Setter
+    private double stopLoss;
+
+    @Getter
+    @Setter
+    private double takeProfit;
 
     @Getter
     @Setter

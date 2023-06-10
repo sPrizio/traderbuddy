@@ -10,8 +10,8 @@ import lombok.Getter;
  */
 public enum TradePlatform {
     CMC_MARKETS(".csv"),
-    METATRADER4(".html"),
-    METATRADER5(".html"),
+    METATRADER4(".html", ".htm"),
+    METATRADER5(".html", ".htm"),
     CTRADER(".csv"),
     UNDEFINED();
 
