@@ -80,6 +80,10 @@ public class CoreConstants {
      */
     public static final String PHONE_NUMBER_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
 
+    public static final String EASTERN_TIMEZONE = "America/Toronto";
+
+    public static final String METATRADER4_TIMEZONE = "EET";
+
     public static class Validation {
 
         private Validation() {
