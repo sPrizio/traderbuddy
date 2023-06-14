@@ -3,4 +3,3 @@
 - Locale functionality. User can pick their country for time, language and filters for news to show entries that only pertain to their choices
 - Retrospectives page
     -> Audio Retrospectives (page and creating / storing)
-- Profitability per 5 minutes needs to have data for the timezone (check backend for this)

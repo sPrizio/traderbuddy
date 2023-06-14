@@ -1,6 +1,7 @@
 package com.traderbuddyv2.api.controllers.analysis;
 
 import com.traderbuddyv2.AbstractGenericTest;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradePerformance;
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.TradeRecordPerformanceBucket;
@@ -53,7 +54,7 @@ public class AnalysisApiControllerTest extends AbstractGenericTest {
     public void setUp() {
         Mockito.when(this.analysisService.getTopTradePerformance(any(), any(), any(), anyBoolean(), anyInt())).thenReturn(List.of(new TradePerformance(generateTestBuyTrade())));
         Mockito.when(this.analysisService.getAverageTradePerformance(any(), any(), anyBoolean(), anyInt())).thenReturn(generateAverageTradePerformance());
-        Mockito.when(this.analysisService.getTradeBuckets(any(), any(), any())).thenReturn(List.of(new TradeTimeBucket(LocalTime.MIN, LocalTime.MAX, List.of())));
+        Mockito.when(this.analysisService.getTradeBuckets(any(), any(), any())).thenReturn(List.of(new TradeTimeBucket(LocalTime.MIN, LocalTime.MAX, List.of(), TradePlatform.CMC_MARKETS)));
         Mockito.when(this.analysisService.getWinningDaysBreakdown(any(), any(), anyInt(), anyBoolean())).thenReturn(new TradeRecordPerformanceBucketWrapper(List.of(new TradeRecordPerformanceBucket(50, 100, 17)), new TradeRecordPerformanceBucketStatistics(0.0, 0)));
         Mockito.when(this.analysisService.getIrrelevantTrades(any(), any())).thenReturn(new IrrelevantTradeTotals(List.of(generateTestBuyTrade(), generateTestSellTrade()), List.of()));
         Mockito.when(this.analysisService.getTradeDayBuckets(any(), any())).thenReturn(Map.of());

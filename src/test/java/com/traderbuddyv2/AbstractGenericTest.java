@@ -98,6 +98,7 @@ public abstract class AbstractGenericTest {
         trade.setReasonsForEntry(List.of(TradeEntryReason.DOUBLE_BOTTOM));
         trade.setRelevant(true);
         trade.setProcessed(false);
+        trade.setAccount(generateTestAccount());
 
         return trade;
     }

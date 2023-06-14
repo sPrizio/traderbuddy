@@ -4,6 +4,7 @@ import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecordStatistics;
@@ -12,9 +13,11 @@ import com.traderbuddyv2.core.models.nonentities.analysis.bucket.TradeTimeBucket
 import com.traderbuddyv2.core.models.nonentities.analysis.performance.*;
 import com.traderbuddyv2.core.models.nonentities.trade.IrrelevantTradeTotals;
 import com.traderbuddyv2.core.services.math.MathService;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -45,6 +48,9 @@ public class AnalysisService {
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
+
+    @Resource(name = "traderBuddyUserDetailsService")
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
 
     //  METHODS
@@ -136,11 +142,18 @@ public class AnalysisService {
 
         final List<TradeTimeBucket> buckets = new ArrayList<>();
         final List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(start.atStartOfDay(), end.atStartOfDay(), false);
+        final Pair<LocalTime, LocalTime> times = getTimes();
 
-        LocalTime compare = LocalTime.of(9, 30);
-        while ((compare.isBefore(LocalTime.of(16, 5)))) {
+        LocalTime compare = times.getLeft();
+        while ((compare.isBefore(times.getRight()))) {
             LocalTime temp = compare;
-            final TradeTimeBucket tradeTimeBucket = new TradeTimeBucket(temp, temp.plusMinutes(bucket.getMinutes()), trades.stream().filter(trade -> compareTradeTimes(trade, temp, bucket)).toList());
+            final TradeTimeBucket tradeTimeBucket =
+                    new TradeTimeBucket(
+                            temp,
+                            temp.plusMinutes(bucket.getMinutes()), trades.stream().filter(trade -> compareTradeTimes(trade, temp, bucket)).toList(),
+                            this.traderBuddyUserDetailsService.getCurrentUser().getAccount().getTradePlatform()
+                    );
+
             tradeTimeBucket.setWinPercentage(this.mathService.wholePercentage(tradeTimeBucket.getWinningTrades(), tradeTimeBucket.getTrades()));
             buckets.add(tradeTimeBucket);
             compare = compare.plusMinutes(bucket.getMinutes());
@@ -295,5 +308,19 @@ public class AnalysisService {
      */
     private List<Double> pipReduce(final List<Double> reducedRecords, final double compare1, final double compare2) {
         return reducedRecords.stream().filter(d -> d >= compare1).filter(d -> d < compare2).toList();
+    }
+
+    /**
+     * Returns {@link LocalTime}s properly converted the user's timezone
+     *
+     * @return {@link Pair} of {@link LocalTime}s
+     */
+    private Pair<LocalTime, LocalTime> getTimes() {
+
+        if (this.traderBuddyUserDetailsService.getCurrentUser().getAccount().getTradePlatform().equals(TradePlatform.METATRADER4)) {
+            return Pair.of(LocalTime.of(15, 30), LocalTime.of(23, 55));
+        }
+
+        return Pair.of(LocalTime.of(8, 30), LocalTime.of(16, 55));
     }
 }

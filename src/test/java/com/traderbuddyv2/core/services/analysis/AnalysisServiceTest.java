@@ -5,6 +5,7 @@ import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.analysis.AnalysisSort;
 import com.traderbuddyv2.core.enums.analysis.AnalysisTimeBucket;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
+import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
 import com.traderbuddyv2.core.services.trade.record.TradeRecordService;
 import org.junit.Before;
@@ -40,6 +41,9 @@ public class AnalysisServiceTest extends AbstractGenericTest {
     @MockBean
     private TradeRecordService tradeRecordService;
 
+    @MockBean
+    private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
     @Autowired
     private AnalysisService analysisService;
 
@@ -48,6 +52,7 @@ public class AnalysisServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), anyBoolean())).thenReturn(List.of(generateTestBuyTrade(), generateTestSellTrade()));
         Mockito.when(this.tradeRecordService.computeTradingRate(any(), any(), any())).thenReturn(1.0);
         Mockito.when(this.tradeRecordService.findHistory(any(), any(), any())).thenReturn(List.of(generateTestTradeRecord()));
+        Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
     }
 
 

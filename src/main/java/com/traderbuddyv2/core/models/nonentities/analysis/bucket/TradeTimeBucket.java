@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.models.nonentities.analysis.bucket;
 
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +27,15 @@ public class TradeTimeBucket extends Bucket {
 
     //  CONSTRUCTORS
 
-    public TradeTimeBucket(final LocalTime start, final LocalTime end, final List<Trade> trades) {
+    public TradeTimeBucket(final LocalTime start, final LocalTime end, final List<Trade> trades, final TradePlatform tradePlatform) {
         super(trades);
-        this.start = start;
-        this.end = end;
+
+        if (tradePlatform.equals(TradePlatform.METATRADER4)) {
+            this.start = start.minusHours(7);
+            this.end = end.minusHours(7);
+        } else {
+            this.start = start;
+            this.end = end;
+        }
     }
 }
