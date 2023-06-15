@@ -5,14 +5,19 @@ import com.traderbuddyv2.api.converters.news.MarketNewsDTOConverter;
 import com.traderbuddyv2.api.models.dto.news.MarketNewsDTO;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.core.constants.CoreConstants;
+import com.traderbuddyv2.core.enums.account.Currency;
+import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.models.entities.news.MarketNews;
 import com.traderbuddyv2.core.services.news.MarketNewsService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +63,17 @@ public class MarketNewsApiController extends AbstractApiController {
                 this.marketNewsDTOConverter.convertAll(this.marketNewsService.findNewsWithinInterval(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), locales)),
                 StringUtils.EMPTY
         );
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link Country}
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/locales")
+    public StandardJsonResponse getNewsLocales() {
+        return new StandardJsonResponse(true, Arrays.stream(Country.values()).map(c -> Triple.of(c.getLabel(), c.getIsoCode(), c.getCurrency().getIsoCode())).toList(), StringUtils.EMPTY);
     }
 
 

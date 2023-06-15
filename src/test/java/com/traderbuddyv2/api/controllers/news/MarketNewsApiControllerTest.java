@@ -86,6 +86,16 @@ public class MarketNewsApiControllerTest extends AbstractGenericTest {
                 .andExpect(jsonPath("$.data[0].date", is("2023-01-19")));
     }
 
+
+    //  ----------------- getNewsLocales -----------------
+
+    @Test
+    public void test_getNewsLocales_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/news/locales"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].middle", is("ARG")));
+    }
+
     
     //  ----------------- postCreateNews -----------------
 
