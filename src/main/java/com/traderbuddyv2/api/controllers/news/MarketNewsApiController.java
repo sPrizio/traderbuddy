@@ -73,7 +73,7 @@ public class MarketNewsApiController extends AbstractApiController {
     @ResponseBody
     @GetMapping("/locales")
     public StandardJsonResponse getNewsLocales() {
-        return new StandardJsonResponse(true, Arrays.stream(Country.values()).map(c -> Triple.of(c.getLabel(), c.getIsoCode(), c.getCurrency().getIsoCode())).toList(), StringUtils.EMPTY);
+        return new StandardJsonResponse(true, Arrays.stream(Country.values()).filter(c -> !CoreConstants.EXCLUDED_COUNTRIES.contains(c)).map(c -> Triple.of(c.getLabel(), c.getIsoCode(), c.getCurrency().getIsoCode())).toList(), StringUtils.EMPTY);
     }
 
 

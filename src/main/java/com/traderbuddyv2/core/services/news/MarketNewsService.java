@@ -75,11 +75,13 @@ public class MarketNewsService {
         }
 
         marketNews.forEach(n -> {
-            final List<MarketNewsSlot> slots = n.getSlots();
+            final List<MarketNewsSlot> slots = new ArrayList<>(n.getSlots());
             slots.forEach(s -> {
                 final List<MarketNewsEntry> entries = s.getEntries().stream().filter(e -> locales.contains(e.getCountry().getCurrency().getIsoCode())).toList();
                 s.setEntries(entries);
             });
+
+            n.setSlots(new ArrayList<>(slots.stream().filter(s -> CollectionUtils.isNotEmpty(s.getEntries())).toList()));
         });
 
         return marketNews.stream().filter(n -> !n.getSlots().isEmpty()).toList();

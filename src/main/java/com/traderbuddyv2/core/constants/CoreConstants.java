@@ -1,5 +1,6 @@
 package com.traderbuddyv2.core.constants;
 
+import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 
 import java.time.LocalDate;
@@ -83,6 +84,25 @@ public class CoreConstants {
     public static final String EASTERN_TIMEZONE = "America/Toronto";
 
     public static final String METATRADER4_TIMEZONE = "EET";
+
+    public static final List<Country> EXCLUDED_COUNTRIES =
+            List.of(
+                    Country.ARGENTINA,
+                    Country.AUSTRIA,
+                    Country.BELGIUM,
+                    Country.BRAZIL,
+                    Country.COLOMBIA,
+                    Country.CZECHIA,
+                    Country.DENMARK,
+                    Country.FINLAND,
+                    Country.GREECE,
+                    Country.IRELAND,
+                    Country.NORWAY,
+                    Country.PORTUGAL,
+                    Country.RUSSIA,
+                    Country.SPAIN,
+                    Country.SWEDEN
+            );
 
     public static class Validation {
 
