@@ -4,10 +4,12 @@ import com.traderbuddyv2.api.models.dto.GenericDTO;
 import com.traderbuddyv2.api.models.dto.account.AccountDTO;
 import com.traderbuddyv2.api.models.dto.trade.record.TradeRecordDTO;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.retrospective.RetrospectiveType;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,6 +39,14 @@ public class RetrospectiveDTO implements GenericDTO {
 
     @Getter
     @Setter
+    private String retrospectiveType;
+
+    @Getter
+    @Setter
+    private String mediaPath;
+
+    @Getter
+    @Setter
     private List<RetrospectiveEntryDTO> points;
 
     @Getter
@@ -46,4 +56,8 @@ public class RetrospectiveDTO implements GenericDTO {
     @Getter
     @Setter
     private TradeRecordDTO totals;
+
+    @Getter
+    @Setter
+    private String name;
 }

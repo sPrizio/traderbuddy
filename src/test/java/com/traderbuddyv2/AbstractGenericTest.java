@@ -9,6 +9,7 @@ import com.traderbuddyv2.core.enums.account.Broker;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.news.MarketNewsSeverity;
 import com.traderbuddyv2.core.enums.plans.TradingPlanStatus;
+import com.traderbuddyv2.core.enums.retrospective.RetrospectiveType;
 import com.traderbuddyv2.core.enums.security.UserRole;
 import com.traderbuddyv2.core.enums.system.Country;
 import com.traderbuddyv2.core.enums.system.Language;
@@ -44,6 +45,7 @@ import com.traderbuddyv2.integration.models.dto.eod.IntradayHistoricalDataEntryD
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataEntryResponse;
 import com.traderbuddyv2.integration.models.response.eod.IntradayHistoricalDataResponse;
 import com.traderbuddyv2.integration.models.response.forexfactory.CalendarNewsEntryResponse;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -172,11 +174,17 @@ public abstract class AbstractGenericTest {
         retrospective1.setStartDate(LocalDate.of(2022, 9, 5));
         retrospective1.setEndDate(LocalDate.of(2022, 9, 11));
         retrospective1.setIntervalFrequency(AggregateInterval.MONTHLY);
+        retrospective1.setRetrospectiveType(RetrospectiveType.NOTE);
+        retrospective1.setMediaPath(StringUtils.EMPTY);
         retrospective1.setPoints(List.of(new RetrospectiveEntry()));
+        retrospective1.setName("Test 1");
 
         retrospective2.setStartDate(LocalDate.of(2022, 9, 12));
         retrospective2.setEndDate(LocalDate.of(2022, 9, 18));
         retrospective2.setIntervalFrequency(AggregateInterval.WEEKLY);
+        retrospective2.setRetrospectiveType(RetrospectiveType.NOTE);
+        retrospective2.setMediaPath(StringUtils.EMPTY);
+        retrospective2.setName("Test 2");
 
         return List.of(retrospective1, retrospective2);
     }

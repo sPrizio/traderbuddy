@@ -7,7 +7,6 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
-import com.traderbuddyv2.core.repositories.retrospective.AudioRetrospectiveRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -43,9 +42,6 @@ import static org.mockito.ArgumentMatchers.any;
 public class RetrospectiveServiceTest extends AbstractGenericTest {
 
     @MockBean
-    private AudioRetrospectiveRepository audioRetrospectiveRepository;
-
-    @MockBean
     private RetrospectiveRepository retrospectiveRepository;
 
     @Autowired
@@ -68,7 +64,6 @@ public class RetrospectiveServiceTest extends AbstractGenericTest {
         Mockito.when(this.retrospectiveRepository.findTopByIntervalFrequencyAndAccountOrderByStartDateDesc(any(), any())).thenReturn(generateRetrospectives().get(0));
         Mockito.when(this.uniqueIdentifierService.retrieveIdForUid("test")).thenReturn(1L);
         Mockito.when(this.traderBuddyUserDetailsService.getCurrentUser()).thenReturn(generateTestUser());
-        Mockito.when(this.audioRetrospectiveRepository.save(any())).thenReturn(null);
     }
 
 

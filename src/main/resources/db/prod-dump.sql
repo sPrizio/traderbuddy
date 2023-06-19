@@ -85,26 +85,6 @@ CREATE TABLE IF NOT EXISTS `account_trading_plan` (
 /*!40000 ALTER TABLE `account_trading_plan` DISABLE KEYS */;
 /*!40000 ALTER TABLE `account_trading_plan` ENABLE KEYS */;
 
--- Dumping structure for table trader_buddy.audio_retrospectives
-CREATE TABLE IF NOT EXISTS `audio_retrospectives` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `end_date` date DEFAULT NULL,
-  `interval_frequency` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `start_date` date DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKqcli56nbow807g5mkleyxkojb` (`account_id`),
-  CONSTRAINT `FKqcli56nbow807g5mkleyxkojb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- Dumping data for table trader_buddy.audio_retrospectives: ~0 rows (approximately)
-/*!40000 ALTER TABLE `audio_retrospectives` DISABLE KEYS */;
-REPLACE INTO `audio_retrospectives` (`id`, `end_date`, `interval_frequency`, `name`, `start_date`, `url`, `account_id`) VALUES
-	(1, '2023-02-28', 2, 'February Retrospective', '2023-02-01', '\\audio\\temp.wav', 5);
-/*!40000 ALTER TABLE `audio_retrospectives` ENABLE KEYS */;
-
 -- Dumping structure for table trader_buddy.base_ranks
 CREATE TABLE IF NOT EXISTS `base_ranks` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -208,7 +188,13 @@ REPLACE INTO `market_news` (`id`, `date`) VALUES
 	(95, '2023-06-13'),
 	(96, '2023-06-14'),
 	(97, '2023-06-15'),
-	(98, '2023-06-16');
+	(98, '2023-06-16'),
+	(99, '2023-06-18'),
+	(100, '2023-06-19'),
+	(101, '2023-06-20'),
+	(102, '2023-06-21'),
+	(103, '2023-06-22'),
+	(104, '2023-06-23');
 /*!40000 ALTER TABLE `market_news` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_entries
@@ -510,7 +496,86 @@ REPLACE INTO `market_news_entries` (`id`, `content`, `severity`, `slot_id`, `cou
 	(662, 'FOMC Member Waller Speaks', 2, 607, 23, '', ''),
 	(663, 'German Buba President Nagel Speaks', 3, 608, 2, '', ''),
 	(664, 'Prelim UoM Consumer Sentiment', 1, 609, 23, '60.2', '57.7'),
-	(665, 'Prelim UoM Inflation Expectations', 2, 609, 23, '', '4.5%');
+	(665, 'Prelim UoM Inflation Expectations', 2, 609, 23, '', '4.5%'),
+	(666, 'BusinessNZ Services Index', 3, 610, 23, '', '49.8'),
+	(667, 'Rightmove HPI m/m', 3, 611, 13, '', '1.8%'),
+	(668, 'Bank Holiday', 4, 612, 23, '', ''),
+	(669, 'Westpac Consumer Sentiment', 3, 613, 23, '', '77.7'),
+	(670, 'Monetary Policy Meeting Minutes', 2, 614, 1, '', ''),
+	(671, 'RMPI m/m', 3, 615, 5, '1.7%', '2.9%'),
+	(672, 'IPPI m/m', 3, 615, 5, '-0.3%', '-0.2%'),
+	(673, 'NAHB Housing Market Index', 3, 616, 23, '51', '50'),
+	(674, 'RBA Deputy Gov Bullock Speaks', 3, 617, 1, '', ''),
+	(675, 'RBA Assist Gov Kent Speaks', 3, 618, 1, '', ''),
+	(676, 'FOMC Member Williams Speaks', 3, 619, 23, '', ''),
+	(677, 'CB Leading Index m/m', 3, 620, 1, '', '0.0%'),
+	(678, 'GDT Price Index', 3, 621, 23, '', '-0.9%'),
+	(679, 'Monetary Policy Meeting Minutes', 3, 622, 17, '', ''),
+	(680, 'Housing Starts', 3, 623, 23, '1.40M', '1.40M'),
+	(681, 'Building Permits', 3, 623, 23, '1.42M', '1.42M'),
+	(682, 'MI Leading Index m/m', 3, 624, 1, '', '0.0%'),
+	(683, 'Current Account', 3, 625, 2, '27.3B', '31.2B'),
+	(684, 'Trade Balance', 3, 626, 23, '3.45B', '2.60B'),
+	(685, 'German PPI m/m', 3, 626, 2, '-0.7%', '0.3%'),
+	(686, 'Revised Industrial Production m/m', 3, 627, 17, '-0.4%', '-0.4%'),
+	(687, 'Trade Balance', 3, 628, 23, '350M', '427M'),
+	(688, 'German Buba President Nagel Speaks', 3, 629, 2, '', ''),
+	(689, 'HPI y/y', 3, 630, 13, '2.6%', '4.1%'),
+	(690, 'Retail Sales m/m', 2, 631, 5, '0.3%', '-1.4%'),
+	(691, 'Core Retail Sales m/m', 2, 631, 5, '0.3%', '-0.3%'),
+	(692, 'NHPI m/m', 3, 631, 5, '0.0%', '-0.1%'),
+	(693, 'CBI Industrial Order Expectations', 3, 632, 13, '-18', '-17'),
+	(694, 'FOMC Member Goolsbee Speaks', 3, 633, 23, '', ''),
+	(695, 'Credit Card Spending y/y', 3, 634, 23, '', '11.4%'),
+	(696, 'Bank Holiday', 4, 635, 6, '', ''),
+	(697, 'Fed Chair Powell Testifies', 1, 636, 23, '', ''),
+	(698, 'FOMC Member Cook Speaks', 3, 636, 23, '', ''),
+	(699, 'FOMC Member Jefferson Speaks', 3, 636, 23, '', ''),
+	(700, 'Core CPI y/y', 3, 637, 13, '6.8%', '6.8%'),
+	(701, 'CPI y/y', 1, 637, 13, '8.4%', '8.7%'),
+	(702, 'PPI Input m/m', 3, 637, 13, '-0.4%', '-0.3%'),
+	(703, 'PPI Output m/m', 3, 637, 13, '-0.1%', '0.0%'),
+	(704, 'RPI y/y', 3, 637, 13, '11.2%', '11.4%'),
+	(705, 'Public Sector Net Borrowing', 3, 637, 13, '19.9B', '24.7B'),
+	(706, 'German 30-y Bond Auction', 3, 638, 2, '', '2.53|2.0'),
+	(707, 'BOC Summary of Deliberations', 3, 639, 5, '', ''),
+	(708, 'SNB Press Conference', 1, 640, 23, '', ''),
+	(709, 'Flash Manufacturing PMI', 3, 641, 1, '', '48.0'),
+	(710, 'Flash Services PMI', 3, 641, 1, '', '51.8'),
+	(711, 'Monetary Policy Summary', 1, 642, 13, '', ''),
+	(712, 'Official Bank Rate', 1, 642, 13, '4.75%', '4.50%'),
+	(713, 'MPC Official Bank Rate Votes', 1, 642, 13, '7-0-2', '7-0-2'),
+	(714, 'National Core CPI y/y', 3, 643, 17, '3.1%', '3.4%'),
+	(715, 'FOMC Member Bowman Speaks', 3, 644, 23, '', ''),
+	(716, 'Crude Oil Inventories', 3, 645, 23, '', '7.9M'),
+	(717, 'Existing Home Sales', 2, 646, 23, '4.25M', '4.28M'),
+	(718, 'CB Leading Index m/m', 3, 646, 23, '-0.8%', '-0.6%'),
+	(719, 'Consumer Confidence', 3, 646, 2, '-17', '-17'),
+	(720, 'Fed Chair Powell Testifies', 1, 646, 23, '', ''),
+	(721, 'Natural Gas Storage', 3, 647, 23, '', '84B'),
+	(722, 'SNB Monetary Policy Assessment', 1, 648, 23, '', ''),
+	(723, 'SNB Policy Rate', 1, 648, 23, '1.75%', '1.50%'),
+	(724, 'Current Account', 3, 649, 23, '-219B', '-207B'),
+	(725, 'Unemployment Claims', 1, 649, 23, '256K', '262K'),
+	(726, 'Flash Manufacturing PMI', 3, 650, 17, '50.2', '50.8'),
+	(727, 'BOE Inflation Letter', 3, 651, 13, '', ''),
+	(728, 'GfK Consumer Confidence', 3, 652, 13, '-26', '-27'),
+	(729, 'FOMC Member Waller Speaks', 2, 653, 23, '', ''),
+	(730, 'Bank Holiday', 4, 654, 6, '', ''),
+	(731, 'German Buba President Nagel Speaks', 3, 655, 2, '', ''),
+	(732, 'SNB Financial Stability Report', 3, 656, 23, '', ''),
+	(733, 'German Flash Manufacturing PMI', 1, 657, 2, '43.6', '42.9'),
+	(734, 'German Flash Services PMI', 1, 657, 2, '56.3', '57.8'),
+	(735, 'Flash Manufacturing PMI', 1, 658, 23, '48.5', '48.5'),
+	(736, 'Flash Services PMI', 1, 658, 23, '54.0', '55.1'),
+	(737, 'Flash Manufacturing PMI', 1, 659, 13, '46.8', '46.9'),
+	(738, 'Flash Services PMI', 1, 659, 13, '54.9', '55.1'),
+	(739, 'Flash Manufacturing PMI', 2, 660, 2, '44.9', '44.6'),
+	(740, 'Flash Services PMI', 2, 660, 2, '54.5', '55.9'),
+	(741, 'Belgian NBB Business Climate', 3, 661, 2, '-10.3', '-9.2'),
+	(742, 'French Flash Manufacturing PMI', 1, 662, 2, '45.2', '46.1'),
+	(743, 'French Flash Services PMI', 1, 662, 2, '52.1', '52.8'),
+	(744, 'Retail Sales m/m', 2, 663, 13, '-0.2%', '0.5%');
 /*!40000 ALTER TABLE `market_news_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.market_news_slots
@@ -721,7 +786,61 @@ REPLACE INTO `market_news_slots` (`id`, `time`, `news_id`) VALUES
 	(606, '05:15:00', 98),
 	(607, '07:45:00', 98),
 	(608, '03:00:00', 98),
-	(609, '10:00:00', 98);
+	(609, '10:00:00', 98),
+	(610, '18:30:00', 99),
+	(611, '19:01:00', 99),
+	(612, '08:00:00', 100),
+	(613, '15:23:00', 100),
+	(614, '21:30:00', 100),
+	(615, '08:30:00', 100),
+	(616, '10:00:00', 100),
+	(617, '23:15:00', 100),
+	(618, '21:35:00', 100),
+	(619, '11:45:00', 101),
+	(620, '10:30:00', 101),
+	(621, '10:33:00', 101),
+	(622, '19:50:00', 101),
+	(623, '08:30:00', 101),
+	(624, '20:30:00', 101),
+	(625, '04:00:00', 101),
+	(626, '02:00:00', 101),
+	(627, '00:30:00', 101),
+	(628, '18:45:00', 102),
+	(629, '09:45:00', 102),
+	(630, '04:30:00', 102),
+	(631, '08:30:00', 102),
+	(632, '06:00:00', 102),
+	(633, '11:40:00', 102),
+	(634, '23:00:00', 102),
+	(635, '20:01:00', 102),
+	(636, '10:00:00', 102),
+	(637, '02:00:00', 102),
+	(638, '06:34:00', 102),
+	(639, '13:30:00', 102),
+	(640, '04:30:00', 103),
+	(641, '19:00:00', 103),
+	(642, '07:00:00', 103),
+	(643, '19:30:00', 103),
+	(644, '09:55:00', 103),
+	(645, '11:00:00', 103),
+	(646, '10:00:00', 103),
+	(647, '10:30:00', 103),
+	(648, '03:30:00', 103),
+	(649, '08:30:00', 103),
+	(650, '20:30:00', 103),
+	(651, '07:03:00', 103),
+	(652, '19:01:00', 103),
+	(653, '04:00:00', 103),
+	(654, '20:01:00', 103),
+	(655, '08:05:00', 103),
+	(656, '00:30:00', 103),
+	(657, '03:30:00', 104),
+	(658, '09:45:00', 104),
+	(659, '04:30:00', 104),
+	(660, '04:00:00', 104),
+	(661, '09:00:00', 104),
+	(662, '03:15:00', 104),
+	(663, '02:00:00', 104);
 /*!40000 ALTER TABLE `market_news_slots` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.phone_numbers
@@ -733,7 +852,7 @@ CREATE TABLE IF NOT EXISTS `phone_numbers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.phone_numbers: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.phone_numbers: ~1 rows (approximately)
 /*!40000 ALTER TABLE `phone_numbers` DISABLE KEYS */;
 REPLACE INTO `phone_numbers` (`id`, `country_code`, `phone_type`, `telephone_number`) VALUES
 	(1, 1, 0, 5149411025);
@@ -814,16 +933,20 @@ CREATE TABLE IF NOT EXISTS `retrospectives` (
   `interval_frequency` int(11) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `account_id` bigint(20) DEFAULT NULL,
+  `media_path` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `retrospective_type` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UniqueIntervalAndStartDateAndEndDate` (`interval_frequency`,`start_date`,`end_date`),
   KEY `FK45ox2nc7as2dui59tb1uyfgqb` (`account_id`),
   CONSTRAINT `FK45ox2nc7as2dui59tb1uyfgqb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.retrospectives: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.retrospectives: ~1 rows (approximately)
 /*!40000 ALTER TABLE `retrospectives` DISABLE KEYS */;
-REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`) VALUES
-	(53, '2023-06-12', 1, '2023-06-05', 5);
+REPLACE INTO `retrospectives` (`id`, `end_date`, `interval_frequency`, `start_date`, `account_id`, `media_path`, `name`, `retrospective_type`) VALUES
+	(53, '2023-06-12', 1, '2023-06-05', 5, 'path', 'Weekly Retrospective', 1),
+	(55, '2023-06-19', 1, '2023-06-12', 5, 'path', 'name', 1);
 /*!40000 ALTER TABLE `retrospectives` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.retrospective_entries
@@ -846,7 +969,13 @@ REPLACE INTO `retrospective_entries` (`id`, `entry_text`, `key_point`, `line_num
 	(278, 'I made good calls this week, the price action was pretty clean. I am product of myself for that.', b'0', 3, 53),
 	(279, 'Looking forward I want to focus on accepting the risk for each trade and controlling possible tilt; as well as not having any expectations for the market movement. Let\'s have a good week!', b'0', 4, 53),
 	(280, 'Accept the risk.', b'1', 5, 53),
-	(281, 'Let the market move. Don\'t assume directions.', b'1', 6, 53);
+	(281, 'Let the market move. Don\'t assume directions.', b'1', 6, 53),
+	(282, 'Second week of the FTMO challenge. I turned in some solid performances this week. I\'ve been reading the market well for the most part and I haven\'t been married to any positions.', b'0', 1, 55),
+	(283, 'I traded well despite CPI and FOMC this week as well as a triple-witching day on Friday. I\'m feeling confident and resilient in my trading.', b'0', 2, 55),
+	(284, 'I did struggle at times with consecutive losses and oversized positions that I consider myself fortunate to have survived. I must be better with that. There is no more excuse. I must graduate.', b'0', 3, 55),
+	(285, 'Looking ahead to next week, we have a holiday on Monday so it is going to be a 4 session week. Let\'s go.', b'0', 4, 55),
+	(286, 'Keep a consistent position size.', b'1', 5, 55),
+	(287, 'Don\'t let losses pile up needlessly', b'1', 6, 55);
 /*!40000 ALTER TABLE `retrospective_entries` ENABLE KEYS */;
 
 -- Dumping structure for table trader_buddy.skills
@@ -1219,7 +1348,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   CONSTRAINT `FKd7vh3l278x7si0bsvpayv312o` FOREIGN KEY (`user_locale_id`) REFERENCES `user_locales` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.users: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.users: ~1 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 REPLACE INTO `users` (`id`, `email`, `first_name`, `last_name`, `password`, `username`, `account_id`, `user_locale_id`, `phone_id`) VALUES
 	(5, 's.prizio@hotmail.com', 'Stephen', 'Prizio', '$2a$10$/.HyJQA84yfceXoYgPO9euce1PmQNfisSI6GA7G52yHUBBxEBBHo6', 's.prizio', 5, 1, 1);
@@ -1234,7 +1363,7 @@ CREATE TABLE IF NOT EXISTS `user_locales` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- Dumping data for table trader_buddy.user_locales: ~0 rows (approximately)
+-- Dumping data for table trader_buddy.user_locales: ~1 rows (approximately)
 /*!40000 ALTER TABLE `user_locales` DISABLE KEYS */;
 REPLACE INTO `user_locales` (`id`, `country`, `time_zone_offset`, `town_city`) VALUES
 	(1, 5, 'America/Toronto (GMT -05:00)', 'Montreal');

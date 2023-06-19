@@ -1,6 +1,7 @@
 package com.traderbuddyv2.core.models.entities.retrospective;
 
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.retrospective.RetrospectiveType;
 import com.traderbuddyv2.core.models.entities.GenericEntity;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import lombok.Getter;
@@ -40,6 +41,21 @@ public class Retrospective implements GenericEntity {
     @Setter
     @Column(name = "interval_frequency")
     private AggregateInterval intervalFrequency;
+
+    @Getter
+    @Setter
+    @Column(name = "retrospective_type")
+    private RetrospectiveType retrospectiveType;
+
+    @Getter
+    @Setter
+    @Column(name = "media_path")
+    private String mediaPath;
+
+    @Getter
+    @Setter
+    @Column
+    private String name;
 
     @Getter
     @Setter

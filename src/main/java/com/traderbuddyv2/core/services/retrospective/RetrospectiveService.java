@@ -2,14 +2,13 @@ package com.traderbuddyv2.core.services.retrospective;
 
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.retrospective.RetrospectiveType;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.exceptions.validation.NoResultFoundException;
-import com.traderbuddyv2.core.models.entities.retrospective.AudioRetrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.retrospective.RetrospectiveEntry;
-import com.traderbuddyv2.core.repositories.retrospective.AudioRetrospectiveRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveEntryRepository;
 import com.traderbuddyv2.core.repositories.retrospective.RetrospectiveRepository;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
@@ -39,9 +38,6 @@ import static com.traderbuddyv2.core.validation.GenericValidator.validateParamet
  */
 @Component("retrospectiveService")
 public class RetrospectiveService {
-
-    @Resource(name = "audioRetrospectiveRepository")
-    private AudioRetrospectiveRepository audioRetrospectiveRepository;
 
     @Resource(name = "retrospectiveEntryRepository")
     private RetrospectiveEntryRepository retrospectiveEntryRepository;
@@ -227,7 +223,7 @@ public class RetrospectiveService {
     }
 
     /**
-     * Saves an {@link AudioRetrospective} from the given {@link MultipartFile}
+     * Saves an {@link Retrospective} from the given {@link MultipartFile}
      *
      * @param start             start date
      * @param end               end date
@@ -238,18 +234,18 @@ public class RetrospectiveService {
      */
     public String saveAudio(final LocalDate start, final LocalDate end, final AggregateInterval aggregateInterval, final String name, final MultipartFile file) {
 
-        final AudioRetrospective audioRetrospective = new AudioRetrospective();
+        final Retrospective audioRetrospective = new Retrospective();
 
         audioRetrospective.setStartDate(start);
         audioRetrospective.setEndDate(end);
         audioRetrospective.setIntervalFrequency(aggregateInterval);
         audioRetrospective.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
         audioRetrospective.setName(name);
-        audioRetrospective.setUrl(FileSystemUtils.getAudioFileUrl(file, false));
+        audioRetrospective.setMediaPath(FileSystemUtils.getAudioFileUrl(file, false));
 
         try {
             file.transferTo(new File(FileSystemUtils.getContentRoot(true) + "\\audio\\" + file.getOriginalFilename()));
-            this.audioRetrospectiveRepository.save(audioRetrospective);
+            this.retrospectiveRepository.save(audioRetrospective);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -275,6 +271,9 @@ public class RetrospectiveService {
         retrospective.setEndDate(LocalDate.parse(retro.get("endDate").toString(), DateTimeFormatter.ISO_DATE));
         retrospective.setIntervalFrequency(AggregateInterval.valueOf(retro.get("intervalFrequency").toString()));
         retrospective.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
+        retrospective.setName("name");
+        retrospective.setMediaPath("path");
+        retrospective.setRetrospectiveType(RetrospectiveType.NOTE);
 
         retrospective = this.retrospectiveRepository.save(retrospective);
 
