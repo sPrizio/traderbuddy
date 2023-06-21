@@ -1,14 +1,17 @@
 package com.traderbuddyv2.core.services.account;
 
 import com.traderbuddyv2.core.constants.CoreConstants;
-import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
+import com.traderbuddyv2.core.enums.account.Currency;
+import com.traderbuddyv2.core.enums.account.*;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.system.Parity;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
+import com.traderbuddyv2.core.models.entities.levelling.skill.Skill;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.trade.Trade;
 import com.traderbuddyv2.core.models.entities.trade.record.TradeRecord;
@@ -16,6 +19,9 @@ import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
+import com.traderbuddyv2.core.repositories.levelling.skill.SkillRepository;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
+import com.traderbuddyv2.core.services.levelling.skill.SkillService;
 import com.traderbuddyv2.core.services.math.MathService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
@@ -27,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -50,6 +57,15 @@ public class AccountService {
 
     @Resource(name = "mathService")
     private MathService mathService;
+
+    @Resource(name = "rankService")
+    private RankService rankService;
+
+    @Resource(name = "skillRepository")
+    private SkillRepository skillRepository;
+
+    @Resource(name = "skillService")
+    private SkillService skillService;
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
@@ -245,6 +261,25 @@ public class AccountService {
         return true;
     }
 
+    /**
+     * Creates a new {@link Account} with the given data
+     *
+     * @param data {@link Map}
+     * @return new {@link Account}
+     */
+    public Account createNewAccount(final Map<String, Object> data) {
+
+        if (MapUtils.isEmpty(data)) {
+            throw new MissingRequiredDataException("The required data for creating an Account entity was null or empty");
+        }
+
+        try {
+            return applyChanges(new Account(), data);
+        } catch (Exception e) {
+            throw new EntityCreationException(String.format("An Account could not be created : %s", e.getMessage()), e);
+        }
+    }
+
 
     //  HELPERS
 
@@ -268,5 +303,42 @@ public class AccountService {
         modification.setAccount(this.traderBuddyUserDetailsService.getCurrentUser().getAccount());
 
         return this.accountBalanceModificationRepository.save(modification);
+    }
+
+    /**
+     * Applies the changes contained within the {@link Map} to the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @param data {@link Map}
+     * @return updated {@link Account}
+     */
+    private Account applyChanges(Account account, final Map<String, Object> data) {
+
+        final Map<String, Object> acc = (Map<String, Object>) data.get("account");
+        final boolean isDefault = this.traderBuddyUserDetailsService.getCurrentUser().getAccounts().isEmpty();
+
+        account.setAccountOpenTime(LocalDateTime.now());
+        account.setActive(true);
+        account.setBalance(Double.parseDouble(acc.get("balance").toString()));
+        account.setUser(this.traderBuddyUserDetailsService.getCurrentUser());
+        account.setRank(this.rankService.getStarterRank());
+        account.setName(acc.get("name").toString());
+        account.setAccountNumber(Long.parseLong(acc.get("number").toString()));
+        account.setCurrency(Currency.get(acc.get("currency").toString()));
+        account.setAccountType(AccountType.valueOf(acc.get("type").toString()));
+        account.setBroker(Broker.valueOf(acc.get("broker").toString()));
+        account.setDailyStopLimit(Double.parseDouble(acc.get("dailyStop").toString()));
+        account.setDailyStopLimitType(StopLimitType.valueOf(acc.get("dailyStopType").toString()));
+        account.setDefaultAccount(isDefault);
+        account.setTradePlatform(TradePlatform.valueOf(acc.get("tradePlatform").toString()));
+
+        account = this.accountRepository.save(account);
+
+        Skill skill = this.skillService.getStarterSkill();
+        skill.setAccount(account);
+        skill = this.skillRepository.save(skill);
+        account.setSkill(skill);
+
+        return this.accountRepository.save(account);
     }
 }

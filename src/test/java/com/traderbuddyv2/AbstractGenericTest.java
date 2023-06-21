@@ -224,7 +224,7 @@ public abstract class AbstractGenericTest {
         account.setAccountType(AccountType.CFD);
         account.setAccountNumber(1234);
         account.setDailyStopLimit(55.0);
-        account.setDailyStopLimitType(StopLimitType.PIPS);
+        account.setDailyStopLimitType(StopLimitType.POINTS);
         account.setName("Test Account");
         account.setCurrency(Currency.CANADIAN_DOLLAR);
         account.setBroker(Broker.CMC_MARKETS);

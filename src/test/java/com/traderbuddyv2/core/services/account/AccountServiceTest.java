@@ -3,6 +3,7 @@ package com.traderbuddyv2.core.services.account;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.core.constants.CoreConstants;
 import com.traderbuddyv2.core.enums.account.AccountBalanceModificationType;
+import com.traderbuddyv2.core.enums.account.AccountType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
 import com.traderbuddyv2.core.enums.trade.info.TradeType;
 import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
@@ -10,6 +11,9 @@ import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.repositories.account.AccountBalanceModificationRepository;
 import com.traderbuddyv2.core.repositories.account.AccountRepository;
+import com.traderbuddyv2.core.repositories.levelling.skill.SkillRepository;
+import com.traderbuddyv2.core.services.levelling.rank.RankService;
+import com.traderbuddyv2.core.services.levelling.skill.SkillService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -54,6 +58,15 @@ public class AccountServiceTest extends AbstractGenericTest {
     private AccountBalanceModificationRepository accountBalanceModificationRepository;
 
     @MockBean
+    private RankService rankService;
+
+    @MockBean
+    private SkillRepository skillRepository;
+
+    @MockBean
+    private SkillService skillService;
+
+    @MockBean
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
 
     @MockBean
@@ -77,6 +90,10 @@ public class AccountServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, true)).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountRepository.findAccountByAccountNumber(1234L)).thenReturn(generateTestAccount());
         Mockito.when(this.accountRepository.findAccountByAccountNumber(-1L)).thenReturn(null);
+        Mockito.when(this.accountRepository.save(any())).thenReturn(generateTestAccount());
+        Mockito.when(this.rankService.getStarterRank()).thenReturn(generateTestRank());
+        Mockito.when(this.skillService.getStarterSkill()).thenReturn(generateTestSkill());
+        Mockito.when(this.skillRepository.save(any())).thenReturn(generateTestSkill());
     }
 
 
@@ -234,5 +251,48 @@ public class AccountServiceTest extends AbstractGenericTest {
     public void test_updateDefaultAccount_success() {
         assertThat(this.accountService.updateDefaultAccount(1234L))
                 .isTrue();
+    }
+
+
+    //  ----------------- createNewAccount -----------------
+
+    @Test
+    public void test_createNewAccount_missingData() {
+        assertThatExceptionOfType(MissingRequiredDataException.class)
+                .isThrownBy(() -> this.accountService.createNewAccount(null))
+                .withMessage("The required data for creating an Account entity was null or empty");
+    }
+
+    @Test
+    public void test_createNewAccount_erroneousCreation() {
+        Map<String, Object> map = Map.of("bad", "input");
+        assertThatExceptionOfType(EntityCreationException.class)
+                .isThrownBy(() -> this.accountService.createNewAccount(map))
+                .withMessage("An Account could not be created : Cannot invoke \"java.util.Map.get(Object)\" because \"acc\" is null");
+    }
+
+    @Test
+    public void test_createNewAccount_success() {
+
+        Map<String, Object> data =
+                Map.of(
+                        "account",
+                        Map.of(
+                                "name", "Test",
+                                "number", "123",
+                                "balance", "150",
+                                "currency", "CAD",
+                                "type", "CFD",
+                                "broker", "CMC_MARKETS",
+                                "dailyStop", "55",
+                                "dailyStopType", "POINTS",
+                                "tradePlatform", "METATRADER4"
+                        )
+                );
+
+        assertThat(this.accountService.createNewAccount(data))
+                .isNotNull()
+                .extracting("balance", "accountType", "accountNumber")
+                .containsExactly(1000.0, AccountType.CFD, 1234L);
     }
 }

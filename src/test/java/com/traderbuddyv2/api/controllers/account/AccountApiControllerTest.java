@@ -64,7 +64,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountService.deleteAccountBalanceModification(anyString())).thenReturn(true);
         Mockito.when(this.accountService.createAccountBalanceModification(any())).thenReturn(generateTestAccountBalanceModification());
         Mockito.when(this.accountService.getPromoPayments()).thenReturn(List.of(generateTestBuyTrade()));
-        Mockito.when(this.accountService.getLossInfo(any(), any())).thenReturn(new LossInfo(StopLimitType.PIPS, 1.0, 1.0, 1.0, 1));
+        Mockito.when(this.accountService.getLossInfo(any(), any())).thenReturn(new LossInfo(StopLimitType.POINTS, 1.0, 1.0, 1.0, 1));
         Mockito.when(this.accountService.updateDefaultAccount(anyLong())).thenReturn(true);
     }
 

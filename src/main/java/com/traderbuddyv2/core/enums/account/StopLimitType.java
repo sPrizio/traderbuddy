@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 public enum StopLimitType {
     PROFIT("Profit"),
-    PIPS("Points");
+    POINTS("Points");
 
     @Getter
     private final String label;

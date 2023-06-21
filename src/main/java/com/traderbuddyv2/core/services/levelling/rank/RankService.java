@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -113,6 +114,27 @@ public class RankService {
         Optional<Rank> rank = this.rankRepository.findById(getCurrentRank().uid());
         rank.ifPresent(account::setRank);
         this.accountRepository.save(account);
+    }
+
+    /**
+     * Returns the starter {@link Rank}
+     *
+     * @return {@link Rank}
+     */
+    public Rank getStarterRank() {
+
+        final List<BaseRank> baseRanks = getAllBaseRanks();
+        return
+                baseRanks
+                        .stream()
+                        .filter(br -> br.getPriority() == 1)
+                        .findFirst()
+                        .map(BaseRank::getRanks)
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .filter(r -> r.getLevel() == 5)
+                        .findFirst()
+                        .orElseThrow(() -> new UnsupportedOperationException("Impossible Error"));
     }
 
 

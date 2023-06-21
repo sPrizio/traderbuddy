@@ -76,4 +76,23 @@ public class SkillService {
         account.setSkill(skill);
         this.accountRepository.save(account);
     }
+
+    /**
+     * Generates the starting {@link Skill} template
+     *
+     * @return {@link Skill}
+     */
+    public Skill getStarterSkill() {
+
+        final Skill skill = new Skill();
+
+        skill.setLevel(1);
+        skill.setDelta(0);
+        skill.setPoints(0);
+        skill.setLastUpdated(LocalDateTime.now());
+        skill.setRemaining(100);
+        skill.setStepIncrement(100);
+
+        return skill;
+    }
 }
