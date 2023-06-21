@@ -5,23 +5,32 @@ import com.traderbuddyv2.api.converters.account.AccountBalanceModificationDTOCon
 import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.api.models.dto.account.AccountBalanceModificationDTO;
 import com.traderbuddyv2.api.models.records.account.AccountOverview;
+import com.traderbuddyv2.api.models.records.account.PairEntry;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
 import com.traderbuddyv2.api.models.records.misc.PromotionalPaymentTotals;
 import com.traderbuddyv2.core.constants.CoreConstants;
+import com.traderbuddyv2.core.enums.account.AccountType;
+import com.traderbuddyv2.core.enums.account.Broker;
+import com.traderbuddyv2.core.enums.account.Currency;
+import com.traderbuddyv2.core.enums.account.StopLimitType;
 import com.traderbuddyv2.core.enums.interval.AggregateInterval;
+import com.traderbuddyv2.core.enums.trade.platform.TradePlatform;
 import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.account.AccountBalanceModification;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
+import lombok.Getter;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +135,61 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse getLossInfo(final @RequestParam("start") String start, final @RequestParam("end") String end) {
         validate(start, end);
         return new StandardJsonResponse(true, this.accountService.getLossInfo(LocalDate.parse(start, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT)), LocalDate.parse(end, DateTimeFormatter.ofPattern(CoreConstants.DATE_FORMAT))), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link Currency}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/currencies")
+    public StandardJsonResponse getCurrencies() {
+        return new StandardJsonResponse(true, Arrays.stream(Currency.values()).map(c -> new PairEntry(c.getIsoCode(), c.getLabel(), c.getSymbol())).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link AccountType}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/account-types")
+    public StandardJsonResponse getAccountTypes() {
+        return new StandardJsonResponse(true, Arrays.stream(AccountType.values()).map(at -> new PairEntry(at.getLabel().toUpperCase(), at.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link Broker}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/brokers")
+    public StandardJsonResponse getBrokers() {
+        return new StandardJsonResponse(true, Arrays.stream(Broker.values()).map(b -> new PairEntry(b.getCode(), b.getName(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link StopLimitType}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/stop-types")
+    public StandardJsonResponse getDailyStopTypes() {
+        return new StandardJsonResponse(true, Arrays.stream(StopLimitType.values()).map(dst -> new PairEntry(dst.getLabel().toUpperCase(), dst.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link TradePlatform}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/trade-platforms")
+    public StandardJsonResponse getTradePlatforms() {
+        return new StandardJsonResponse(true, Arrays.stream(TradePlatform.values()).map(tp -> new PairEntry(tp.getCode(), tp.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
     }
 
 

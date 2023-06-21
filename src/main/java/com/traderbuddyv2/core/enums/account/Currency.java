@@ -9,24 +9,24 @@ import lombok.Getter;
  * @version 1.0
  */
 public enum Currency {
-    US_DOLLAR("USD", "US Dollars"),
-    EUROPEAN_EURO("EUR", "Euros"),
-    JAPANESE_YEN("JPY", "Japanese Yen"),
-    UK_STERLING("GBP", "Sterling"),
-    SWISS_FRANC("CHF", "Swiss Francs"),
-    CANADIAN_DOLLAR("CAD", "Canadian Dollars"),
-    AUSTRALIAN_DOLLAR("AUD", "Australian Dollars"),
-    NEW_ZEALAND_DOLLAR("NZD", "New Zealand Dollars"),
-    SOUTH_AFRICAN_RAND("ZAR", "South African Rand"),
-    ARGENTINE_PESO("ARS", "Argentine Peso"),
-    BRAZILIAN_REAL("BRL", "Brazilian Real"),
-    CHINESE_RENMINBI("CNY", "Renminbi"),
-    COLOMBIAN_PESO("COP", "Colombian Peso"),
-    CZECH_KORUNA("CZK", "Czech Koruna"),
-    DANISH_KRONE("DKK", "Danish Krone"),
-    NORWEGIAN_KRONE("NOK", "Norwegian Krone"),
-    RUSSIAN_RUBLE("RUB", "Russian Ruble"),
-    SWEDISH_KRONA("SEK", "Swedish Krona");
+    US_DOLLAR("USD", "US Dollars", "$"),
+    EUROPEAN_EURO("EUR", "Euros", "€"),
+    JAPANESE_YEN("JPY", "Japanese Yen", "¥"),
+    UK_STERLING("GBP", "Sterling", "£"),
+    SWISS_FRANC("CHF", "Swiss Francs", "₣"),
+    CANADIAN_DOLLAR("CAD", "Canadian Dollars", "$"),
+    AUSTRALIAN_DOLLAR("AUD", "Australian Dollars", "$"),
+    NEW_ZEALAND_DOLLAR("NZD", "New Zealand Dollars", "$"),
+    SOUTH_AFRICAN_RAND("ZAR", "South African Rand", "R"),
+    ARGENTINE_PESO("ARS", "Argentine Peso", "$"),
+    BRAZILIAN_REAL("BRL", "Brazilian Real", "R$"),
+    CHINESE_RENMINBI("CNY", "Renminbi", "¥"),
+    COLOMBIAN_PESO("COP", "Colombian Peso", "$"),
+    CZECH_KORUNA("CZK", "Czech Koruna", "Kč"),
+    DANISH_KRONE("DKK", "Danish Krone", "kr."),
+    NORWEGIAN_KRONE("NOK", "Norwegian Krone", "kr"),
+    RUSSIAN_RUBLE("RUB", "Russian Ruble", "₽"),
+    SWEDISH_KRONA("SEK", "Swedish Krona", "kr");
 
 
     @Getter
@@ -35,9 +35,13 @@ public enum Currency {
     @Getter
     private final String label;
 
-    Currency(final String isoCode, final String label) {
+    @Getter
+    private final String symbol;
+
+    Currency(final String isoCode, final String label, final String symbol) {
         this.isoCode = isoCode;
         this.label = label;
+        this.symbol = symbol;
     }
 
     /**

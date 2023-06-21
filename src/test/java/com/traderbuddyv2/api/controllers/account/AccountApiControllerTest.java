@@ -136,6 +136,56 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- getCurrencies -----------------
+
+    @Test
+    public void test_getCurrencies_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/currencies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is("USD")));
+    }
+
+
+    //  ----------------- getAccountTypes -----------------
+
+    @Test
+    public void test_getAccountTypes_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/account-types"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is("SHARES")));
+    }
+
+
+    //  ----------------- getBrokers -----------------
+
+    @Test
+    public void test_getBrokers_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/brokers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is("CMC_MARKETS")));
+    }
+
+
+    //  ----------------- getDailyStopTypes -----------------
+
+    @Test
+    public void test_getDailyStopTypes_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/stop-types"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is("PROFIT")));
+    }
+
+
+    //  ----------------- getTradePlatforms -----------------
+
+    @Test
+    public void test_getTradePlatforms_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/trade-platforms"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is("CMC_MARKETS")));
+    }
+
+
     //  ----------------- putSwitchAccount -----------------
 
     @Test

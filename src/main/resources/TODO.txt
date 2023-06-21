@@ -1,3 +1,20 @@
 - Create new account flow that should set up all required data (account, user, trading plan, user locale)
+    -> Account Open Time = now()
+    -> Active = true
+    -> Balance = starting balance
+    -> User Id = user
+    -> Skills Id = new Skills()
+    -> Rank Id = Bronze V
+    -> Name = name
+    -> Account Number = account number
+    -> Currency = currency
+    -> Account Type = account type
+    -> Broker = broker
+    -> Daily stop limit = daily stop limit
+    -> Daily stop limit type = daily stop limit type
+    -> Default Account = checkbox
+    -> Trade Platform = trade platform
+
+- useState should have types set
 - Locale functionality. User can pick their country for time, language and filters for news to show entries that only pertain to their choices
 - Finish login with security flow to finish this damn app
