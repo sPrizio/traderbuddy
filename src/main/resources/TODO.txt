@@ -2,4 +2,8 @@
 - Finish login with security flow to finish this damn app
 - trade history generator into the template
 - register user flow (this will be a page and not a modal)
-- skills can never go below zero
+- edit user info (probably will refer to an edit page that can update user info including locale)
+- react router, each tab / menu option should be its own page
+    -> Login
+    -> Register
+    -> Home page ... etc.

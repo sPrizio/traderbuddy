@@ -72,6 +72,12 @@ public class SkillService {
         skill.setLastUpdated(LocalDateTime.now());
         skill.setRemaining(this.mathService.getInteger(this.mathService.subtract(skill.getStepIncrement(), skill.getPoints())));
 
+        if (skill.getLevel() < 1) {
+            skill.setLevel(1);
+            skill.setPoints(0);
+            skill.setRemaining(skill.getStepIncrement());
+        }
+
         this.skillRepository.save(skill);
         account.setSkill(skill);
         this.accountRepository.save(account);
