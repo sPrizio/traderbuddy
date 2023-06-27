@@ -23,6 +23,7 @@ import com.traderbuddyv2.core.repositories.levelling.skill.SkillRepository;
 import com.traderbuddyv2.core.services.levelling.rank.RankService;
 import com.traderbuddyv2.core.services.levelling.skill.SkillService;
 import com.traderbuddyv2.core.services.math.MathService;
+import com.traderbuddyv2.core.services.plan.TradingPlanService;
 import com.traderbuddyv2.core.services.platform.UniqueIdentifierService;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.trade.TradeService;
@@ -75,6 +76,9 @@ public class AccountService {
 
     @Resource(name = "traderBuddyUserDetailsService")
     private TraderBuddyUserDetailsService traderBuddyUserDetailsService;
+
+    @Resource(name = "tradingPlanService")
+    private TradingPlanService tradingPlanService;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;
@@ -333,6 +337,7 @@ public class AccountService {
         account.setTradePlatform(TradePlatform.valueOf(acc.get("tradePlatform").toString()));
 
         account = this.accountRepository.save(account);
+        this.tradingPlanService.generateDefaultTradingPlan(account);
 
         Skill skill = this.skillService.getStarterSkill();
         skill.setAccount(account);

@@ -266,7 +266,23 @@ public class TradingPlanServiceTest extends AbstractGenericTest {
                 .extracting("earnings", "balance")
                 .containsExactly(4249.78, 17099.89);
     }
-    
+
+
+    //  ----------------- generateDefaultTradingPlan -----------------
+
+    @Test
+    public void test_generateDefaultTradingPlan_badParam() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradingPlanService.generateDefaultTradingPlan(null))
+                .withMessage(CoreConstants.Validation.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    public void test_generateDefaultTradingPlan_success() {
+        assertThat(this.tradingPlanService.generateDefaultTradingPlan(generateTestAccount()))
+                .isNotNull();
+    }
+
 
     //  ----------------- createTradingPlan -----------------
 

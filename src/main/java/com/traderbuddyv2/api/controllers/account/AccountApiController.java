@@ -2,6 +2,7 @@ package com.traderbuddyv2.api.controllers.account;
 
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.account.AccountBalanceModificationDTOConverter;
+import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.api.models.dto.account.AccountBalanceModificationDTO;
 import com.traderbuddyv2.api.models.records.account.AccountOverview;
@@ -21,10 +22,8 @@ import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.records.account.EquityCurveEntry;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
 import com.traderbuddyv2.core.services.account.AccountService;
-import lombok.Getter;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -51,6 +50,9 @@ public class AccountApiController extends AbstractApiController {
 
     @Resource(name = "accountBalanceModificationDTOConverter")
     private AccountBalanceModificationDTOConverter accountBalanceModificationDTOConverter;
+
+    @Resource(name = "accountDTOConverter")
+    private AccountDTOConverter accountDTOConverter;
 
     @Resource(name = "accountFacade")
     private AccountFacade accountFacade;
@@ -218,9 +220,22 @@ public class AccountApiController extends AbstractApiController {
      */
     @ResponseBody
     @PostMapping("/create-modification")
-    public StandardJsonResponse createAccountBalanceModification(final @RequestBody Map<String, Object> requestBody) {
+    public StandardJsonResponse postCreateAccountBalanceModification(final @RequestBody Map<String, Object> requestBody) {
         validateJsonIntegrity(requestBody, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
         return new StandardJsonResponse(true, this.accountBalanceModificationDTOConverter.convert(this.accountService.createAccountBalanceModification(requestBody)), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link Account}
+     *
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @PostMapping("/create-account")
+    public StandardJsonResponse postCreateNewAccount(final @RequestBody Map<String, Object> requestBody) {
+        validateJsonIntegrity(requestBody, List.of("account"), "json did not contain of the required keys : %s", List.of("account"));
+        return new StandardJsonResponse(true, this.accountDTOConverter.convert(this.accountService.createNewAccount(requestBody)), StringUtils.EMPTY);
     }
 
 

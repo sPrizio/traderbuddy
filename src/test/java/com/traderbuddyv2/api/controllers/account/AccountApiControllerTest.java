@@ -3,6 +3,7 @@ package com.traderbuddyv2.api.controllers.account;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.traderbuddyv2.AbstractGenericTest;
 import com.traderbuddyv2.api.constants.ApiConstants;
+import com.traderbuddyv2.api.converters.account.AccountDTOConverter;
 import com.traderbuddyv2.api.facades.AccountFacade;
 import com.traderbuddyv2.core.enums.account.StopLimitType;
 import com.traderbuddyv2.core.models.records.account.LossInfo;
@@ -47,6 +48,9 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     private AccountFacade accountFacade;
 
     @MockBean
+    private AccountDTOConverter accountDTOConverter;
+
+    @MockBean
     private AccountService accountService;
 
     @MockBean
@@ -66,6 +70,8 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountService.getPromoPayments()).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountService.getLossInfo(any(), any())).thenReturn(new LossInfo(StopLimitType.POINTS, 1.0, 1.0, 1.0, 1));
         Mockito.when(this.accountService.updateDefaultAccount(anyLong())).thenReturn(true);
+        Mockito.when(this.accountService.createNewAccount(any())).thenReturn(generateTestAccount());
+        Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
     }
 
 
@@ -226,6 +232,40 @@ public class AccountApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(post("/api/v1/account/create-modification").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.dateTime", is("2022-09-12T01:01:01")));
+    }
+
+
+    //  ----------------- postCreateNewAccount -----------------
+
+    @Test
+    public void test_postCreateNewAccount_badJsonIntegrity() throws Exception {
+        this.mockMvc.perform(post("/api/v1/account/create-account").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    public void test_postCreateNewAccount_success() throws Exception {
+
+        Map<String, Object> data =
+                Map.of(
+                        "account",
+                        Map.of(
+                                "name", "Test",
+                                "number", "123",
+                                "balance", "150",
+                                "currency", "CAD",
+                                "type", "CFD",
+                                "broker", "CMC_MARKETS",
+                                "dailyStop", "55",
+                                "dailyStopType", "POINTS",
+                                "tradePlatform", "METATRADER4"
+                        )
+                );
+
+        this.mockMvc.perform(post("/api/v1/account/create-account").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.balance", is(1000.0)));
     }
 
 

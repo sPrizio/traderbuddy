@@ -8,6 +8,7 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
 import com.traderbuddyv2.core.exceptions.validation.NoResultFoundException;
+import com.traderbuddyv2.core.models.entities.account.Account;
 import com.traderbuddyv2.core.models.entities.plan.DepositPlan;
 import com.traderbuddyv2.core.models.entities.plan.TradingPlan;
 import com.traderbuddyv2.core.models.entities.plan.WithdrawalPlan;
@@ -226,6 +227,32 @@ public class TradingPlanService {
         } catch (Exception e) {
             throw new EntityModificationException(String.format("An error occurred while modifying the TradingPlan : %s" , e.getMessage()), e);
         }
+    }
+
+    /**
+     * Generates a default {@link TradingPlan} for the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return {@link TradingPlan}
+     */
+    public TradingPlan generateDefaultTradingPlan(final Account account) {
+
+        validateParameterIsNotNull(account, CoreConstants.Validation.ACCOUNT_CANNOT_BE_NULL);
+
+        final TradingPlan tradingPlan = new TradingPlan();
+
+        tradingPlan.setActive(true);
+        tradingPlan.setEndDate(LocalDate.now().plusYears(3));
+        tradingPlan.setName("Default Trading Plan");
+        tradingPlan.setProfitTarget(1.25);
+        tradingPlan.setStartDate(LocalDate.now());
+        tradingPlan.setStartingBalance(30000);
+        tradingPlan.setStatus(TradingPlanStatus.IN_PROGRESS);
+        tradingPlan.setAccount(account);
+        tradingPlan.setAbsolute(false);
+        tradingPlan.setAggregateInterval(AggregateInterval.DAILY);
+
+        return this.tradingPlanRepository.save(tradingPlan);
     }
 
 
