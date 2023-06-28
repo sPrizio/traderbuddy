@@ -3,7 +3,3 @@
 - trade history generator into the template
 - register user flow (this will be a page and not a modal)
 - edit user info (probably will refer to an edit page that can update user info including locale)
-- react router, each tab / menu option should be its own page
-    -> Login
-    -> Register
-    -> Home page ... etc.

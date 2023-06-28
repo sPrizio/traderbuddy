@@ -201,7 +201,7 @@ public class MetaTrader4TradesImportService implements ImportService {
                 Double.parseDouble(data.get(6)),
                 Double.parseDouble(data.get(7)),
                 Double.parseDouble(data.get(9)),
-                Double.parseDouble(data.get(13))
+                Double.parseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim())
         );
     }
 
