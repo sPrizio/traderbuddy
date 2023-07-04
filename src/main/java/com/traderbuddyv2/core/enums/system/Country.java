@@ -69,4 +69,39 @@ public enum Country {
 
         return UNITED_STATES;
     }
+
+    /**
+     * Returns the {@link Country} for the given iso code
+     *
+     * @param code iso code
+     * @return {@link Country}
+     */
+    public static Country getByIsoCode(final String code) {
+        return switch (code.toUpperCase()) {
+            case "ARG" -> ARGENTINA;
+            case "AUS" -> AUSTRALIA;
+            case "AUT" -> AUSTRIA;
+            case "BEL" -> BELGIUM;
+            case "BRA" -> BRAZIL;
+            case "CAN" -> CANADA;
+            case "CHN" -> CHINA;
+            case "COL" -> COLOMBIA;
+            case "CZE" -> CZECHIA;
+            case "DNK" -> DENMARK;
+            case "FIN" -> FINLAND;
+            case "FRA" -> FRANCE;
+            case "DEU" -> GERMANY;
+            case "GBR" -> UNITED_KINGDOM;
+            case "GRC" -> GREECE;
+            case "IRL" -> IRELAND;
+            case "ITA" -> ITALY;
+            case "JPN" -> JAPAN;
+            case "NOR" -> NORWAY;
+            case "PRT" -> PORTUGAL;
+            case "RUS" -> RUSSIA;
+            case "ESP" -> SPAIN;
+            case "SWE" -> SWEDEN;
+            default -> UNITED_STATES;
+        };
+    }
 }

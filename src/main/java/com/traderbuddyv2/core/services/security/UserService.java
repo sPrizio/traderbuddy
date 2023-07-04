@@ -98,7 +98,7 @@ public class UserService {
         try {
             return applyChanges(new User(), data);
         } catch (Exception e) {
-            throw new EntityCreationException(String.format("A Retrospective could not be created : %s", e.getMessage()), e);
+            throw new EntityCreationException(String.format("A User could not be created : %s", e.getMessage()), e);
         }
     }
 
@@ -148,7 +148,7 @@ public class UserService {
         user.setEmail(ud.get("email").toString());
         user.setPassword(ud.get("password").toString());
         user.setLastName(ud.get("lastName").toString());
-        user.setFirstName(ud.get("firstname").toString());
+        user.setFirstName(ud.get("firstName").toString());
         user.setUsername(ud.get("username").toString());
         user.setRoles(List.of(UserRole.TRADER));
 
@@ -159,13 +159,12 @@ public class UserService {
         phoneNumber.setTelephoneNumber(Long.parseLong(ud.get("phoneNumber").toString()));
         phoneNumber.setUser(user);
 
-        userLocale.setCountry(Country.valueOf(ud.get("country").toString()));
+        userLocale.setCountry(Country.getByIsoCode(ud.get("country").toString()));
         userLocale.setLanguages(null);
         userLocale.setTownCity(ud.get("townCity").toString());
         userLocale.setTimeZoneOffset(ud.get("timeZoneOffset").toString());
         userLocale.setCurrencies(null);
         userLocale.setUser(user);
-
 
         phoneNumber = this.phoneNumberRepository.save(phoneNumber);
 
