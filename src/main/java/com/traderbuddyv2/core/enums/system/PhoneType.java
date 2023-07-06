@@ -9,5 +9,6 @@ package com.traderbuddyv2.core.enums.system;
 public enum PhoneType {
     MOBILE,
     HOME,
+    WORK,
     OTHER
 }

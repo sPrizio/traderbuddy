@@ -3,6 +3,10 @@ package com.traderbuddyv2.api.controllers.user;
 import com.traderbuddyv2.api.controllers.AbstractApiController;
 import com.traderbuddyv2.api.converters.security.UserDTOConverter;
 import com.traderbuddyv2.api.models.records.json.StandardJsonResponse;
+import com.traderbuddyv2.core.enums.account.Currency;
+import com.traderbuddyv2.core.enums.system.Country;
+import com.traderbuddyv2.core.enums.system.Language;
+import com.traderbuddyv2.core.enums.system.PhoneType;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.services.security.TraderBuddyUserDetailsService;
 import com.traderbuddyv2.core.services.security.UserService;
@@ -10,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateJsonIntegrity;
 
@@ -52,6 +56,74 @@ public class UserApiController extends AbstractApiController {
     @GetMapping("/current-user")
     public StandardJsonResponse getCurrentUser() {
         return new StandardJsonResponse(true, this.userDTOConverter.convert(this.traderBuddyUserDetailsService.getCurrentUser()), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all of the {@link PhoneType}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/country-codes")
+    public StandardJsonResponse getCountryCodes() {
+        return new StandardJsonResponse(
+                true,
+                Arrays.stream(Country.values())
+                        .map(Country::getPhoneCode)
+                        .collect(Collectors.toCollection(TreeSet::new)),
+                StringUtils.EMPTY
+        );
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all of the {@link PhoneType}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/phone-types")
+    public StandardJsonResponse getPhoneTypes() {
+        return new StandardJsonResponse(true, PhoneType.values(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all of the {@link Currency}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/currencies")
+    public StandardJsonResponse getCurrencies() {
+        return new StandardJsonResponse(true, Arrays.stream(Currency.values()).map(Currency::getIsoCode).collect(Collectors.toCollection(TreeSet::new)), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all of the {@link Country}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/countries")
+    public StandardJsonResponse getCountries() {
+        return new StandardJsonResponse(true, Country.values(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all of the {@link Language}s
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ResponseBody
+    @GetMapping("/languages")
+    public StandardJsonResponse getLanguages() {
+        return new StandardJsonResponse(true, Language.values(), StringUtils.EMPTY);
+    }
+
+    @ResponseBody
+    @GetMapping("timezones")
+    public StandardJsonResponse getTimeZones(final @RequestParam("q") String query) {
+        //  TODO: autocomplete search
+        return new StandardJsonResponse(true, null, StringUtils.EMPTY);
     }
 
 
