@@ -1,6 +1,6 @@
 - Locale functionality. User can pick their country for time, language and filters for news to show entries that only pertain to their choices
 - Finish login with security flow to finish this damn app
-- trade history generator into the template
+- trade history generator into the template (trade history is added into the template automatically)
 - register user flow (this will be a page and not a modal)
 - edit user info (probably will refer to an edit page that can update user info including locale)
 - For equity curve, if less than the time period, add the starting balance to it
