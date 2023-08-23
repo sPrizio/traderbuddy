@@ -5,9 +5,11 @@ import com.traderbuddyv2.core.exceptions.system.EntityCreationException;
 import com.traderbuddyv2.core.exceptions.system.EntityModificationException;
 import com.traderbuddyv2.core.exceptions.validation.IllegalParameterException;
 import com.traderbuddyv2.core.exceptions.validation.MissingRequiredDataException;
+import com.traderbuddyv2.core.models.records.search.SearchResult;
 import com.traderbuddyv2.core.repositories.security.UserLocaleRepository;
 import com.traderbuddyv2.core.repositories.security.UserRepository;
 import com.traderbuddyv2.core.repositories.system.PhoneNumberRepository;
+import com.traderbuddyv2.core.services.search.SearchService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,11 +21,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 
 /**
  * Testing class for {@link UserService}
@@ -44,6 +47,9 @@ public class UserServiceTest extends AbstractGenericTest {
     @MockBean
     private UserLocaleRepository userLocaleRepository;
 
+    @MockBean
+    private SearchService searchService;
+
     @Autowired
     private UserService userService;
 
@@ -54,6 +60,7 @@ public class UserServiceTest extends AbstractGenericTest {
         Mockito.when(this.userRepository.save(any())).thenReturn(generateTestUser());
         Mockito.when(this.phoneNumberRepository.save(any())).thenReturn(generateTestPhoneNumber());
         Mockito.when(this.userLocaleRepository.save(any())).thenReturn(generateTestUserLocale());
+        Mockito.when(this.searchService.search(anyString(), anyInt())).thenReturn(Set.of(new SearchResult("test", "Search Result 1", 1)));
     }
 
 
@@ -192,5 +199,21 @@ public class UserServiceTest extends AbstractGenericTest {
                 .isNotNull()
                 .extracting("email", "firstName", "lastName")
                 .containsExactly("test@email.com", "Stephen", "Test");
+    }
+
+
+    //  ----------------- searchTimezones -----------------
+
+    @Test
+    public void test_searchTimezones_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.userService.searchTimezones(null, 10))
+                .withMessage("The search query cannot be null");
+    }
+
+    @Test
+    public void test_searchTimezones_success() {
+        assertThat(this.userService.searchTimezones("test", 10))
+                .isNotEmpty();
     }
 }

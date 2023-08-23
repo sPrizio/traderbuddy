@@ -119,11 +119,16 @@ public class UserApiController extends AbstractApiController {
         return new StandardJsonResponse(true, Language.values(), StringUtils.EMPTY);
     }
 
+    /**
+     * Returns a {@link StandardJsonResponse} containing available timezones matching the search
+     *
+     * @param query search query
+     * @return {@link StandardJsonResponse}
+     */
     @ResponseBody
-    @GetMapping("timezones")
-    public StandardJsonResponse getTimeZones(final @RequestParam("q") String query) {
-        //  TODO: autocomplete search
-        return new StandardJsonResponse(true, null, StringUtils.EMPTY);
+    @GetMapping("/timezones")
+    public StandardJsonResponse getTimeZones(final @RequestParam("q") String query, final @RequestParam(value = "limit", defaultValue = "25") int limit) {
+        return new StandardJsonResponse(true, this.userService.searchTimezones(query, limit), StringUtils.EMPTY);
     }
 
 

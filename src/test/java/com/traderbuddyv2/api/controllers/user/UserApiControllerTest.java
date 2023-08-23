@@ -25,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -67,6 +68,7 @@ public class UserApiControllerTest extends AbstractGenericTest {
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
         Mockito.when(this.userService.createUser(anyMap())).thenReturn(generateTestUser());
         Mockito.when(this.userService.updateUser(anyString(), anyMap())).thenReturn(generateTestUser());
+        Mockito.when(this.userService.searchTimezones(anyString(), anyInt())).thenReturn(Set.of("America/Montreal"));
     }
 
 
@@ -77,6 +79,70 @@ public class UserApiControllerTest extends AbstractGenericTest {
         this.mockMvc.perform(get("/api/v1/user/current-user"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.lastName", is("Test")));
+    }
+
+
+    //  ----------------- getCountryCodes -----------------
+
+    @Test
+    public void test_getCountryCodes_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/user/country-codes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("1")));
+    }
+
+
+    //  ----------------- getPhoneTypes -----------------
+
+    @Test
+    public void test_getPhoneTypes_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/user/phone-types"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("MOBILE")));
+    }
+
+
+    //  ----------------- getCurrencies -----------------
+
+    @Test
+    public void test_getCurrencies_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/user/currencies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("ARS")));
+    }
+
+
+    //  ----------------- getCountries -----------------
+
+    @Test
+    public void test_getCountries_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/user/countries"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("ARGENTINA")));
+    }
+
+
+    //  ----------------- getLanguages -----------------
+
+    @Test
+    public void test_getLanguages_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/user/languages"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("ENGLISH")));
+    }
+
+
+    //  ----------------- getTimeZones -----------------
+
+    @Test
+    public void test_getTimeZones_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("q", List.of("hello"));
+
+        this.mockMvc.perform(get("/api/v1/user/timezones").params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0]", is("America/Montreal")));
     }
 
 

@@ -131,5 +131,7 @@ public class CoreConstants {
         public static final String INVALID_INTERVAL = "%s was not a valid interval";
 
         public static final String MUTUALLY_EXCLUSIVE_DATES = "start date was after end date or vice versa";
+
+        public static final String SEARCH_QUERY_CANNOT_BE_NULL = "search query cannot be null";
     }
 }

@@ -11,9 +11,11 @@ import com.traderbuddyv2.core.models.entities.retrospective.Retrospective;
 import com.traderbuddyv2.core.models.entities.security.User;
 import com.traderbuddyv2.core.models.entities.security.UserLocale;
 import com.traderbuddyv2.core.models.entities.system.PhoneNumber;
+import com.traderbuddyv2.core.models.records.search.SearchResult;
 import com.traderbuddyv2.core.repositories.security.UserLocaleRepository;
 import com.traderbuddyv2.core.repositories.security.UserRepository;
 import com.traderbuddyv2.core.repositories.system.PhoneNumberRepository;
+import com.traderbuddyv2.core.services.search.SearchService;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,8 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.traderbuddyv2.core.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -35,6 +39,9 @@ public class UserService {
 
     @Resource(name = "phoneNumberRepository")
     private PhoneNumberRepository phoneNumberRepository;
+
+    @Resource(name = "timezoneSearchService")
+    private SearchService searchService;
 
     @Resource(name = "userRepository")
     private UserRepository userRepository;
@@ -126,6 +133,18 @@ public class UserService {
         } catch (Exception e) {
             throw new EntityModificationException(String.format("An error occurred while modifying the User : %s", e.getMessage()), e);
         }
+    }
+
+    /**
+     * Searches through the system's timezones to find best-matching for the query
+     *
+     * @param query search query
+     * @param limit limit the number of results
+     * @return {@link Set} of time zones as strings
+     */
+    public Set<String> searchTimezones(final String query, final int limit) {
+        validateParameterIsNotNull(query, "The search query cannot be null");
+        return this.searchService.search(query, limit).stream().map(SearchResult::getValue).collect(Collectors.toSet());
     }
 
 
